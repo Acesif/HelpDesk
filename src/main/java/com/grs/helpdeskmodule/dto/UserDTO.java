@@ -9,14 +9,10 @@ import java.util.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class UserDto {
+public class UserDTO {
 
 
-    private String firstName;
-
-    private String lastName;
-
-    private String username;
+    private String name;
 
     private String email;
 

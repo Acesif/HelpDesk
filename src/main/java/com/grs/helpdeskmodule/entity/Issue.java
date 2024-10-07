@@ -4,6 +4,7 @@ import com.grs.helpdeskmodule.base.BaseEntity;
 import jakarta.annotation.Nonnull;
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 import java.security.SecureRandom;
 import java.util.Date;
@@ -14,7 +15,7 @@ import java.util.UUID;
 @Table(name = "issue")
 @Getter
 @Setter
-@Builder
+@SuperBuilder
 @AllArgsConstructor
 @NoArgsConstructor
 public class Issue extends BaseEntity {
@@ -36,9 +37,9 @@ public class Issue extends BaseEntity {
     @JoinColumn(name = "user_id")
     private User postedBy;
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "issue_id")
+    @OneToMany(mappedBy = "issue", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Attachment> attachments;
+
 
     @PrePersist
     public void generateTrackingNumber() {

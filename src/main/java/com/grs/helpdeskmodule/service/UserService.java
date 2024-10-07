@@ -1,11 +1,11 @@
-package com.grs.helpdeskmodule.entity.service;
+package com.grs.helpdeskmodule.service;
 
 import com.grs.helpdeskmodule.base.BaseEntityRepository;
 import com.grs.helpdeskmodule.base.BaseService;
 import com.grs.helpdeskmodule.entity.User;
 
 
-import com.grs.helpdeskmodule.entity.repository.UserRepository;
+import com.grs.helpdeskmodule.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -18,7 +18,7 @@ public class UserService extends BaseService<User> {
         this.userRepository = userRepository;
     }
 
-    public User findUserByUsername(String username){
-        return userRepository.findByUsername(username);
+    public User findUserByEmail(String email){
+        return userRepository.findByEmail(email);
     }
 }

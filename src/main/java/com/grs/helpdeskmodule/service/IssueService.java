@@ -1,4 +1,4 @@
-package com.grs.helpdeskmodule.entity.service;
+package com.grs.helpdeskmodule.service;
 
 import com.grs.helpdeskmodule.base.BaseEntityRepository;
 import com.grs.helpdeskmodule.base.BaseService;

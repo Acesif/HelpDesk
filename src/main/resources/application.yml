@@ -2,12 +2,20 @@ spring:
   application:
     name: HelpDesk-Module
   datasource:
-    url: jdbc:mysql://127.0.0.1:3307/helpdesk?createDatabaseIfNotExist=true&autoReconnect=true&useSSL=false&useUnicode=yes&characterEncoding=UTF-8&allowPublicKeyRetrieval=true
+    url: jdbc:mysql://127.0.0.1:3306/helpdesk?createDatabaseIfNotExist=true&autoReconnect=true&useSSL=false&useUnicode=yes&characterEncoding=UTF-8&allowPublicKeyRetrieval=true
     username: root
     password: root
     driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     database-platform: org.hibernate.dialect.MySQLDialect
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: update
     show-sql: true
+    defer-datasource-initialization: true
+  sql:
+    init:
+      data-locations: classpath:data.sql
+      mode: always
+
+
+

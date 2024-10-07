@@ -12,7 +12,7 @@ import java.util.Set;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class IssueDto {
+public class IssueDTO {
 
     private String trackingNumber;
 
@@ -26,5 +26,5 @@ public class IssueDto {
 
     private Date postedOn;
 
-    private Set<Attachment> attachments;
+    private Set<AttachmentDTO> attachments;
 }

@@ -1,8 +1,8 @@
-package com.grs.helpdeskmodule.entity.controller;
+package com.grs.helpdeskmodule.controller;
 
-import com.grs.helpdeskmodule.dto.UserDto;
+import com.grs.helpdeskmodule.dto.UserDTO;
 import com.grs.helpdeskmodule.entity.User;
-import com.grs.helpdeskmodule.entity.service.UserService;
+import com.grs.helpdeskmodule.service.UserService;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -19,27 +19,10 @@ public class UserController {
 
     private final UserService userService;
 
-    @PostConstruct
-    public void startupUser() {
-        User user = User.builder()
-                .firstName("test")
-                .lastName("test")
-                .username("testuser")
-                .email("test@user.com")
-                .phoneNumber("01111111111")
-                .officeId("office_1")
-                .designation("GRO")
-                .build();
-
-        userService.save(user);
-    }
-
     @PostMapping("/create")
-    public ResponseEntity<UserDto> createUser(@RequestBody UserDto userDto){
+    public ResponseEntity<UserDTO> createUser(@RequestBody UserDTO userDto){
         User user = User.builder()
-                .firstName(userDto.getFirstName())
-                .lastName(userDto.getLastName())
-                .username(userDto.getUsername())
+                .name(userDto.getName())
                 .email(userDto.getEmail())
                 .phoneNumber(userDto.getPhoneNumber())
                 .officeId(userDto.getOfficeId())
@@ -47,10 +30,8 @@ public class UserController {
                 .build();
 
         User createdUser = userService.save(user);
-        UserDto returnedDto = UserDto.builder()
-                .firstName(createdUser.getFirstName())
-                .lastName(createdUser.getLastName())
-                .username(createdUser.getUsername())
+        UserDTO returnedDto = UserDTO.builder()
+                .name(createdUser.getName())
                 .email(createdUser.getEmail())
                 .phoneNumber(createdUser.getPhoneNumber())
                 .officeId(createdUser.getOfficeId())

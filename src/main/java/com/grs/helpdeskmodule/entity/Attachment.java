@@ -16,5 +16,12 @@ public class Attachment extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String fileName;
+
+    @Lob
     private byte[] fileData;
+
+    @ManyToOne
+    @JoinColumn(name = "issue")
+    private Issue issue;
+
 }
