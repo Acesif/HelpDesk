@@ -2,14 +2,14 @@ package com.grs.helpdeskmodule.entity;
 
 import com.grs.helpdeskmodule.base.BaseEntity;
 import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
 import java.security.SecureRandom;
-import java.util.Date;
+import java.util.List;
 import java.util.Set;
-import java.util.UUID;
 
 @Entity
 @Table(name = "issue")
@@ -39,6 +39,9 @@ public class Issue extends BaseEntity {
 
     @OneToMany(mappedBy = "issue", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Attachment> attachments;
+
+    @OneToMany(mappedBy = "parentIssue", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<IssueReplies> issueReplies;
 
 
     @PrePersist

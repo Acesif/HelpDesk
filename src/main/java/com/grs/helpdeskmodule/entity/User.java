@@ -35,4 +35,6 @@ public class User extends BaseEntity {
     private String officeId;
 
     private String designation;
+
+    private String password;
 }

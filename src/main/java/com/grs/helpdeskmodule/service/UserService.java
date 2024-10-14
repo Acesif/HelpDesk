@@ -8,6 +8,8 @@ import com.grs.helpdeskmodule.entity.User;
 import com.grs.helpdeskmodule.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class UserService extends BaseService<User> {
 
@@ -20,5 +22,9 @@ public class UserService extends BaseService<User> {
 
     public User findUserByEmail(String email){
         return userRepository.findByEmail(email);
+    }
+
+    public List<User> findAll(){
+        return userRepository.findAll();
     }
 }

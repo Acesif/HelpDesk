@@ -23,4 +23,6 @@ public class UserDTO {
     private Date createdOn;
 
     private String designation;
+
+    private String password;
 }

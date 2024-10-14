@@ -1,6 +1,5 @@
 package com.grs.helpdeskmodule.dto;
 
-import com.grs.helpdeskmodule.entity.Attachment;
 import com.grs.helpdeskmodule.entity.IssueStatus;
 import lombok.*;
 
