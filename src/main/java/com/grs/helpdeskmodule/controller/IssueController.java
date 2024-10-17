@@ -2,8 +2,10 @@ package com.grs.helpdeskmodule.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.grs.helpdeskmodule.dto.IssueDTO;
+import com.grs.helpdeskmodule.dto.Response;
 import com.grs.helpdeskmodule.entity.Attachment;
 import com.grs.helpdeskmodule.entity.Issue;
+import com.grs.helpdeskmodule.entity.IssueStatus;
 import com.grs.helpdeskmodule.entity.User;
 import com.grs.helpdeskmodule.service.IssueService;
 import com.grs.helpdeskmodule.service.UserService;
@@ -34,12 +36,17 @@ public class IssueController {
 
     @Transactional
     @PostMapping(value = "/new", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<IssueDTO> createIssue(
-            @RequestPart("issue") String issueJson,
-            @RequestPart(value = "attachments", required = false) List<MultipartFile> attachments) throws IOException {
+    public Response<?> createIssue(
+            @RequestPart("title") String title,
+            @RequestPart("description") String description,
+            @RequestPart("status") String status,
+            @RequestPart(value = "attachments", required = false) List<MultipartFile> attachments) {
 
-        ObjectMapper objectMapper = new ObjectMapper();
-        IssueDTO issueDto = objectMapper.readValue(issueJson, IssueDTO.class);
+        IssueDTO issueDto = IssueDTO.builder()
+                .title(title)
+                .description(description)
+                .status(IssueStatus.valueOf(status))
+                .build();
 
         String loggedInUserEmail = SecurityContextHolder.getContext().getAuthentication().getName();
         User postedByUser = userService.findUserByEmail(loggedInUserEmail);
@@ -82,7 +89,11 @@ public class IssueController {
                 .postedBy(savedIssue.getPostedBy().getEmail())
                 .build();
 
-        return new ResponseEntity<>(savedIssueDTO, HttpStatus.CREATED);
+        return Response.builder()
+                .status(HttpStatus.CREATED)
+                .message("Issue created successfully")
+                .data(savedIssueDTO)
+                .build();
     }
 
 }
