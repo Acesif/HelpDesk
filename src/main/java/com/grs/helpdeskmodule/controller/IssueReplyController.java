@@ -5,6 +5,7 @@ import com.grs.helpdeskmodule.dto.IssueRepliesDTO;
 import com.grs.helpdeskmodule.dto.Response;
 import com.grs.helpdeskmodule.entity.Issue;
 import com.grs.helpdeskmodule.entity.IssueReplies;
+import com.grs.helpdeskmodule.entity.IssueStatus;
 import com.grs.helpdeskmodule.entity.User;
 import com.grs.helpdeskmodule.service.IssueReplyService;
 import com.grs.helpdeskmodule.service.IssueService;
@@ -14,8 +15,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
-import javax.management.InstanceNotFoundException;
-
 @RestController
 @RequestMapping("/api/issue_reply")
 @RequiredArgsConstructor
@@ -24,6 +23,13 @@ public class IssueReplyController {
     private final IssueService issueService;
     private final UserService userService;
     private final IssueReplyService issueReplyService;
+
+    private void setCurrentStatus(Long parentId){
+        IssueStatus currentStatus = issueReplyService.findLastReply(parentId).getUpdatedStatus();
+        Issue updatedIssue = issueService.findById(parentId);
+        updatedIssue.setStatus(currentStatus);
+        issueService.update(updatedIssue);
+    }
 
     @PostMapping("/{id}")
     public Response<?> postReply(
@@ -39,17 +45,19 @@ public class IssueReplyController {
         if (issue != null){
             IssueReplies issueReply = IssueReplies.builder()
                     .flag(true)
-                    .parentIssue(issue)
+                    .parentIssueId(issue.getId())
                     .comment(issueRepliesDTO.getComment())
-                    .repliant(postedByUser)
+                    .repliantId(postedByUser.getId())
                     .updatedStatus(issueRepliesDTO.getUpdatedStatus())
                     .build();
 
             IssueReplies savedIssueReply = issueReplyService.saveReply(issueReply);
+            setCurrentStatus(id);
+
             IssueRepliesDTO repliesDTO = IssueRepliesDTO.builder()
-                    .repliant(savedIssueReply.getRepliant())
+                    .repliantId(savedIssueReply.getRepliantId())
                     .comment(savedIssueReply.getComment())
-                    .parentIssue(savedIssueReply.getParentIssue())
+                    .parentIssueId(savedIssueReply.getParentIssueId())
                     .updatedStatus(savedIssueReply.getUpdatedStatus())
                     .build();
 

@@ -14,4 +14,8 @@ public class IssueReplyService {
     public IssueReplies saveReply(IssueReplies issueReplies){
         return issueReplyRepository.save(issueReplies);
     }
+
+    public IssueReplies findLastReply(Long parentId){
+        return issueReplyRepository.findLastIssue(parentId);
+    }
 }

@@ -14,14 +14,9 @@ import lombok.experimental.SuperBuilder;
 @Setter
 public class IssueReplies extends BaseEntity {
 
-    @OneToOne
-    public User repliant;
-
-    @ManyToOne
-    public Issue parentIssue;
-
+    public Long repliantId;
+    public Long parentIssueId;
     public String comment;
-
     @Enumerated(EnumType.STRING)
     public IssueStatus updatedStatus;
 }

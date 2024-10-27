@@ -40,10 +40,6 @@ public class Issue extends BaseEntity {
     @OneToMany(mappedBy = "issue", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Attachment> attachments;
 
-    @OneToMany(mappedBy = "parentIssue", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<IssueReplies> issueReplies;
-
-
     @PrePersist
     public void generateTrackingNumber() {
         SecureRandom random = new SecureRandom();

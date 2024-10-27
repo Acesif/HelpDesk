@@ -14,16 +14,10 @@ import java.util.Set;
 public class IssueDTO {
 
     private String trackingNumber;
-
     private String title;
-
     private String description;
-
     private IssueStatus status;
-
-    private String postedBy;
-
+    private Long postedBy;
     private Date postedOn;
-
     private Set<AttachmentDTO> attachments;
 }

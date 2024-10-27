@@ -11,6 +11,7 @@ import com.grs.helpdeskmodule.service.IssueService;
 import com.grs.helpdeskmodule.service.UserService;
 import com.grs.helpdeskmodule.utils.IssueMapper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.expression.spel.ast.NullLiteral;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -84,9 +85,8 @@ public class IssueController {
                 .description(savedIssue.getDescription())
                 .status(savedIssue.getStatus())
                 .trackingNumber(savedIssue.getTrackingNumber())
-                .attachments(IssueMapper.convertToAttachmentDTOs(savedIssue.getAttachments() != null ? savedIssue.getAttachments() : new HashSet<>()))
                 .postedOn(savedIssue.getCreateDate())
-                .postedBy(savedIssue.getPostedBy().getEmail())
+                .postedBy(savedIssue.getPostedBy().getId())
                 .build();
 
         return Response.builder()
@@ -96,4 +96,63 @@ public class IssueController {
                 .build();
     }
 
+    @Transactional
+    @PutMapping("/{id}")
+    public Response<?> updateIssue(
+            @PathVariable("id") Long id,
+            @RequestBody IssueDTO issueDTO
+    ){
+
+        return null;
+    }
+
+    @DeleteMapping("/{id}")
+    public Response<?> removeIssue(@PathVariable("id") Long id){
+        Issue removeIssue = issueService.findById(id);
+        removeIssue.setFlag(false);
+        issueService.update(removeIssue);
+
+        return Response.builder()
+                .status(HttpStatus.OK)
+                .message("Issue removed successfully")
+                .data(null)
+                .build();
+    }
+
+    @GetMapping("/{id}")
+    public Response<?> getIssueDetails(@PathVariable("id") Long id){
+
+        Issue findIssue = issueService.findById(id);
+
+        if (findIssue == null){
+            return Response.builder()
+                    .status(HttpStatus.NO_CONTENT)
+                    .message("Issue not found")
+                    .data(null)
+                    .build();
+        } else {
+            if (!findIssue.getFlag()){
+                return Response.builder()
+                        .status(HttpStatus.NO_CONTENT)
+                        .message("Issue doesn't exist")
+                        .data(null)
+                        .build();
+            }
+
+            IssueDTO issueDTO = IssueDTO.builder()
+                    .title(findIssue.getTitle())
+                    .status(findIssue.getStatus())
+                    .description(findIssue.getDescription())
+                    .postedBy(findIssue.getPostedBy().getId())
+                    .trackingNumber(findIssue.getTrackingNumber())
+                    .postedOn(findIssue.getCreateDate())
+                    .build();
+
+            return Response.builder()
+                    .status(HttpStatus.OK)
+                    .message("Issue found")
+                    .data(issueDTO)
+                    .build();
+        }
+    }
 }

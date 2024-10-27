@@ -13,8 +13,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 public class IssueRepliesDTO {
-    public User repliant;
-    public Issue parentIssue;
+    public Long repliantId;
+    public Long parentIssueId;
     public String comment;
     public IssueStatus updatedStatus;
 }
