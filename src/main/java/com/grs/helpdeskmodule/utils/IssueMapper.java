@@ -2,8 +2,12 @@ package com.grs.helpdeskmodule.utils;
 
 import com.grs.helpdeskmodule.dto.AttachmentDTO;
 import com.grs.helpdeskmodule.entity.Attachment;
+import com.grs.helpdeskmodule.entity.Issue;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.Base64;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -25,5 +29,25 @@ public class IssueMapper {
             attachment.setFileData(Base64.getDecoder().decode(dto.getFileData()));
             return attachment;
         }).collect(Collectors.toSet());
+    }
+
+    public static void convertMultipartToAttachment(List<MultipartFile> multipartFiles, Issue issue){
+        issue.getAttachments().clear();
+        if (multipartFiles != null && !multipartFiles.isEmpty()) {
+            Set<Attachment> attachmentEntities = multipartFiles.stream().map(file -> {
+                try {
+                    return Attachment.builder()
+                            .flag(true)
+                            .fileName(file.getOriginalFilename())
+                            .fileData(file.getBytes())
+                            .issue(issue)
+                            .build();
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }).collect(Collectors.toSet());
+
+            issue.getAttachments().addAll(attachmentEntities);
+        }
     }
 }

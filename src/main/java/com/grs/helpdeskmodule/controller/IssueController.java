@@ -7,6 +7,8 @@ import com.grs.helpdeskmodule.entity.Attachment;
 import com.grs.helpdeskmodule.entity.Issue;
 import com.grs.helpdeskmodule.entity.IssueStatus;
 import com.grs.helpdeskmodule.entity.User;
+import com.grs.helpdeskmodule.repository.AttachmentRepository;
+import com.grs.helpdeskmodule.service.AttachmentService;
 import com.grs.helpdeskmodule.service.IssueService;
 import com.grs.helpdeskmodule.service.UserService;
 import com.grs.helpdeskmodule.utils.IssueMapper;
@@ -21,6 +23,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -34,6 +37,20 @@ public class IssueController {
 
     private final IssueService issueService;
     private final UserService userService;
+    private final AttachmentService attachmentService;
+
+    /**
+     * Creates a new issue with the given title, description, and status. Optionally allows attaching files.
+     * Ensures that the operation is atomic and rolls back in case of any failure.
+     * Handles HTTP POST requests to the "/new" endpoint, consuming multipart form data.
+     *
+     * @param title The title of the issue.
+     * @param description The description of the issue.
+     * @param status The status of the issue.
+     * @param attachments Optional list of files to be attached to the issue.
+     *
+     * @return A generic response indicating the outcome of the issue creation.
+     */
 
     @Transactional
     @PostMapping(value = "/new", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
@@ -61,31 +78,19 @@ public class IssueController {
                 .postedBy(postedByUser)
                 .build();
 
-        if (attachments != null && !attachments.isEmpty()) {
-            Set<Attachment> attachmentEntities = attachments.stream().map(file -> {
-                try {
-                    return Attachment.builder()
-                            .flag(true)
-                            .fileName(file.getOriginalFilename())
-                            .fileData(file.getBytes())
-                            .issue(issue)
-                            .build();
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-            }).collect(Collectors.toSet());
 
-            issue.setAttachments(attachmentEntities);
-        }
+        IssueMapper.convertMultipartToAttachment(attachments,issue);
 
         Issue savedIssue = issueService.save(issue);
 
         IssueDTO savedIssueDTO = IssueDTO.builder()
+                .id(savedIssue.getId())
                 .title(savedIssue.getTitle())
                 .description(savedIssue.getDescription())
                 .status(savedIssue.getStatus())
                 .trackingNumber(savedIssue.getTrackingNumber())
                 .postedOn(savedIssue.getCreateDate())
+                .updatedOn(savedIssue.getUpdateDate())
                 .postedBy(savedIssue.getPostedBy().getId())
                 .build();
 
@@ -97,13 +102,51 @@ public class IssueController {
     }
 
     @Transactional
-    @PutMapping("/{id}")
+    @PutMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public Response<?> updateIssue(
             @PathVariable("id") Long id,
-            @RequestBody IssueDTO issueDTO
+            @RequestPart("title") String title,
+            @RequestPart("description") String description,
+            @RequestPart("status") String  status,
+            @RequestPart(value = "attachments", required = false) List<MultipartFile> attachments
     ){
+        Issue issue = issueService.findById(id);
 
-        return null;
+        if (issue == null || !issue.getFlag()){
+            return Response.builder()
+                    .status(HttpStatus.NO_CONTENT)
+                    .message("Issue not found")
+                    .data(null)
+                    .build();
+        }
+
+        issue.setFlag(true);
+        issue.setStatus(IssueStatus.valueOf(status));
+        issue.setTitle(title);
+        issue.setDescription(description);
+        issue.setUpdateDate(new Date());
+
+        IssueMapper.convertMultipartToAttachment(attachments,issue);
+
+        Issue updatedIssue = issueService.update(issue);
+
+
+        return Response.builder()
+                .status(HttpStatus.OK)
+                .message("Issue successfully updated")
+                .data(
+                        IssueDTO.builder()
+                                .id(updatedIssue.getId())
+                                .title(updatedIssue.getTitle())
+                                .status(updatedIssue.getStatus())
+                                .description(updatedIssue.getDescription())
+                                .postedBy(updatedIssue.getPostedBy().getId())
+                                .postedOn(updatedIssue.getCreateDate())
+                                .updatedOn(updatedIssue.getUpdateDate())
+                                .trackingNumber(updatedIssue.getTrackingNumber())
+                                .build()
+                )
+                .build();
     }
 
     @DeleteMapping("/{id}")
@@ -111,6 +154,7 @@ public class IssueController {
         Issue removeIssue = issueService.findById(id);
         removeIssue.setFlag(false);
         issueService.update(removeIssue);
+        attachmentService.removeAll(id);
 
         return Response.builder()
                 .status(HttpStatus.OK)
@@ -140,12 +184,14 @@ public class IssueController {
             }
 
             IssueDTO issueDTO = IssueDTO.builder()
+                    .id(findIssue.getId())
                     .title(findIssue.getTitle())
                     .status(findIssue.getStatus())
                     .description(findIssue.getDescription())
                     .postedBy(findIssue.getPostedBy().getId())
-                    .trackingNumber(findIssue.getTrackingNumber())
                     .postedOn(findIssue.getCreateDate())
+                    .updatedOn(findIssue.getUpdateDate())
+                    .trackingNumber(findIssue.getTrackingNumber())
                     .build();
 
             return Response.builder()
