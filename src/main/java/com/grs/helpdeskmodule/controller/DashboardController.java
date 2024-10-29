@@ -9,15 +9,10 @@ import com.grs.helpdeskmodule.utils.IssueMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @Slf4j
 @RestController
@@ -27,14 +22,41 @@ public class DashboardController {
 
     private final DashboardService dashboardService;
 
-    /**
-     * findIssuesByStatus(IssueStatus status)
-     * findIssuesByYearMonth(String YearMonth)
-     * findIssuesByYearMonth()
-     * findIssuesBetweenYearMonths(String startYearMonth, String endYearMonth)
-     * findIssuesByTrackingNumber(String trackingNumber)
-     * findIssuesByTitleOrDescription(String input)
-     */
+    @GetMapping("/count")
+    public Response<?> getCount(){
+        Map<String,Integer> countList = new HashMap<>();
+        Integer OPEN = dashboardService.findIssuesByStatus("OPEN").size();
+        countList.put("open", OPEN);
+        Integer RESOLVED = dashboardService.findIssuesByStatus("RESOLVED").size();
+        countList.put("resolved", RESOLVED);
+        Integer REJECTED = dashboardService.findIssuesByStatus("REJECTED").size();
+        countList.put("rejected", REJECTED);
+        Integer ONGOING = dashboardService.findIssuesByStatus("ONGOING").size();
+        countList.put("ongoing", ONGOING);
+        Integer CLOSED = dashboardService.findIssuesByStatus("CLOSED").size();
+        countList.put("closed", CLOSED);
+
+        Integer totalCount = OPEN+REJECTED+RESOLVED+ONGOING+CLOSED;
+        countList.put("total", totalCount);
+
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(new Date());
+        calendar.add(Calendar.MONTH, -1);
+        Date previousMonthDate = calendar.getTime();
+
+        Integer prevMonthIssues = dashboardService.findIssuesByYearMonth(dateFormat.format(previousMonthDate)).size();
+        Integer currentMonthIssues = dashboardService.findIssuesByYearMonth().size();
+
+        countList.put("time_exceeded", prevMonthIssues);
+        countList.put("current_month_issues", currentMonthIssues);
+
+        return Response.builder()
+                .status(HttpStatus.OK)
+                .message("Statistics of issues")
+                .data(countList)
+                .build();
+    }
 
     @PostMapping("/status")
     public Response<?> findIssuesByStatus(
@@ -144,21 +166,61 @@ public class DashboardController {
             @RequestParam(value = "trackingNumber", required = false) String trackingNumber
     ){
 
+        if (trackingNumber == null){
+            return Response.builder()
+                    .status(HttpStatus.BAD_REQUEST)
+                    .message("trackingNumber parameter missing")
+                    .data(null)
+                    .build();
+        }
+
+        Issue issue = dashboardService.findIssuesByTrackingNumber(trackingNumber);
+
+        if (issue == null){
+            return Response.builder()
+                    .status(HttpStatus.NO_CONTENT)
+                    .message("No issues found with tracking number "+trackingNumber)
+                    .data(null)
+                    .build();
+        }
+
+        IssueDTO issueDTO = IssueMapper.convertToIssueDTO(issue);
+
         return Response.builder()
                 .status(HttpStatus.OK)
-                .message("")
-                .data(null)
+                .message("Issues found with tracking number "+trackingNumber)
+                .data(issueDTO)
                 .build();
     }
-    @PostMapping("/input")
+    @PostMapping("/find")
     public Response<?> findIssuesByTitleOrDescription(
             @RequestParam(value = "input", required = false) String input
     ){
 
+        if (input == null){
+            return Response.builder()
+                    .status(HttpStatus.BAD_REQUEST)
+                    .message("Input parameter missing")
+                    .data(null)
+                    .build();
+        }
+
+        List<Issue> issues = dashboardService.findIssuesByTitleOrDescription(input);
+
+        if (issues.isEmpty()){
+            return Response.builder()
+                    .status(HttpStatus.NO_CONTENT)
+                    .message("No issues found with with the text "+input)
+                    .data(null)
+                    .build();
+        }
+
+        List<IssueDTO> issueDTOList = issues.stream().map(IssueMapper::convertToIssueDTO).toList();
+
         return Response.builder()
                 .status(HttpStatus.OK)
-                .message("")
-                .data(null)
+                .message("Issues found with the text "+input)
+                .data(issueDTOList)
                 .build();
     }
 }
