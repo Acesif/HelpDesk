@@ -1,8 +1,8 @@
 package com.grs.helpdeskmodule.entity;
 
+import com.grs.helpdeskmodule.base.BaseEntity;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -11,6 +11,9 @@ import java.io.Serializable;
 @Getter
 @Setter
 @Table(name = "priorities")
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class Priorities implements Serializable {
 
     @Serial

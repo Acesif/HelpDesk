@@ -32,7 +32,7 @@ public class User extends BaseEntity {
     private String phoneNumber;
 
     @Column(name = "office_id")
-    private String officeId;
+    private Long officeId;
 
     private String designation;
 

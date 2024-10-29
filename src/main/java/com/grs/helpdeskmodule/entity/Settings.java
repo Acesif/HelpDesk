@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Settings extends BaseEntity {
+public class Settings {
 
     @Id
     @Column(name = "`key`", nullable = false, unique = true)

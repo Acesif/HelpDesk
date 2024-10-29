@@ -16,7 +16,7 @@ public class UserDTO {
     private String name;
     private String email;
     private String phoneNumber;
-    private String officeId;
+    private Long officeId;
     @JsonFormat(pattern = "dd-MM-yyyy HH:mm:ss", timezone = "Asia/Dhaka")
     private Date createdOn;
     private String designation;

@@ -79,7 +79,7 @@ public class IssueController {
                 .build();
 
 
-        IssueMapper.convertMultipartToAttachment(attachments,issue);
+        IssueMapper.convertMultipartToAttachmentToSave(attachments,issue);
 
         Issue savedIssue = issueService.save(issue);
 
@@ -100,6 +100,19 @@ public class IssueController {
                 .data(savedIssueDTO)
                 .build();
     }
+
+    /**
+     * Updates an existing issue using their issue id and sending the updated params. Optionally allows attaching files.
+     * Ensures that the operation is atomic and rolls back in case of any failure.
+     * Handles HTTP PUT requests to the "/{id}" endpoint, consuming multipart form data.
+     *
+     * @param title The title of the issue.
+     * @param description The description of the issue.
+     * @param status The status of the issue.
+     * @param attachments Optional list of files to be attached to the issue.
+     *
+     * @return A generic response indicating the outcome of the issue creation.
+     */
 
     @Transactional
     @PutMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
@@ -126,7 +139,7 @@ public class IssueController {
         issue.setDescription(description);
         issue.setUpdateDate(new Date());
 
-        IssueMapper.convertMultipartToAttachment(attachments,issue);
+        IssueMapper.convertMultipartToAttachmentToUpdate(attachments,issue);
 
         Issue updatedIssue = issueService.update(issue);
 
