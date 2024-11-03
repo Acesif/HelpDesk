@@ -1,32 +1,22 @@
 package com.grs.helpdeskmodule.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.grs.helpdeskmodule.base.BaseEntity;
 import com.grs.helpdeskmodule.dto.IssueDTO;
 import com.grs.helpdeskmodule.dto.Response;
-import com.grs.helpdeskmodule.entity.Attachment;
-import com.grs.helpdeskmodule.entity.Issue;
-import com.grs.helpdeskmodule.entity.IssueStatus;
-import com.grs.helpdeskmodule.entity.User;
-import com.grs.helpdeskmodule.repository.AttachmentRepository;
+import com.grs.helpdeskmodule.entity.*;
 import com.grs.helpdeskmodule.service.AttachmentService;
 import com.grs.helpdeskmodule.service.IssueService;
 import com.grs.helpdeskmodule.service.UserService;
 import com.grs.helpdeskmodule.utils.IssueMapper;
 import lombok.RequiredArgsConstructor;
-import org.springframework.expression.spel.ast.NullLiteral;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 
@@ -46,7 +36,6 @@ public class IssueController {
      *
      * @param title The title of the issue.
      * @param description The description of the issue.
-     * @param status The status of the issue.
      * @param attachments Optional list of files to be attached to the issue.
      *
      * @return A generic response indicating the outcome of the issue creation.
@@ -57,13 +46,12 @@ public class IssueController {
     public Response<?> createIssue(
             @RequestPart("title") String title,
             @RequestPart("description") String description,
-            @RequestPart("status") String status,
             @RequestPart(value = "attachments", required = false) List<MultipartFile> attachments) {
 
         IssueDTO issueDto = IssueDTO.builder()
                 .title(title)
                 .description(description)
-                .status(IssueStatus.valueOf(status))
+                .status(IssueStatus.OPEN)
                 .build();
 
         String loggedInUserEmail = SecurityContextHolder.getContext().getAuthentication().getName();
@@ -83,6 +71,12 @@ public class IssueController {
 
         Issue savedIssue = issueService.save(issue);
 
+        Map<Long,String> filenames = new HashMap<>();
+
+        for (Attachment a : savedIssue.getAttachments()){
+            filenames.put(a.getId(),a.getFileName());
+        }
+
         IssueDTO savedIssueDTO = IssueDTO.builder()
                 .id(savedIssue.getId())
                 .title(savedIssue.getTitle())
@@ -92,6 +86,7 @@ public class IssueController {
                 .postedOn(savedIssue.getCreateDate())
                 .updatedOn(savedIssue.getUpdateDate())
                 .postedBy(savedIssue.getPostedBy().getId())
+                .attachments(filenames)
                 .build();
 
         return Response.builder()
@@ -143,6 +138,12 @@ public class IssueController {
 
         Issue updatedIssue = issueService.update(issue);
 
+        Map<Long,String> filenames = new HashMap<>();
+
+        for (Attachment a : updatedIssue.getAttachments()){
+            filenames.put(a.getId(),a.getFileName());
+        }
+
 
         return Response.builder()
                 .status(HttpStatus.OK)
@@ -157,6 +158,7 @@ public class IssueController {
                                 .postedOn(updatedIssue.getCreateDate())
                                 .updatedOn(updatedIssue.getUpdateDate())
                                 .trackingNumber(updatedIssue.getTrackingNumber())
+                                .attachments(filenames)
                                 .build()
                 )
                 .build();
@@ -196,6 +198,12 @@ public class IssueController {
                         .build();
             }
 
+            Map<Long,String> filenames = new HashMap<>();
+
+            for (Attachment a : findIssue.getAttachments()){
+                filenames.put(a.getId(),a.getFileName());
+            }
+
             IssueDTO issueDTO = IssueDTO.builder()
                     .id(findIssue.getId())
                     .title(findIssue.getTitle())
@@ -205,6 +213,7 @@ public class IssueController {
                     .postedOn(findIssue.getCreateDate())
                     .updatedOn(findIssue.getUpdateDate())
                     .trackingNumber(findIssue.getTrackingNumber())
+                    .attachments(filenames)
                     .build();
 
             return Response.builder()
@@ -213,5 +222,42 @@ public class IssueController {
                     .data(issueDTO)
                     .build();
         }
+    }
+
+    @GetMapping("/user/{id}")
+    public Response<?> getIssuesByUser(@PathVariable("id") Long id){
+        List<Issue> issueList = issueService.findIssueByUser(id);
+
+        if (issueList.isEmpty()){
+            return Response.builder()
+                    .status(HttpStatus.NO_CONTENT)
+                    .message("No issues found for this user")
+                    .data(null)
+                    .build();
+        }
+
+        List<Issue> sortedIssueDTOList = issueList.stream().sorted(Comparator.comparing(BaseEntity::getUpdateDate)).toList();
+
+        List<IssueDTO> issueDTOList = sortedIssueDTOList.stream().map(IssueMapper::convertToIssueDTO).toList();
+
+        Map<Long, Issue> issueMap = issueList.stream()
+                .collect(Collectors.toMap(Issue::getId, issue -> issue));
+
+        for (IssueDTO issueDTO : issueDTOList) {
+            Issue correspondingIssue = issueMap.get(issueDTO.getId());
+            if (correspondingIssue != null) {
+                Map<Long, String> filenames = new HashMap<>();
+                for (Attachment attachment : correspondingIssue.getAttachments()) {
+                    filenames.put(attachment.getId(), attachment.getFileName());
+                }
+                issueDTO.setAttachments(filenames);
+            }
+        }
+
+        return Response.builder()
+                .status(HttpStatus.OK)
+                .message("Issues for user id "+id+" has been retrieved")
+                .data(issueDTOList)
+                .build();
     }
 }

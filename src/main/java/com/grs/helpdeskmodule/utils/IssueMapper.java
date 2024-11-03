@@ -2,8 +2,11 @@ package com.grs.helpdeskmodule.utils;
 
 import com.grs.helpdeskmodule.dto.AttachmentDTO;
 import com.grs.helpdeskmodule.dto.IssueDTO;
+import com.grs.helpdeskmodule.dto.IssueRepliesDTO;
 import com.grs.helpdeskmodule.entity.Attachment;
 import com.grs.helpdeskmodule.entity.Issue;
+import com.grs.helpdeskmodule.entity.IssueReplies;
+import com.grs.helpdeskmodule.entity.IssueStatus;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -14,13 +17,14 @@ import java.util.stream.Collectors;
 
 public class IssueMapper {
 
-    public static Set<AttachmentDTO> convertToAttachmentDTOs(Set<Attachment> attachments) {
-        return attachments.stream().map(attachment -> {
-            AttachmentDTO dto = new AttachmentDTO();
-            dto.setFileName(attachment.getFileName());
-            dto.setFileData(Base64.getEncoder().encodeToString(attachment.getFileData()));
-            return dto;
-        }).collect(Collectors.toSet());
+    public static Set<AttachmentDTO> convertToAttachmentDTOs(Set<Attachment> attachments,Long id) {
+        return attachments.stream().map(attachment ->
+            AttachmentDTO.builder()
+                    .fileName(attachment.getFileName())
+                    .fileData(Base64.getEncoder().encodeToString(attachment.getFileData()))
+                    .issue(id)
+                    .build()
+        ).collect(Collectors.toSet());
     }
 
     public static Set<Attachment> convertToAttachments(Set<AttachmentDTO> attachmentDTOs) {
@@ -42,6 +46,25 @@ public class IssueMapper {
                 .postedBy(issue.getPostedBy().getId())
                 .trackingNumber(issue.getTrackingNumber())
                 .description(issue.getDescription())
+                .build();
+    }
+
+    public static IssueRepliesDTO convertToIssueRepliesDTO(IssueReplies issueReplies){
+        return IssueRepliesDTO.builder()
+                .repliantId(issueReplies.getRepliantId())
+                .parentIssueId(issueReplies.getParentIssueId())
+                .comment(issueReplies.getComment())
+                .updatedStatus(issueReplies.getUpdatedStatus())
+                .updateDate(issueReplies.getUpdateDate())
+                .build();
+    }
+
+    public static IssueReplies convertToIssueReplies(IssueRepliesDTO issueRepliesDTO){
+        return IssueReplies.builder()
+                .repliantId(issueRepliesDTO.getRepliantId())
+                .parentIssueId(issueRepliesDTO.getParentIssueId())
+                .comment(issueRepliesDTO.getComment())
+                .updatedStatus(issueRepliesDTO.getUpdatedStatus())
                 .build();
     }
 

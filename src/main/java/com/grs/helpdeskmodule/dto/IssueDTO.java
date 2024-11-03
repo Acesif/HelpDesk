@@ -5,6 +5,8 @@ import com.grs.helpdeskmodule.entity.IssueStatus;
 import lombok.*;
 
 import java.util.Date;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 @Getter
@@ -24,5 +26,5 @@ public class IssueDTO {
     private Date postedOn;
     @JsonFormat(pattern = "dd-MM-yyyy HH:mm:ss", timezone = "Asia/Dhaka")
     private Date updatedOn;
-    private Set<AttachmentDTO> attachments;
+    private Map<Long,String> attachments;
 }

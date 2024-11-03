@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class AttachmentService extends BaseService<Attachment> {
@@ -19,7 +20,11 @@ public class AttachmentService extends BaseService<Attachment> {
         this.attachmentRepository = attachmentRepository;
     }
 
-    public void removeAll(Long id){
-        attachmentRepository.removeBulkAttachments(id);
+    public void removeAll(Long issue_id){
+        attachmentRepository.removeBulkAttachments(issue_id);
+    }
+
+    public Set<Attachment> findAllByIssue(Long issue_id){
+        return attachmentRepository.getAllByIssueId(issue_id);
     }
 }

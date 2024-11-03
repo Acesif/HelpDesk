@@ -5,6 +5,8 @@ import com.grs.helpdeskmodule.repository.IssueReplyRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class IssueReplyService {
@@ -17,5 +19,9 @@ public class IssueReplyService {
 
     public IssueReplies findLastReply(Long parentId){
         return issueReplyRepository.findLastIssue(parentId);
+    }
+
+    public List<IssueReplies> findIssuesByParentId(Long parentId){
+        return issueReplyRepository.findIssueRepliesByIssueId(parentId);
     }
 }

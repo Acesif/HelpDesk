@@ -2,6 +2,8 @@ package com.grs.helpdeskmodule.base;
 
 import lombok.RequiredArgsConstructor;
 import java.util.Date;
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 
 @Service
@@ -36,4 +38,5 @@ public abstract class BaseService<T extends BaseEntity> {
     public void hardDelete(Long id) {
         baseRepository.deleteById(id);
     }
+
 }

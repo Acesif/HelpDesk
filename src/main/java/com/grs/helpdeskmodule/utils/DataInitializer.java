@@ -40,7 +40,7 @@ public class DataInitializer implements CommandLineRunner {
                             .officeId(1L)
                             .password(passwordEncoder.encode("nullhobe"))
                             .phoneNumber("01111111111")
-                            .designation("GRO")
+                            .designation("ADMIN")
                             .build()
             );
         }

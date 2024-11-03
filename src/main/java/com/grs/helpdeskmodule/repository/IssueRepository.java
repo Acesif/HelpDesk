@@ -24,4 +24,7 @@ public interface IssueRepository extends BaseEntityRepository<Issue> {
 
     @Query(value = "SELECT * FROM helpdesk.issue WHERE title LIKE CONCAT('%', :input, '%') OR description LIKE CONCAT('%', :input, '%')", nativeQuery = true)
     List<Issue> findIssuesByTitleOrDescription(@Param("input") String input);
+
+    @Query(value = "SELECT * FROM helpdesk.issue WHERE user_id = :user_id", nativeQuery = true)
+    List<Issue> findIssuesByUser(@Param("user_id") Long user_id);
 }

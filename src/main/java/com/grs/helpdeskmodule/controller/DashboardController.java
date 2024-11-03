@@ -2,6 +2,7 @@ package com.grs.helpdeskmodule.controller;
 
 import com.grs.helpdeskmodule.dto.IssueDTO;
 import com.grs.helpdeskmodule.dto.Response;
+import com.grs.helpdeskmodule.entity.Attachment;
 import com.grs.helpdeskmodule.entity.Issue;
 import com.grs.helpdeskmodule.entity.IssueStatus;
 import com.grs.helpdeskmodule.service.DashboardService;
@@ -90,12 +91,10 @@ public class DashboardController {
                     .build();
         }
 
-        List<IssueDTO> issueDTOList = issues.stream().map(IssueMapper::convertToIssueDTO).toList();
-
         return Response.builder()
                 .status(HttpStatus.OK)
                 .message("All "+status+" issues found")
-                .data(issueDTOList)
+                .data(withAttachments(issues))
                 .build();
     }
 
@@ -120,12 +119,10 @@ public class DashboardController {
                     .build();
         }
 
-        List<IssueDTO> issueDTOList = issues.stream().map(IssueMapper::convertToIssueDTO).toList();
-
         return Response.builder()
                 .status(HttpStatus.OK)
                 .message("All issues on "+(YearMonth == null ? new SimpleDateFormat("yyyy-MM-dd").format(new Date()) : YearMonth)+" found")
-                .data(issueDTOList)
+                .data(withAttachments(issues))
                 .build();
     }
 
@@ -153,12 +150,10 @@ public class DashboardController {
                     .build();
         }
 
-        List<IssueDTO> issueDTOList = issues.stream().map(IssueMapper::convertToIssueDTO).toList();
-
         return Response.builder()
                 .status(HttpStatus.OK)
                 .message("All issues found between "+startYearMonth+" and "+endYearMonth)
-                .data(issueDTOList)
+                .data(withAttachments(issues))
                 .build();
     }
     @PostMapping("/tracking")
@@ -184,7 +179,12 @@ public class DashboardController {
                     .build();
         }
 
+        Map<Long,String> filenames = new HashMap<>();
+        for (Attachment a : issue.getAttachments()){
+            filenames.put(a.getId(),a.getFileName());
+        }
         IssueDTO issueDTO = IssueMapper.convertToIssueDTO(issue);
+        issueDTO.setAttachments(filenames);
 
         return Response.builder()
                 .status(HttpStatus.OK)
@@ -215,12 +215,30 @@ public class DashboardController {
                     .build();
         }
 
-        List<IssueDTO> issueDTOList = issues.stream().map(IssueMapper::convertToIssueDTO).toList();
+        List<IssueDTO> issueDTOList = withAttachments(issues);
 
         return Response.builder()
                 .status(HttpStatus.OK)
                 .message("Issues found with the text "+input)
                 .data(issueDTOList)
                 .build();
+    }
+
+    private List<IssueDTO> withAttachments(List<Issue> issues) {
+        return issues.stream().map(
+                issue -> {
+
+                    Map<Long,String> filenames = new HashMap<>();
+
+                    for (Attachment a : issue.getAttachments()){
+                        filenames.put(a.getId(),a.getFileName());
+                    }
+
+                    IssueDTO convertedIssue = IssueMapper.convertToIssueDTO(issue);
+                    convertedIssue.setAttachments(filenames);
+
+                    return convertedIssue;
+                }
+        ).toList();
     }
 }

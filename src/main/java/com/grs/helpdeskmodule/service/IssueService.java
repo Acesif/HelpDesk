@@ -16,7 +16,13 @@ import java.util.List;
 @Service
 public class IssueService extends BaseService<Issue> {
 
+    private final IssueRepository issueRepository;
     public IssueService(BaseEntityRepository<Issue> baseRepository, IssueRepository issueRepository) {
         super(baseRepository);
+        this.issueRepository = issueRepository;
+    }
+
+    public List<Issue> findIssueByUser(Long id){
+        return issueRepository.findIssuesByUser(id);
     }
 }

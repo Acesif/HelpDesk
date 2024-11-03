@@ -24,6 +24,10 @@ public class UserService extends BaseService<User> {
         return userRepository.findByEmail(email);
     }
 
+    public User findUserByPhoneNumber (String phone_number){
+        return userRepository.findByPhoneNumber(phone_number);
+    }
+
     public List<User> findAll(){
         return userRepository.findAll();
     }

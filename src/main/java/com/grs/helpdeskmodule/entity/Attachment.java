@@ -23,5 +23,4 @@ public class Attachment extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "issue_id")
     private Issue issue;
-
 }
