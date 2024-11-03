@@ -143,8 +143,8 @@ public class DataInitializer implements CommandLineRunner {
 
     private void initiateRolePermissions(){
 
-        roleRepository.deleteAll();
-        permissionRepository.deleteAll();
+//        roleRepository.deleteAll();
+//        permissionRepository.deleteAll();
 
         /*
             Dashboard & Settings
@@ -203,18 +203,20 @@ public class DataInitializer implements CommandLineRunner {
                 .permission("CAN SET PRIORITY TO ISSUES")
                 .build();
 
-        permissionRepository.saveAll(List.of(
-                viewDashboaard,
-                editSettings,
-                setUserRoles,
-                editUsers,
-                createUser,
-                postIssues,
-                replyToIssues,
-                viewIssues,
-                viewOwnIssues,
-                setPriorities)
-        );
+        if (permissionRepository.findAll().isEmpty()){
+            permissionRepository.saveAll(List.of(
+                    viewDashboaard,
+                    editSettings,
+                    setUserRoles,
+                    editUsers,
+                    createUser,
+                    postIssues,
+                    replyToIssues,
+                    viewIssues,
+                    viewOwnIssues,
+                    setPriorities)
+            );
+        }
 
         viewDashboaard = permissionRepository.findById(1L).orElseThrow();
         editSettings = permissionRepository.findById(2L).orElseThrow();

@@ -2,12 +2,16 @@ package com.grs.helpdeskmodule.controller;
 
 import com.grs.helpdeskmodule.dto.Response;
 import com.grs.helpdeskmodule.dto.UserDTO;
+import com.grs.helpdeskmodule.entity.Permissions;
 import com.grs.helpdeskmodule.entity.User;
+import com.grs.helpdeskmodule.repository.PermissionRepository;
 import com.grs.helpdeskmodule.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/auth/su")
@@ -16,10 +20,8 @@ public class SuperadminController {
 
     private final UserService userService;
     private final PasswordEncoder passwordEncoder;
+    private final PermissionRepository permissionRepository;
 
-    /**
-     * todo need to create a rest api for getting permissions
-     */
     @PutMapping("/update/user")
     public Response<?> updateUser(@RequestBody UserDTO userDTO){
 
@@ -60,5 +62,29 @@ public class SuperadminController {
                 .build();
     }
 
-    
+    @GetMapping("/permissions")
+    public Response<?> getPermissions(){
+        List<Permissions> permissions = permissionRepository.findAll();
+
+        if (permissions.isEmpty()){
+            return Response.builder()
+                    .status(HttpStatus.NO_CONTENT)
+                    .message("No permissions found")
+                    .data(permissions)
+                    .build();
+        }
+        return Response.builder()
+                .status(HttpStatus.OK)
+                .message("List of permissions found")
+                .data(permissions)
+                .build();
+    }
+
+    /*
+    todo need to add permission editing functionality for each role
+     */
+    @PutMapping("/role/edit/{role_id}")
+    public Response<?> editPermissions(@PathVariable("role_id") Long id){
+        return null;
+    }
 }
