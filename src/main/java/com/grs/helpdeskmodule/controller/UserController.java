@@ -1,5 +1,6 @@
 package com.grs.helpdeskmodule.controller;
 
+import com.grs.helpdeskmodule.dto.LoginRequest;
 import com.grs.helpdeskmodule.dto.Response;
 import com.grs.helpdeskmodule.dto.UserDTO;
 import com.grs.helpdeskmodule.entity.User;
@@ -60,6 +61,11 @@ public class UserController {
                 .message("User successfully created")
                 .data(returnedDto)
                 .build();
+    }
+
+    @PostMapping("/login")
+    public String loginUser(@RequestBody LoginRequest loginRequest){
+        return userService.verify(loginRequest);
     }
 
     @GetMapping("/auth/all")

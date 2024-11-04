@@ -239,7 +239,6 @@ public class DataInitializer implements CommandLineRunner {
                                     viewDashboaard,
                                     replyToIssues,
                                     viewIssues,
-                                    viewDashboaard,
                                     setPriorities)
                             )
                             .build()

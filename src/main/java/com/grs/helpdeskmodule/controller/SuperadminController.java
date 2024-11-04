@@ -3,15 +3,19 @@ package com.grs.helpdeskmodule.controller;
 import com.grs.helpdeskmodule.dto.Response;
 import com.grs.helpdeskmodule.dto.UserDTO;
 import com.grs.helpdeskmodule.entity.Permissions;
+import com.grs.helpdeskmodule.entity.Role;
 import com.grs.helpdeskmodule.entity.User;
 import com.grs.helpdeskmodule.repository.PermissionRepository;
+import com.grs.helpdeskmodule.repository.RoleRepository;
 import com.grs.helpdeskmodule.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/auth/su")
@@ -21,6 +25,7 @@ public class SuperadminController {
     private final UserService userService;
     private final PasswordEncoder passwordEncoder;
     private final PermissionRepository permissionRepository;
+    private final RoleRepository roleRepository;
 
     @PutMapping("/update/user")
     public Response<?> updateUser(@RequestBody UserDTO userDTO){
@@ -80,11 +85,54 @@ public class SuperadminController {
                 .build();
     }
 
-    /*
-    todo need to add permission editing functionality for each role
-     */
     @PutMapping("/role/edit/{role_id}")
-    public Response<?> editPermissions(@PathVariable("role_id") Long id){
-        return null;
+    public Response<?> editPermissions(
+            @PathVariable("role_id") Long id,
+            @RequestBody Map<String, List<Long>> requestBody
+            ){
+        Role role = roleRepository.findById(id).orElse(null);
+
+        if (role == null){
+            return Response.<UserDTO>builder()
+                    .status(HttpStatus.NO_CONTENT)
+                    .message("Role not found")
+                    .data(null)
+                    .build();
+        }
+
+        List<Long> permissionList = requestBody.get("permissionList");
+        List<Permissions> permissions = new ArrayList<>();
+
+        for (Long i : permissionList){
+            permissions.add(permissionRepository.findById(i).orElse(null));
+        }
+
+        role.setPermissions(permissions);
+        Role savedRole = roleRepository.save(role);
+
+        return Response.builder()
+                .status(HttpStatus.OK)
+                .message("Permissions updated")
+                .data(savedRole)
+                .build();
+    }
+
+    @GetMapping("/role/{role_id}")
+    public Response<?> getRoleDetails(@PathVariable("role_id") Long id){
+        Role role = roleRepository.findById(id).orElse(null);
+
+        if (role == null){
+            return Response.<UserDTO>builder()
+                    .status(HttpStatus.NO_CONTENT)
+                    .message("Role not found")
+                    .data(null)
+                    .build();
+        }
+
+        return Response.builder()
+                .status(HttpStatus.OK)
+                .message("Details of role "+role.getRole()+" have been fetched")
+                .data(role)
+                .build();
     }
 }
