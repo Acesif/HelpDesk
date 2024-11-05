@@ -22,7 +22,6 @@ import java.util.*;
 public class DashboardController {
 
     private final DashboardService dashboardService;
-
     @GetMapping("/count")
     public Response<?> getCount(){
         Map<String,Integer> countList = new HashMap<>();

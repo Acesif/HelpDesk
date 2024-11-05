@@ -1,5 +1,6 @@
 package com.grs.helpdeskmodule.config;
 
+import com.grs.helpdeskmodule.jwt.JWTFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -14,6 +15,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import java.util.List;
 
@@ -30,26 +32,16 @@ public class SecurityConfig {
     }
 
     private final UserDetailsService userDetailsService;
+    private final JWTFilter jwtFilter;
 
     private final String[] SUPERADMIN_PATHS = new String[]{
             "/api/auth/su/**",
-            "/api/user/**",
-            "/api/issue_reply/**",
-            "/api/auth/all",
-            "/api/issue/user/**",
-            "/api/user/create",
-            "/api/dashboard/**"
     };
     private final String[] ADMIN_PATHS = new String[]{
-            "/api/attachments",
-            "/api/issue/new",
             "/api/user/**",
             "/api/issue_reply/**",
             "/api/auth/all",
             "/api/dashboard/**"
-    };
-    private final String[] VENDOR_PATHS = new String[]{
-
     };
     private final String[] OFFICER_PATHS = new String[]{
             "/api/attachments",
@@ -66,15 +58,15 @@ public class SecurityConfig {
         return http.authorizeHttpRequests(requests ->
                 requests
                         .requestMatchers(PERMITALL_PATHS).permitAll()
-                        .requestMatchers(SUPERADMIN_PATHS).hasRole("SUPERADMIN")
-                        .requestMatchers(ADMIN_PATHS).hasRole("ADMIN")
-                        .requestMatchers(VENDOR_PATHS).hasRole("VENDOR")
-                        .requestMatchers(OFFICER_PATHS).hasRole("OFFICER")
+                        .requestMatchers(ADMIN_PATHS).hasAnyAuthority("ADMIN","SUPERADMIN")
+                        .requestMatchers(SUPERADMIN_PATHS).hasAnyAuthority("SUPERADMIN","VENDOR")
+                        .requestMatchers(OFFICER_PATHS).hasAnyAuthority("OFFICER","ADMIN","SUPERADMIN")
                         .anyRequest().authenticated()
                 )
                 .httpBasic(withDefaults())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .csrf(AbstractHttpConfigurer::disable)
+                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
 
