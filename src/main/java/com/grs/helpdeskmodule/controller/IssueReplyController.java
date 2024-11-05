@@ -39,6 +39,14 @@ public class IssueReplyController {
         issueService.update(updatedIssue);
     }
 
+    /**
+     * Retrieves the history of replies for a specific issue based on its ID, sorted by the update date.
+     * Handles HTTP GET requests to the "/{id}" endpoint.
+     *
+     * @param id The ID of the issue whose reply history is to be retrieved.
+     * @return A response containing a list of replies for the specified issue, or a message if no replies are found.
+     */
+
     @GetMapping("/{id}")
     public Response<?> getIssueHistory(@PathVariable("id") Long id){
         List<IssueReplies> getIssuesById = issueReplyService.findIssuesByParentId(id);
@@ -55,6 +63,16 @@ public class IssueReplyController {
                 .data(issueRepliesDTOS)
                 .build();
     }
+
+    /**
+     * Posts a reply to a specified issue. The reply includes the comment and updated status.
+     * Sets the current status of the issue after the reply is posted.
+     * Handles HTTP POST requests to the "/{id}" endpoint.
+     *
+     * @param id              The ID of the issue to which the reply is being posted.
+     * @param issueRepliesDTO The data transfer object containing the reply details, including comment and updated status.
+     * @return A response containing the details of the posted reply or a message if the issue is not found.
+     */
 
     @PostMapping("/{id}")
     public Response<?> postReply(

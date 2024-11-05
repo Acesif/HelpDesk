@@ -27,6 +27,14 @@ public class SuperadminController {
     private final PermissionRepository permissionRepository;
     private final RoleRepository roleRepository;
 
+    /**
+     * Updates the details of an existing user based on the provided UserDTO.
+     * If a field is null in the UserDTO, the existing value is retained.
+     * Handles HTTP PUT requests to the "/update/user" endpoint.
+     *
+     * @param userDTO The data transfer object containing the updated user details.
+     * @return A response containing the updated user details or a message if the user is not found.
+     */
     @PutMapping("/update/user")
     public Response<?> updateUser(@RequestBody UserDTO userDTO){
 
@@ -67,6 +75,13 @@ public class SuperadminController {
                 .build();
     }
 
+    /**
+     * Retrieves a list of all available permissions in the system.
+     * Handles HTTP GET requests to the "/permissions" endpoint.
+     *
+     * @return A response containing a list of permissions or a message if no permissions are found.
+     */
+
     @GetMapping("/permissions")
     public Response<?> getPermissions(){
         List<Permissions> permissions = permissionRepository.findAll();
@@ -84,6 +99,16 @@ public class SuperadminController {
                 .data(permissions)
                 .build();
     }
+
+    /**
+     * Edits the permissions associated with a specific role based on the provided role ID.
+     * If the role is not found, returns a message indicating so.
+     * Handles HTTP PUT requests to the "/role/edit/{role_id}" endpoint.
+     *
+     * @param id          The ID of the role to update.
+     * @param requestBody A map containing the list of permission IDs to associate with the role.
+     * @return A response indicating the success of the operation and the updated role details.
+     */
 
     @PutMapping("/role/edit/{role_id}")
     public Response<?> editPermissions(
@@ -116,6 +141,14 @@ public class SuperadminController {
                 .data(savedRole)
                 .build();
     }
+
+    /**
+     * Retrieves details of a specific role based on its ID.
+     * Handles HTTP GET requests to the "/role/{role_id}" endpoint.
+     *
+     * @param id The ID of the role whose details are to be retrieved.
+     * @return A response containing the role details or a message if the role is not found.
+     */
 
     @GetMapping("/role/{role_id}")
     public Response<?> getRoleDetails(@PathVariable("role_id") Long id){

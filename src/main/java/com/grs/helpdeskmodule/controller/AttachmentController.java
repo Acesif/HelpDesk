@@ -23,6 +23,14 @@ public class AttachmentController {
 
     private final AttachmentService attachmentService;
 
+    /**
+     * Retrieves all attachments associated with a specific issue by its ID.
+     * Returns a message indicating no attachments are found if the issue has none.
+     * Handles HTTP GET requests to the "/issue/{id}" endpoint.
+     *
+     * @param id The ID of the issue whose attachments are to be retrieved.
+     * @return A response containing a set of attachment details or a message if no attachments are found.
+     */
     @GetMapping("/issue/{id}")
     public Response<?> getAttachmentsByIssue(@PathVariable("id") Long id){
         Set<Attachment> attachments = attachmentService.findAllByIssue(id);
@@ -44,6 +52,15 @@ public class AttachmentController {
                 .build();
     }
 
+    /**
+     * Retrieves a specific attachment by its ID, returning the file data in Base64 format.
+     * If the attachment does not exist, returns a message indicating it was not found.
+     * Handles HTTP GET requests to the "/{id}" endpoint.
+     *
+     * @param id The ID of the attachment to retrieve.
+     * @return A response containing the attachment details, including the file name and Base64-encoded data,
+     *         or a message if the attachment is not found.
+     */
     @GetMapping("/{id}")
     public Response<?> getAttachmentById(@PathVariable("id") Long id){
         Attachment attachment = attachmentService.findById(id);

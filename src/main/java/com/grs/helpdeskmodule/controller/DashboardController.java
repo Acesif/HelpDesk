@@ -22,6 +22,15 @@ import java.util.*;
 public class DashboardController {
 
     private final DashboardService dashboardService;
+
+    /**
+     * Retrieves the count of issues grouped by status and other statistical metrics, including
+     * issues from the previous and current month.
+     * Handles HTTP GET requests to the "/count" endpoint.
+     *
+     * @return A response containing a map with the count of issues by status, total count,
+     *         previous month's issues, and current month's issues.
+     */
     @GetMapping("/count")
     public Response<?> getCount(){
         Map<String,Integer> countList = new HashMap<>();
@@ -58,6 +67,13 @@ public class DashboardController {
                 .build();
     }
 
+    /**
+     * Finds issues by a specified status. If the status is invalid or missing, returns a bad request response.
+     * Handles HTTP POST requests to the "/status" endpoint.
+     *
+     * @param status The status of the issues to retrieve (e.g., "OPEN", "RESOLVED").
+     * @return A response containing a list of issues with the specified status or a message if no issues are found.
+     */
     @PostMapping("/status")
     public Response<?> findIssuesByStatus(
             @RequestParam(value = "status", required = false) String status
@@ -97,6 +113,13 @@ public class DashboardController {
                 .build();
     }
 
+    /**
+     * Finds issues based on a specified year and month. If no parameter is provided, defaults to the current month.
+     * Handles HTTP POST requests to the "/current_month" endpoint.
+     *
+     * @param YearMonth The year and month (in "yyyy-MM" format) to filter issues by. Optional.
+     * @return A response containing a list of issues from the specified month or a message if no issues are found.
+     */
     @PostMapping("/current_month")
     public Response<?> findIssuesByYearMonth(
             @RequestParam(value = "YearMonth", required = false) String YearMonth
@@ -125,6 +148,15 @@ public class DashboardController {
                 .build();
     }
 
+    /**
+     * Finds issues between two specified year-months (inclusive).
+     * Both parameters are required; returns a bad request response if either is missing.
+     * Handles HTTP POST requests to the "/between_month" endpoint.
+     *
+     * @param startYearMonth The start year and month (in "yyyy-MM" format) for filtering issues.
+     * @param endYearMonth   The end year and month (in "yyyy-MM" format) for filtering issues.
+     * @return A response containing a list of issues found within the specified date range, or a message if no issues are found.
+     */
     @PostMapping("/between_month")
     public Response<?> findIssuesBetweenYearMonths(
             @RequestParam(value = "startYearMonth", required = false) String startYearMonth,
@@ -155,6 +187,13 @@ public class DashboardController {
                 .data(withAttachments(issues))
                 .build();
     }
+    /**
+     * Finds an issue based on a specified tracking number. Returns a message if no issue is found with the provided tracking number.
+     * Handles HTTP POST requests to the "/tracking" endpoint.
+     *
+     * @param trackingNumber The tracking number of the issue to retrieve.
+     * @return A response containing the issue details, including attachments, or a message if the issue is not found.
+     */
     @PostMapping("/tracking")
     public Response<?> findIssuesByTrackingNumber(
             @RequestParam(value = "trackingNumber", required = false) String trackingNumber
@@ -191,6 +230,14 @@ public class DashboardController {
                 .data(issueDTO)
                 .build();
     }
+
+    /**
+     * Finds issues that contain a specified text in their title or description.
+     * Handles HTTP POST requests to the "/find" endpoint.
+     *
+     * @param input The text to search for in issue titles or descriptions.
+     * @return A response containing a list of issues that match the specified text, or a message if no matches are found.
+     */
     @PostMapping("/find")
     public Response<?> findIssuesByTitleOrDescription(
             @RequestParam(value = "input", required = false) String input

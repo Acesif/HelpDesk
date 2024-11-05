@@ -164,6 +164,14 @@ public class IssueController {
                 .build();
     }
 
+    /**
+     * Soft deletes an issue by setting its flag to false. This method does not permanently delete the issue
+     * from the database, but removes it from active status. Also removes associated attachments.
+     * Handles HTTP DELETE requests to the "/{id}" endpoint.
+     *
+     * @param id The ID of the issue to be removed.
+     * @return A generic response indicating the outcome of the issue removal.
+     */
     @DeleteMapping("/{id}")
     public Response<?> removeIssue(@PathVariable("id") Long id){
         Issue removeIssue = issueService.findById(id);
@@ -178,6 +186,14 @@ public class IssueController {
                 .build();
     }
 
+    /**
+     * Retrieves the details of an issue by its ID. If the issue is inactive (flag set to false),
+     * returns a message indicating the issue doesn't exist.
+     * Handles HTTP GET requests to the "/{id}" endpoint.
+     *
+     * @param id The ID of the issue to retrieve.
+     * @return A response containing the issue details or an error message if not found.
+     */
     @GetMapping("/{id}")
     public Response<?> getIssueDetails(@PathVariable("id") Long id){
 
@@ -224,6 +240,13 @@ public class IssueController {
         }
     }
 
+    /**
+     * Retrieves a list of issues created by a specific user, sorted by update date.
+     * Handles HTTP GET requests to the "/user/{id}" endpoint.
+     *
+     * @param id The ID of the user whose issues are to be retrieved.
+     * @return A list of issues for the specified user, or a message indicating no issues found.
+     */
     @GetMapping("/user/{id}")
     public Response<?> getIssuesByUser(@PathVariable("id") Long id){
         List<Issue> issueList = issueService.findIssueByUser(id);

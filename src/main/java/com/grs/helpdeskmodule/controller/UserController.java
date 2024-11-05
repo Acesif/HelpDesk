@@ -25,6 +25,14 @@ public class UserController {
     private final UserService userService;
     private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
 
+    /**
+     * Creates a new user with the details provided in the UserDTO. Checks if a user with the same email
+     * or phone number already exists, returning a conflict response if so.
+     * Handles HTTP POST requests to the "/create" endpoint.
+     *
+     * @param userDto The data transfer object containing the new user's details.
+     * @return A response containing the created user's details or a message if the user already exists.
+     */
     @PostMapping("/create")
     public Response<UserDTO> createUser(@RequestBody UserDTO userDto){
 
@@ -63,10 +71,25 @@ public class UserController {
                 .build();
     }
 
+    /**
+     * Verifies user login credentials and returns a token or verification result.
+     * Handles HTTP POST requests to the "/login" endpoint.
+     *
+     * @param loginRequest The login request object containing the user's login credentials.
+     * @return A verification response, typically a token, if login is successful.
+     */
+
     @PostMapping("/login")
     public String loginUser(@RequestBody LoginRequest loginRequest){
         return userService.verify(loginRequest);
     }
+
+    /**
+     * Retrieves a list of all users in the system.
+     * Handles HTTP GET requests to the "/auth/all" endpoint.
+     *
+     * @return A response containing a list of all users or a message if no users are found.
+     */
 
     @GetMapping("/auth/all")
     public Response<List<UserDTO>> findAllUsers(){
@@ -78,6 +101,16 @@ public class UserController {
                 .data(userDTOList)
                 .build();
     }
+
+    /**
+     * Updates the details of an existing user based on the provided UserDTO and user ID.
+     * If a field in the UserDTO is null, the existing value is retained.
+     * Handles HTTP PUT requests to the "/auth/{id}" endpoint.
+     *
+     * @param userDto The data transfer object containing the updated user details.
+     * @param id      The ID of the user to update.
+     * @return A response containing the updated user details or a message if the user does not exist.
+     */
 
     @PutMapping("/auth/{id}")
     public Response<UserDTO> updateUser(@RequestBody UserDTO userDto, @PathVariable("id") Long id){
