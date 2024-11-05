@@ -46,6 +46,7 @@ public class IssueMapper {
                 .postedBy(issue.getPostedBy().getId())
                 .trackingNumber(issue.getTrackingNumber())
                 .description(issue.getDescription())
+                .category(issue.getIssueCategory())
                 .build();
     }
 

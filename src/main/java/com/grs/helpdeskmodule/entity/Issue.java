@@ -33,6 +33,10 @@ public class Issue extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private IssueStatus status;
 
+    @Nonnull
+    @Enumerated(EnumType.STRING)
+    private IssueCategory issueCategory;
+
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User postedBy;

@@ -1,6 +1,7 @@
 package com.grs.helpdeskmodule.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.grs.helpdeskmodule.entity.IssueCategory;
 import com.grs.helpdeskmodule.entity.IssueStatus;
 import lombok.*;
 
@@ -21,6 +22,7 @@ public class IssueDTO {
     private String title;
     private String description;
     private IssueStatus status;
+    private IssueCategory category;
     private Long postedBy;
     @JsonFormat(pattern = "dd-MM-yyyy HH:mm:ss", timezone = "Asia/Dhaka")
     private Date postedOn;

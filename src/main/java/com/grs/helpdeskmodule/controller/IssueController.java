@@ -46,12 +46,14 @@ public class IssueController {
     public Response<?> createIssue(
             @RequestPart("title") String title,
             @RequestPart("description") String description,
+            @RequestPart("category") String category,
             @RequestPart(value = "attachments", required = false) List<MultipartFile> attachments) {
 
         IssueDTO issueDto = IssueDTO.builder()
                 .title(title)
                 .description(description)
                 .status(IssueStatus.OPEN)
+                .category(IssueCategory.valueOf(category.toUpperCase()))
                 .build();
 
         String loggedInUserEmail = SecurityContextHolder.getContext().getAuthentication().getName();
@@ -63,6 +65,7 @@ public class IssueController {
                 .description(issueDto.getDescription())
                 .status(issueDto.getStatus())
                 .trackingNumber(issueDto.getTrackingNumber())
+                .issueCategory(IssueCategory.valueOf(category.toUpperCase()))
                 .postedBy(postedByUser)
                 .build();
 
@@ -86,6 +89,7 @@ public class IssueController {
                 .postedOn(savedIssue.getCreateDate())
                 .updatedOn(savedIssue.getUpdateDate())
                 .postedBy(savedIssue.getPostedBy().getId())
+                .category(savedIssue.getIssueCategory())
                 .attachments(filenames)
                 .build();
 
@@ -116,6 +120,7 @@ public class IssueController {
             @RequestPart("title") String title,
             @RequestPart("description") String description,
             @RequestPart("status") String  status,
+            @RequestPart("category") String category,
             @RequestPart(value = "attachments", required = false) List<MultipartFile> attachments
     ){
         Issue issue = issueService.findById(id);
@@ -132,6 +137,7 @@ public class IssueController {
         issue.setStatus(IssueStatus.valueOf(status));
         issue.setTitle(title);
         issue.setDescription(description);
+        issue.setIssueCategory(IssueCategory.valueOf(category));
         issue.setUpdateDate(new Date());
 
         IssueMapper.convertMultipartToAttachmentToUpdate(attachments,issue);
@@ -158,6 +164,7 @@ public class IssueController {
                                 .postedOn(updatedIssue.getCreateDate())
                                 .updatedOn(updatedIssue.getUpdateDate())
                                 .trackingNumber(updatedIssue.getTrackingNumber())
+                                .category(updatedIssue.getIssueCategory())
                                 .attachments(filenames)
                                 .build()
                 )
@@ -229,6 +236,7 @@ public class IssueController {
                     .postedOn(findIssue.getCreateDate())
                     .updatedOn(findIssue.getUpdateDate())
                     .trackingNumber(findIssue.getTrackingNumber())
+                    .category(findIssue.getIssueCategory())
                     .attachments(filenames)
                     .build();
 
