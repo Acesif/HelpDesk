@@ -3,42 +3,48 @@
   <button class="btn btn-success">New Issue</button>
 </div>
 
+<app-issue-form (issueDataEmitter)="updateIssue($event)"></app-issue-form>
 
-<table class="table table-striped">
-  <thead>
-  <tr>
-    <th scope="col">#</th>
-    <th scope="col">Tracking Number</th>
-    <th scope="col">Subject</th>
-    <th scope="col">Status</th>
-    <th scope="col">Office</th>
-    <th scope="col">Date</th>
-  </tr>
-  </thead>
-  <tbody>
-  <tr>
-    <th scope="row">1</th>
-    <td>Mark</td>
-    <td>Otto</td>
-    <td>one</td>
-    <td>one</td>
-    <td>one</td>
-  </tr>
-  <tr>
-    <th scope="row">2</th>
-    <td>Jacob</td>
-    <td>Thornton</td>
-    <td>two</td>
-    <td>two</td>
-    <td>two</td>
-  </tr>
-  <tr>
-    <th scope="row">3</th>
-    <td>Larry the Bird</td>
-    <td>three</td>
-    <td>three</td>
-    <td>three</td>
-    <td>three</td>
-  </tr>
-  </tbody>
-</table>
+<div class="issues-container" *ngIf="issues.length > 0; else noIssues">
+  <table class="table table-striped">
+    <thead>
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">Tracking Number</th>
+      <th scope="col">Subject</th>
+      <th scope="col">Status</th>
+      <th scope="col">Office</th>
+      <th scope="col">Submission Date</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let issue of issues; let i = index">
+      <th scope="row">{{ i + 1 }}</th>
+      <td>{{ issue.tracking_number }}</td>
+      <td>{{ issue.subject }}</td>
+      <td>{{ issue.status }}</td>
+      <td>{{ issue.office }}</td>
+      <td>{{ issue.date }}</td>
+    </tr>
+    </tbody>
+  </table>
+</div>
+
+<ng-template #noIssues>
+  <table class="table table-striped">
+    <thead>
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">Tracking Number</th>
+      <th scope="col">Subject</th>
+      <th scope="col">Status</th>
+      <th scope="col">Office</th>
+      <th scope="col">Submission Date</th>
+    </tr>
+    </thead>
+    <tbody>
+      <p>No issues found.</p>
+    </tbody>
+  </table>
+</ng-template>
+

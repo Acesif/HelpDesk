@@ -1,0 +1,68 @@
+<form class="mb-5" #issueForm="ngForm" (ngSubmit)="onSubmit(issueForm.value)">
+  <div class="mb-3">
+    <label for="tracking_number" class="form-label">Tracking Number</label>
+    <input
+      type="text"
+      class="form-control"
+      id="tracking_number"
+      name="trackingNumber"
+      [(ngModel)]="trackingNumber"
+      readonly
+    />
+  </div>
+  <div class="mb-3">
+    <label for="subject" class="form-label">Subject</label>
+    <input
+      type="text"
+      class="form-control"
+      id="subject"
+      placeholder="Enter a subject of your complaint"
+      name="subject"
+      [(ngModel)]="subject"
+      required
+    />
+  </div>
+  <div class="mb-3">
+    <label for="status" class="form-label">Status</label>
+    <select
+      class="form-control"
+      id="status"
+      name="status"
+      [(ngModel)]="status"
+      required
+    >
+      <option value="" disabled selected>
+        Select a status
+      </option>
+      <option *ngFor="let status of statuses" [value]="status">
+        {{ status }}
+      </option>
+    </select>
+  </div>
+  <div class="mb-3">
+    <label for="office" class="form-label">Office</label>
+    <input
+      type="text"
+      class="form-control"
+      id="office"
+      name="office"
+      placeholder="Select an office"
+      [(ngModel)]="office"
+      required
+    />
+  </div>
+  <div class="mb-3">
+    <label for="date" class="form-label">Date</label>
+    <input
+      type="date"
+      class="form-control"
+      id="date"
+      name="date"
+      [(ngModel)]="date"
+      required
+    />
+  </div>
+  <button type="submit" class="btn btn-success">
+    Submit
+  </button>
+</form>
