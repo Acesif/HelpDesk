@@ -1,13 +1,22 @@
 import {Component, EventEmitter, Output, SimpleChanges} from '@angular/core';
 import {Issue} from '../../model/Issue.model';
+import {IssueService} from '../services/issue.service';
+import {ActivatedRoute, Router} from '@angular/router';
 
 @Component({
   selector: 'app-issue-form',
   templateUrl: './issue-form.component.html',
-  styleUrl: './issue-form.component.scss'
+  styleUrl: './issue-form.component.scss',
 })
 
 export class IssueFormComponent {
+
+  constructor(
+    private issueService: IssueService,
+    private router: Router,
+    private activatedRoute: ActivatedRoute,
+  ) {}
+
   trackingNumber: string = '';
   subject: string = '';
   status: string = '';
@@ -45,21 +54,40 @@ export class IssueFormComponent {
     }
   }
 
-  @Output() issueDataEmitter: EventEmitter<Issue> = new EventEmitter();
+  // @Output() issueDataEmitter: EventEmitter<Issue> = new EventEmitter();
 
   onSubmit(formData: any): void {
     const [isValid, emptyFields]:[boolean,string[]] = this.validateForm(formData);
     if (isValid){
-      this.issueDataEmitter.emit(
-          new Issue(
-            formData.trackingNumber,
-            formData.subject,
-            formData.status,
-            formData.office,
-            formData.date
-          )
+
+      // this.issueDataEmitter.emit(
+      //     new Issue(
+      //       formData.trackingNumber,
+      //       formData.subject,
+      //       formData.status,
+      //       formData.office,
+      //       formData.date
+      //     )
+      // )
+
+      this.issueService.createIssue(
+            new Issue(
+              formData.trackingNumber,
+              formData.subject,
+              formData.status,
+              formData.office,
+              formData.date
+            )
       )
       this.resetFormData()
+      this.issueService.statusChanged.emit(true);
+      this.router.navigate(['/issues/list'], { relativeTo: this.activatedRoute })
+        .then(() => {
+        })
+        .catch((err) => {
+          console.log(err.message);
+        });
+
     } else {
       alert(`The following fields are required: ${emptyFields.join(', ')}`);
     }

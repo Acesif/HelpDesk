@@ -2,8 +2,24 @@
   width: 40px;
   height: 40px;
 }
-
 #navbar{
   padding-left: 290px;
   padding-right: 290px;
 }
+.dropdown-menu li:hover a {
+  background-color: #007bff;
+}
+.dropdown-menu li:hover .dropdown-item {
+  color: whitesmoke;
+}
+
+#profile-icon {
+  border: 1px solid transparent;
+  transition: border 0.2s ease-in-out;
+}
+
+#profile-icon:hover {
+  border: 1px solid #007bff;
+}
+
+

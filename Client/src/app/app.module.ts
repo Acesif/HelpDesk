@@ -8,6 +8,22 @@ import { IssueDetailsComponent } from './issue-details/issue-details.component';
 import {NgOptimizedImage} from '@angular/common';
 import { IssueFormComponent } from './issue-form/issue-form.component';
 import {FormsModule} from '@angular/forms';
+import { DropdownDirective } from './shared/dropdown.directive';
+import {IssueService} from './services/issue.service';
+import { HomepageComponent } from './homepage/homepage.component';
+import {Route, RouterModule} from '@angular/router';
+
+const routes: Route[] = [
+  { path: '', component: HomepageComponent },
+  { path: 'issues',
+    children: [
+      { path: 'new', component: IssueFormComponent },
+      { path: 'list', component: IssuesComponent },
+      { path: ':id', component: IssueDetailsComponent },
+    ]
+  },
+];
+
 
 @NgModule({
   declarations: [
@@ -16,13 +32,16 @@ import {FormsModule} from '@angular/forms';
     NavbarComponent,
     IssueDetailsComponent,
     IssueFormComponent,
+    DropdownDirective,
+    HomepageComponent,
   ],
   imports: [
     BrowserModule,
     NgOptimizedImage,
     FormsModule,
+    RouterModule.forRoot(routes)
   ],
-  providers: [],
+  providers: [IssueService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
