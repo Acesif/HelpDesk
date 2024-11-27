@@ -1,1 +1,22 @@
-<p>issue-details works!</p>
+<div class="container mt-3">
+  <h2>Issue Details</h2>
+  <div *ngIf="issue; else notFound" class="mt-5">
+    <div class="card">
+      <div class="card-header">
+        <h5>Tracking Number: {{ issue.tracking_number }}</h5>
+      </div>
+      <div class="card-body">
+        <p><strong>Subject:</strong> {{ issue.subject }}</p>
+        <p><strong>Status:</strong> {{ issue.status }}</p>
+        <p><strong>Office:</strong> {{ issue.office }}</p>
+        <p><strong>Submission Date:</strong> {{ issue.date }}</p>
+      </div>
+    </div>
+  </div>
+  <ng-template #notFound>
+    <div class="alert alert-danger">
+      <strong>Error:</strong> Issue not found!
+    </div>
+  </ng-template>
+</div>
+

@@ -1,1 +1,47 @@
-<h1>Home</h1>
+<app-filterform></app-filterform>
+<div class="row d-flex align-items-center dashboard">
+  <div class="col-6">
+    <ngx-charts-pie-chart
+      [view]="view"
+      [results]="pieData"
+      [gradient]="gradient"
+      [legend]="showLegend"
+      [labels]="showLabels"
+      [doughnut]="isDoughnut"
+    >
+    </ngx-charts-pie-chart>
+  </div>
+  <div class="col-6">
+    <table class="table table-hover">
+      <thead>
+      <tr class="table-header">
+        <th scope="col">STATUS</th>
+        <th scope="col">COUNT</th>
+        <th scope="col">%</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr>
+        <td><strong>OPEN</strong></td>
+        <td id="open-count">0</td>
+        <td id="open-pcent">0%</td>
+      </tr>
+      <tr>
+        <td><strong>CLOSED</strong></td>
+        <td id="close-count">0</td>
+        <td id="close-pcent">0%</td>
+      </tr>
+      <tr>
+        <td><strong>RESOLVED</strong></td>
+        <td id="resolve-count">0</td>
+        <td id="resolve-pcent">0%</td>
+      </tr>
+      <tr>
+        <td><strong>REJECTED</strong></td>
+        <td id="reject-count">0</td>
+        <td id="reject-pcent">0%</td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

@@ -7,4 +7,8 @@ import { Component } from '@angular/core';
 })
 export class NavbarComponent {
   appName = "GRS Helpdesk"
+
+  getUserId() {
+    return 0;
+  }
 }

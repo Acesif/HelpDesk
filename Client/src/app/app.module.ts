@@ -10,11 +10,16 @@ import { IssueFormComponent } from './issue-form/issue-form.component';
 import {FormsModule} from '@angular/forms';
 import { DropdownDirective } from './shared/dropdown.directive';
 import {IssueService} from './services/issue.service';
-import { HomepageComponent } from './homepage/homepage.component';
 import {Route, RouterModule} from '@angular/router';
+import {NgxChartsModule} from '@swimlane/ngx-charts';
+import { FilterformComponent } from './filterform/filterform.component';
+import { TitleComponent } from './shared/title/title.component';
+import {HomepageComponent} from './homepage/homepage.component';
+import { ProfileComponent } from './profile/profile.component';
 
 const routes: Route[] = [
   { path: '', component: HomepageComponent },
+  { path: 'profile/:id', component: ProfileComponent },
   { path: 'issues',
     children: [
       { path: 'new', component: IssueFormComponent },
@@ -34,11 +39,15 @@ const routes: Route[] = [
     IssueFormComponent,
     DropdownDirective,
     HomepageComponent,
+    FilterformComponent,
+    TitleComponent,
+    ProfileComponent,
   ],
   imports: [
     BrowserModule,
     NgOptimizedImage,
     FormsModule,
+    NgxChartsModule,
     RouterModule.forRoot(routes)
   ],
   providers: [IssueService],

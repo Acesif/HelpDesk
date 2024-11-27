@@ -6,5 +6,17 @@ import { Component } from '@angular/core';
   styleUrl: './homepage.component.scss'
 })
 export class HomepageComponent {
+  view: [number, number] = [700, 400];
 
+  pieData = [
+    { name: 'OPENED', value: 40 },
+    { name: 'RESOLVED', value: 20 },
+    { name: 'REJECTED', value: 30 },
+    { name: 'PENDING', value: 10 },
+  ];
+
+  gradient: boolean = true;
+  showLegend: boolean = false;
+  showLabels: boolean = true;
+  isDoughnut: boolean = true;
 }

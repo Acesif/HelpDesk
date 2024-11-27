@@ -1,0 +1,78 @@
+<div class="container mt-3">
+  <h2>User Profile</h2>
+  <div *ngIf="user" class="mt-5">
+    <div class="card mb-4">
+      <div class="card-header">
+        <h5>Profile Details</h5>
+      </div>
+      <div class="card-body">
+        <p><strong>Name:</strong> {{ user.name }}</p>
+        <p><strong>Email:</strong> {{ user.email }}</p>
+        <p><strong>Phone Number:</strong> {{ user.phoneNumber }}</p>
+        <p><strong>Office ID:</strong> {{ user.officeId }}</p>
+        <p><strong>Designation:</strong> {{ user.designation }}</p>
+      </div>
+    </div>
+
+    <!-- Edit User Form -->
+<!--    <button class="btn btn-primary mb-3" (click)="toggleEdit()">Edit Profile</button>-->
+<!--    <form *ngIf="isEditing" (ngSubmit)="saveProfile()">-->
+<!--      <div class="mb-3">-->
+<!--        <label for="name" class="form-label">Name</label>-->
+<!--        <input-->
+<!--          type="text"-->
+<!--          id="name"-->
+<!--          class="form-control"-->
+<!--          [(ngModel)]="editableUser.name"-->
+<!--          name="name"-->
+<!--        />-->
+<!--      </div>-->
+<!--      <div class="mb-3">-->
+<!--        <label for="email" class="form-label">Email</label>-->
+<!--        <input-->
+<!--          type="email"-->
+<!--          id="email"-->
+<!--          class="form-control"-->
+<!--          [(ngModel)]="editableUser.email"-->
+<!--          name="email"-->
+<!--        />-->
+<!--      </div>-->
+<!--      <div class="mb-3">-->
+<!--        <label for="phoneNumber" class="form-label">Phone Number</label>-->
+<!--        <input-->
+<!--          type="tel"-->
+<!--          id="phoneNumber"-->
+<!--          class="form-control"-->
+<!--          [(ngModel)]="editableUser.phoneNumber"-->
+<!--          name="phoneNumber"-->
+<!--        />-->
+<!--      </div>-->
+<!--      <div class="mb-3">-->
+<!--        <label for="officeId" class="form-label">Office ID</label>-->
+<!--        <input-->
+<!--          type="number"-->
+<!--          id="officeId"-->
+<!--          class="form-control"-->
+<!--          [(ngModel)]="editableUser.officeId"-->
+<!--          name="officeId"-->
+<!--        />-->
+<!--      </div>-->
+<!--      <div class="mb-3">-->
+<!--        <label for="designation" class="form-label">Designation</label>-->
+<!--        <input-->
+<!--          type="text"-->
+<!--          id="designation"-->
+<!--          class="form-control"-->
+<!--          [(ngModel)]="editableUser.designation"-->
+<!--          name="designation"-->
+<!--        />-->
+<!--      </div>-->
+<!--      <button type="submit" class="btn btn-success">Save</button>-->
+<!--      <button type="button" class="btn btn-secondary" (click)="toggleEdit()">Cancel</button>-->
+<!--    </form>-->
+  </div>
+
+  <div *ngIf="!user" class="alert alert-danger">
+    User not found!
+  </div>
+</div>
