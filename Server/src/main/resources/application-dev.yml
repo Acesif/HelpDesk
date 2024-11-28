@@ -16,6 +16,12 @@ spring:
     hibernate:
       ddl-auto: update
     defer-datasource-initialization: true
+#    properties:
+#      hibernate:
+#        connection:
+#          useUnicode: true
+#          characterEncoding: utf8
+#          characterSetResults: utf8mb4
 
 management:
   endpoints:

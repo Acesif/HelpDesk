@@ -1,5 +1,5 @@
 # Project: HelpDesk
-# 📁 Collection: User 
+# 📁 Collection: UserModel 
 
 
 ## End-point: Register user

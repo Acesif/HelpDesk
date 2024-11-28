@@ -1,16 +1,16 @@
 package com.grs.helpdeskmodule.utils;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.grs.helpdeskmodule.entity.*;
-import com.grs.helpdeskmodule.repository.PermissionRepository;
-import com.grs.helpdeskmodule.repository.PriorityRepository;
-import com.grs.helpdeskmodule.repository.RoleRepository;
-import com.grs.helpdeskmodule.repository.SettingsRepository;
+import com.grs.helpdeskmodule.repository.*;
 import com.grs.helpdeskmodule.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,15 +23,17 @@ public class DataInitializer implements CommandLineRunner {
     private final SettingsRepository settingsRepository;
     private final RoleRepository roleRepository;
     private final PermissionRepository permissionRepository;
+    private final OfficeRepository officeRepository;
 
     private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
 
     @Override
-    public void run(String... args) {
+    public void run(String... args) throws IOException {
         initiateUser();
         initiatePriority();
         initiateSettings();
         initiateRolePermissions();
+        initializeOffices();
     }
     private void initiateUser(){
         if (userService.findUserByEmail("superadmin@admin.com") == null){
@@ -290,6 +292,35 @@ public class DataInitializer implements CommandLineRunner {
                             .build()
             );
             roleRepository.saveAll(roles);
+        }
+    }
+    public void initializeOffices() throws IOException {
+        ObjectMapper mapper = new ObjectMapper();
+        File jsonFile = new File("Server/db_tables/offices.json");
+
+        List<Office> offices = mapper.readValue(jsonFile, mapper.getTypeFactory().constructCollectionType(List.class, Office.class));
+
+        if (!officeRepository.findAll().isEmpty()){
+            officeRepository.deleteAll();
+        }
+        int index = 0;
+        for (Office office : offices) {
+            System.out.printf("Populated "+(index++)+" of "+offices.size()+" entries in the Office Table\n");
+            Office saveOffice = Office.builder()
+                    .id(office.getId())
+                    .status(office.getStatus())
+                    .geo_district_id(office.getGeo_district_id())
+                    .geo_division_id(office.getGeo_division_id())
+                    .office_name_bng(office.getOffice_name_bng())
+                    .office_name_eng(office.getOffice_name_eng())
+                    .office_layer_id(office.getOffice_layer_id())
+                    .office_ministry_id(office.getOffice_ministry_id())
+                    .office_origin_id(office.getOffice_origin_id())
+                    .parent_office_id(office.getParent_office_id())
+                    .geo_upazila_id(office.getGeo_upazila_id())
+                    .office_web(office.getOffice_web())
+                    .build();
+            officeRepository.save(saveOffice);
         }
     }
 }
