@@ -50,7 +50,8 @@ public class SecurityConfig {
     };
     private final String[] PERMITALL_PATHS = new String[]{
             "/api/user/create",
-            "/api/user/login"
+            "/api/user/login",
+            "/api/settings/**"
     };
 
     @Bean

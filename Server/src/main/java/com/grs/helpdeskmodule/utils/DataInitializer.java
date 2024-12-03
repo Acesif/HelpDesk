@@ -5,17 +5,23 @@ import com.grs.helpdeskmodule.entity.*;
 import com.grs.helpdeskmodule.repository.*;
 import com.grs.helpdeskmodule.service.UserService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
 @Component
 @RequiredArgsConstructor
+@Slf4j
 public class DataInitializer implements CommandLineRunner {
 
     private final UserService userService;
@@ -87,16 +93,32 @@ public class DataInitializer implements CommandLineRunner {
         }
     }
 
-    private void initiateSettings(){
+    private void initiateSettings() throws IOException {
+
+        Path assetsPath = Paths.get("./uploads","assets");
+        Path issueAttachmentPath = Paths.get("./uploads","issue-attachments");
+        Path profilePictures = Paths.get("./uploads","user-profiles");
+
+        try {
+            if (!Files.exists(assetsPath)){
+                Files.createDirectory(assetsPath);
+                log.info("Assets folder created successfully at: {}", assetsPath);
+            }
+            if (!Files.exists(issueAttachmentPath)){
+                Files.createDirectory(issueAttachmentPath);
+                log.info("Issue Attachments folder created successfully at: {}", issueAttachmentPath);
+            }
+            if (!Files.exists(profilePictures)){
+                Files.createDirectory(profilePictures);
+                log.info("User profiles folder created successfully at: {}", profilePictures);
+            }
+        } catch (IOException e) {
+            log.error("Failed to create folder: {}", e.getMessage());
+        }
+
         List<Settings> settings = new ArrayList<>();
 
         if (settingsRepository.findAll().isEmpty()){
-            settings.add(
-              Settings.builder()
-                      .key("app_background")
-                      .value("default")
-                      .build()
-            );
             settings.add(
                     Settings.builder()
                             .key("app_background")
@@ -300,27 +322,26 @@ public class DataInitializer implements CommandLineRunner {
 
         List<Office> offices = mapper.readValue(jsonFile, mapper.getTypeFactory().constructCollectionType(List.class, Office.class));
 
-        if (!officeRepository.findAll().isEmpty()){
-            officeRepository.deleteAll();
-        }
-        int index = 0;
-        for (Office office : offices) {
-            System.out.printf("Populated "+(index++)+" of "+offices.size()+" entries in the Office Table\n");
-            Office saveOffice = Office.builder()
-                    .id(office.getId())
-                    .status(office.getStatus())
-                    .geo_district_id(office.getGeo_district_id())
-                    .geo_division_id(office.getGeo_division_id())
-                    .office_name_bng(office.getOffice_name_bng())
-                    .office_name_eng(office.getOffice_name_eng())
-                    .office_layer_id(office.getOffice_layer_id())
-                    .office_ministry_id(office.getOffice_ministry_id())
-                    .office_origin_id(office.getOffice_origin_id())
-                    .parent_office_id(office.getParent_office_id())
-                    .geo_upazila_id(office.getGeo_upazila_id())
-                    .office_web(office.getOffice_web())
-                    .build();
-            officeRepository.save(saveOffice);
+        if (officeRepository.findAll().isEmpty()){
+            int index = 0;
+            for (Office office : offices) {
+                System.out.printf("Populated "+(index++)+" of "+offices.size()+" entries in the Office Table\n");
+                Office saveOffice = Office.builder()
+                        .id(office.getId())
+                        .status(office.getStatus())
+                        .geo_district_id(office.getGeo_district_id())
+                        .geo_division_id(office.getGeo_division_id())
+                        .office_name_bng(office.getOffice_name_bng())
+                        .office_name_eng(office.getOffice_name_eng())
+                        .office_layer_id(office.getOffice_layer_id())
+                        .office_ministry_id(office.getOffice_ministry_id())
+                        .office_origin_id(office.getOffice_origin_id())
+                        .parent_office_id(office.getParent_office_id())
+                        .geo_upazila_id(office.getGeo_upazila_id())
+                        .office_web(office.getOffice_web())
+                        .build();
+                officeRepository.save(saveOffice);
+            }
         }
     }
 }

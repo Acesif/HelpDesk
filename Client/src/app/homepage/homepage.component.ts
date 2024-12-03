@@ -8,7 +8,7 @@ import { Component } from '@angular/core';
 export class HomepageComponent {
   view: [number, number] = [700, 400];
 
-  pieData = [
+  pieData: {name: string, value: number}[] = [
     { name: 'OPENED', value: 1 },
     { name: 'RESOLVED', value: 20 },
     { name: 'REJECTED', value: 30 },
