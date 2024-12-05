@@ -43,11 +43,4 @@ public class Issue extends BaseEntity {
 
     @OneToMany(mappedBy = "issue", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Attachment> attachments;
-
-    @PrePersist
-    public void generateTrackingNumber() {
-        SecureRandom random = new SecureRandom();
-        long number = (long) (random.nextDouble() * 1_000_000_00000L);
-        this.trackingNumber = String.format("%011d", number);
-    }
 }

@@ -8,6 +8,6 @@ import lombok.Data;
 @Builder
 public class AttachmentDTO {
     private String fileName;
-    private String fileData;
+    private String filePath;
     private Long issue;
 }

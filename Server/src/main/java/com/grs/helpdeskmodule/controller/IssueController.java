@@ -7,7 +7,8 @@ import com.grs.helpdeskmodule.entity.*;
 import com.grs.helpdeskmodule.service.AttachmentService;
 import com.grs.helpdeskmodule.service.IssueService;
 import com.grs.helpdeskmodule.service.UserService;
-import com.grs.helpdeskmodule.utils.IssueMapper;
+import com.grs.helpdeskmodule.utils.AttachmentUtils;
+import com.grs.helpdeskmodule.utils.IssueUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -64,13 +65,13 @@ public class IssueController {
                 .title(issueDto.getTitle())
                 .description(issueDto.getDescription())
                 .status(issueDto.getStatus())
-                .trackingNumber(issueDto.getTrackingNumber())
+                .trackingNumber(AttachmentUtils.generateTrackingNumber())
                 .issueCategory(IssueCategory.valueOf(category.toUpperCase()))
                 .postedBy(postedByUser)
                 .build();
 
 
-        IssueMapper.convertMultipartToAttachmentToSave(attachments,issue);
+        AttachmentUtils.convertMultipartToAttachmentToSave(attachments,issue);
 
         Issue savedIssue = issueService.save(issue);
 
@@ -137,10 +138,10 @@ public class IssueController {
         issue.setStatus(IssueStatus.valueOf(status));
         issue.setTitle(title);
         issue.setDescription(description);
-        issue.setIssueCategory(IssueCategory.valueOf(category));
+        issue.setIssueCategory(IssueCategory.valueOf(category.toUpperCase()));
         issue.setUpdateDate(new Date());
 
-        IssueMapper.convertMultipartToAttachmentToUpdate(attachments,issue);
+        AttachmentUtils.convertMultipartToAttachmentToUpdate(attachments,issue);
 
         Issue updatedIssue = issueService.update(issue);
 
@@ -269,7 +270,7 @@ public class IssueController {
 
         List<Issue> sortedIssueDTOList = issueList.stream().sorted(Comparator.comparing(BaseEntity::getUpdateDate)).toList();
 
-        List<IssueDTO> issueDTOList = sortedIssueDTOList.stream().map(IssueMapper::convertToIssueDTO).toList();
+        List<IssueDTO> issueDTOList = sortedIssueDTOList.stream().map(IssueUtils::convertToIssueDTO).toList();
 
         Map<Long, Issue> issueMap = issueList.stream()
                 .collect(Collectors.toMap(Issue::getId, issue -> issue));

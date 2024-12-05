@@ -5,17 +5,13 @@ import com.grs.helpdeskmodule.dto.Response;
 import com.grs.helpdeskmodule.dto.UserDTO;
 import com.grs.helpdeskmodule.entity.User;
 import com.grs.helpdeskmodule.service.UserService;
-import com.grs.helpdeskmodule.utils.UserMapper;
-import jakarta.annotation.PostConstruct;
+import com.grs.helpdeskmodule.utils.UserUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.stream.Collectors;
+import java.util.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -80,8 +76,23 @@ public class UserController {
      */
 
     @PostMapping("/login")
-    public String loginUser(@RequestBody LoginRequest loginRequest){
-        return userService.verify(loginRequest);
+    public Response<?> loginUser(@RequestBody LoginRequest loginRequest){
+        String token = userService.verify(loginRequest);
+        User user = userService.findUserByEmail(loginRequest.getEmail());
+
+        Map<String,Object> response = new LinkedHashMap<>();
+        response.put("name",user.getName());
+        response.put("email",user.getName());
+        response.put("phoneNumber",user.getPhoneNumber());
+        response.put("officeId",user.getOfficeId());
+        response.put("designation",user.getDesignation());
+        response.put("token", token);
+
+        return Response.builder()
+                .status(HttpStatus.OK)
+                .message("Successfully logged in")
+                .data(response)
+                .build();
     }
 
     /**
@@ -94,7 +105,7 @@ public class UserController {
     @GetMapping("/auth/all")
     public Response<List<UserDTO>> findAllUsers(){
         List<User> userList = userService.findAll();
-        List<UserDTO> userDTOList = userList.stream().map(UserMapper::maptoDTO).toList();
+        List<UserDTO> userDTOList = userList.stream().map(UserUtils::maptoDTO).toList();
         return Response.<List<UserDTO>>builder()
                 .status(HttpStatus.OK)
                 .message("All users retrieved")

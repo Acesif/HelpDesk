@@ -11,17 +11,15 @@ import com.grs.helpdeskmodule.entity.User;
 import com.grs.helpdeskmodule.service.IssueReplyService;
 import com.grs.helpdeskmodule.service.IssueService;
 import com.grs.helpdeskmodule.service.UserService;
-import com.grs.helpdeskmodule.utils.IssueMapper;
+import com.grs.helpdeskmodule.utils.AttachmentUtils;
+import com.grs.helpdeskmodule.utils.IssueUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Comparator;
-import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/issue_reply")
@@ -55,7 +53,7 @@ public class IssueReplyController {
                 .sorted(Comparator.comparing(BaseEntity::getUpdateDate))
                 .toList();
 
-        List<IssueRepliesDTO> issueRepliesDTOS = issueRepliesList.stream().map(IssueMapper::convertToIssueRepliesDTO).toList();
+        List<IssueRepliesDTO> issueRepliesDTOS = issueRepliesList.stream().map(IssueUtils::convertToIssueRepliesDTO).toList();
 
         return Response.builder()
                 .status(HttpStatus.OK)

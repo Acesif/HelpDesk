@@ -4,7 +4,7 @@ import com.grs.helpdeskmodule.dto.AttachmentDTO;
 import com.grs.helpdeskmodule.dto.Response;
 import com.grs.helpdeskmodule.entity.Attachment;
 import com.grs.helpdeskmodule.service.AttachmentService;
-import com.grs.helpdeskmodule.utils.IssueMapper;
+import com.grs.helpdeskmodule.utils.AttachmentUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,8 +12,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Arrays;
-import java.util.Base64;
 import java.util.Set;
 
 @RestController
@@ -43,7 +41,7 @@ public class AttachmentController {
                     .build();
         }
 
-        Set<AttachmentDTO> attachmentDTOS = IssueMapper.convertToAttachmentDTOs(attachments,id);
+        Set<AttachmentDTO> attachmentDTOS = AttachmentUtils.convertToAttachmentDTOs(attachments,id);
 
         return Response.builder()
                 .status(HttpStatus.OK)
@@ -75,7 +73,7 @@ public class AttachmentController {
 
         AttachmentDTO attachmentDTO = AttachmentDTO.builder()
                 .fileName(attachment.getFileName())
-                .fileData(Base64.getEncoder().encodeToString(attachment.getFileData()))
+                .filePath(attachment.getFilePath())
                 .issue(id)
                 .build();
 

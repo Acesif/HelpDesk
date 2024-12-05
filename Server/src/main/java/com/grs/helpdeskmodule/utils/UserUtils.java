@@ -3,7 +3,7 @@ package com.grs.helpdeskmodule.utils;
 import com.grs.helpdeskmodule.dto.UserDTO;
 import com.grs.helpdeskmodule.entity.User;
 
-public class UserMapper {
+public class UserUtils {
 
     public static User mapToUser(UserDTO dto){
         return User.builder()

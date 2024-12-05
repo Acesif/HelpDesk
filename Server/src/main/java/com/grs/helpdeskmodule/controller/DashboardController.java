@@ -6,7 +6,8 @@ import com.grs.helpdeskmodule.entity.Attachment;
 import com.grs.helpdeskmodule.entity.Issue;
 import com.grs.helpdeskmodule.entity.IssueStatus;
 import com.grs.helpdeskmodule.service.DashboardService;
-import com.grs.helpdeskmodule.utils.IssueMapper;
+import com.grs.helpdeskmodule.utils.AttachmentUtils;
+import com.grs.helpdeskmodule.utils.IssueUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -221,7 +222,7 @@ public class DashboardController {
         for (Attachment a : issue.getAttachments()){
             filenames.put(a.getId(),a.getFileName());
         }
-        IssueDTO issueDTO = IssueMapper.convertToIssueDTO(issue);
+        IssueDTO issueDTO = IssueUtils.convertToIssueDTO(issue);
         issueDTO.setAttachments(filenames);
 
         return Response.builder()
@@ -280,7 +281,7 @@ public class DashboardController {
                         filenames.put(a.getId(),a.getFileName());
                     }
 
-                    IssueDTO convertedIssue = IssueMapper.convertToIssueDTO(issue);
+                    IssueDTO convertedIssue = IssueUtils.convertToIssueDTO(issue);
                     convertedIssue.setAttachments(filenames);
 
                     return convertedIssue;

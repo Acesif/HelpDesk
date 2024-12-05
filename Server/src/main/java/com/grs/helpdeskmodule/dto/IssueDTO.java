@@ -1,6 +1,7 @@
 package com.grs.helpdeskmodule.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.grs.helpdeskmodule.entity.Issue;
 import com.grs.helpdeskmodule.entity.IssueCategory;
 import com.grs.helpdeskmodule.entity.IssueStatus;
 import lombok.*;

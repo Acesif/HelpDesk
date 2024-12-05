@@ -16,9 +16,7 @@ public class Attachment extends BaseEntity {
 
     private String fileName;
 
-    @Lob
-    @Column(columnDefinition = "LONGBLOB")
-    private byte[] fileData;
+    private String filePath;
 
     @ManyToOne
     @JoinColumn(name = "issue_id")
