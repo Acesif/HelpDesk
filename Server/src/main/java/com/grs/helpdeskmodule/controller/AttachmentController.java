@@ -7,11 +7,17 @@ import com.grs.helpdeskmodule.service.AttachmentService;
 import com.grs.helpdeskmodule.utils.AttachmentUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Set;
 
 @RestController
@@ -60,27 +66,25 @@ public class AttachmentController {
      *         or a message if the attachment is not found.
      */
     @GetMapping("/{id}")
-    public Response<?> getAttachmentById(@PathVariable("id") Long id){
+    public ResponseEntity<byte[]> getAttachmentById(@PathVariable("id") Long id) {
         Attachment attachment = attachmentService.findById(id);
 
-        if (attachment == null){
-            return Response.builder()
-                    .status(HttpStatus.NO_CONTENT)
-                    .message("Attachment not found")
-                    .data(null)
-                    .build();
+        if (attachment == null) {
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
         }
 
-        AttachmentDTO attachmentDTO = AttachmentDTO.builder()
-                .fileName(attachment.getFileName())
-                .filePath(attachment.getFilePath())
-                .issue(id)
-                .build();
+        try {
+            Path filePath = Paths.get(attachment.getFilePath());
+            byte[] imageBytes = Files.readAllBytes(filePath);
 
-        return Response.builder()
-                .status(HttpStatus.OK)
-                .message("Attachment found")
-                .data(attachmentDTO)
-                .build();
+            String contentType = Files.probeContentType(filePath);
+
+            return ResponseEntity.ok()
+                    .header("Content-Disposition", "inline; filename=\"" + attachment.getFileName() + "\"")
+                    .contentType(MediaType.parseMediaType(contentType != null ? contentType : "application/octet-stream"))
+                    .body(imageBytes);
+        } catch (IOException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
     }
 }

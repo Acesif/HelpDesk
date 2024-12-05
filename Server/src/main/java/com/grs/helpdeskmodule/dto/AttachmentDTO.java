@@ -7,6 +7,7 @@ import lombok.Data;
 @Data
 @Builder
 public class AttachmentDTO {
+    private Long id;
     private String fileName;
     private String filePath;
     private Long issue;

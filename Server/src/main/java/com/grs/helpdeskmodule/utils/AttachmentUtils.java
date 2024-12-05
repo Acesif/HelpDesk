@@ -21,6 +21,7 @@ public class AttachmentUtils {
     public static Set<AttachmentDTO> convertToAttachmentDTOs(Set<Attachment> attachments,Long id) {
         return attachments.stream().map(attachment ->
             AttachmentDTO.builder()
+                    .id(attachment.getId())
                     .fileName(attachment.getFileName())
                     .filePath(attachment.getFilePath())
                     .issue(id)
