@@ -1,15 +1,21 @@
 export class Issue {
-  public tracking_number: string;
-  public subject: string;
-  public status: string;
+  public title: string;
+  public description: string;
+  public issueCategory: string;
   public office: string;
-  public date: string;
+  public attachments: File[];
 
-  constructor(tracking_number: string, subject: string, status: string, office: string, date: string) {
-    this.tracking_number = tracking_number;
-    this.subject = subject;
-    this.status = status;
+  constructor(
+    title: string,
+    description: string,
+    office: string,
+    issueCategory: string,
+    attachments: File[] = [],
+  ) {
+    this.title = title;
+    this.description = description;
+    this.issueCategory = issueCategory;
     this.office = office;
-    this.date = date;
+    this.attachments = attachments;
   }
 }

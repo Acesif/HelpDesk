@@ -20,10 +20,18 @@ export class IssueFormComponent {
   ) {}
 
   trackingNumber: string = '';
-  subject: string = '';
-  status: string = '';
-  office: string = '';
-  date: string = '';
+  title: string = '';
+  description: string = '';
+  category: string = '';
+  officeId: string = '';
+  attachments: File[] = [];
+
+  onFileSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (input.files) {
+      this.attachments = Array.from(input.files);
+    }
+  }
 
   statuses: string[] = [
     'OPEN',
@@ -35,73 +43,59 @@ export class IssueFormComponent {
 
   ngOnInit(): void {
     this.intercepter.validateRoutePermission();
-    this.generateTrackingNumber();
   }
 
-  generateTrackingNumber(): void {
-    this.trackingNumber = `${Date.now()}${Math.floor(Math.random() * 1000)}`;
-  }
-
-  validateForm(formData: any): [boolean,string[]] {
-    let emptyFields: string[] = [];
-
-    if (!formData.subject) emptyFields.push("Subject");
-    if (!formData.status) emptyFields.push("Status");
-    if (!formData.office) emptyFields.push("Office");
-    if (!formData.date) emptyFields.push("Date");
-
-    if (emptyFields.length > 0) {
-      return [false,emptyFields]
-    } else {
-      return [true,emptyFields]
-    }
-  }
-
-  // @Output() issueDataEmitter: EventEmitter<Issue> = new EventEmitter();
+  // validateForm(formData: any): [boolean,string[]] {
+  //   let emptyFields: string[] = [];
+  //
+  //   if (formData.subject === '') emptyFields.push("title");
+  //   if (formData.description === '') emptyFields.push("description");
+  //   if (formData.category === '') emptyFields.push("category");
+  //   if (formData.office === '') emptyFields.push("office");
+  //
+  //   if (emptyFields.length > 0) {
+  //     return [false,emptyFields]
+  //   } else {
+  //     this.title = formData.title;
+  //     this.description = formData.description;
+  //     this.category = formData.category;
+  //     this.officeId = formData.officeId;
+  //     return [true,emptyFields]
+  //   }
+  // }
 
   onSubmit(formData: any): void {
-    const [isValid, emptyFields]:[boolean,string[]] = this.validateForm(formData);
-    if (isValid){
 
-      // this.issueDataEmitter.emit(
-      //     new Issue(
-      //       formData.trackingNumber,
-      //       formData.subject,
-      //       formData.status,
-      //       formData.office,
-      //       formData.date
-      //     )
-      // )
+    // const [isValid, emptyFields]: [boolean, string[]] = this.validateForm(formData);
+    // if (isValid) {
 
-      this.issueService.createIssue(
-            new Issue(
-              formData.trackingNumber,
-              formData.subject,
-              formData.status,
-              formData.office,
-              formData.date
-            )
-      )
-      this.resetFormData()
-      this.issueService.statusChanged.emit(true);
-      this.router.navigate(['/issues/list'], { relativeTo: this.activatedRoute })
-        .then(() => {
-        })
-        .catch((err) => {
-          console.log(err.message);
-        });
+      // if (emptyFields.length > 0) {
+      //   alert(`please fill up these fields`);
+      // }
 
-    } else {
-      alert(`The following fields are required: ${emptyFields.join(', ')}`);
-    }
+      let issue: Issue = new Issue(
+        formData.value.title,
+        formData.value.description,
+        formData.value.category,
+        formData.value.officeId,
+        this.attachments
+      );
+
+      this.issueService.createIssue(issue);
+      this.resetFormData();
+    // }
   }
 
   resetFormData(){
-    this.trackingNumber = '';
-    this.subject = '';
-    this.status = '';
-    this.office = '';
-    this.date = '';
-    this.generateTrackingNumber();
+    this.title = '';
+    this.description = '';
+    this.category = '';
+    this.officeId = '';
+    this.attachments = [];
+
+    const fileInput = document.getElementById('attachments') as HTMLInputElement;
+    if (fileInput) {
+      fileInput.value = '';
+    }
   }
 }

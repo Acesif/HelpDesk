@@ -20,9 +20,9 @@ export class IssueDetailsComponent {
 
   ngOnInit(){
     this.intercepter.validateRoutePermission();
-    this.issue = this.issueService.getIssues().find(issue => this.route.snapshot.params['id'] === issue.tracking_number);
+    // this.issue = this.issueService.getIssues().find(issue => this.route.snapshot.params['id'] === issue.tracking_number);
     this.route.params.subscribe(params => {
-      this.issue = this.issueService.getIssues().find(issue => issue.tracking_number === params['id']);
+      // this.issue = this.issueService.getIssues().find(issue => issue.tracking_number === params['id']);
     })
     // this.issue = {
     //   tracking_number: this.route.snapshot.params['id'],
