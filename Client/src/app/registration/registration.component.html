@@ -1,0 +1,114 @@
+<div class="container mt-5">
+  <form [formGroup]="registrationForm" (ngSubmit)="onSubmit()" class="needs-validation" novalidate>
+    <!-- Name Field -->
+    <div class="mb-3">
+      <label for="name" class="form-label">Name</label>
+      <input
+        id="name"
+        class="form-control"
+        formControlName="name"
+        required
+        [ngClass]="{'is-invalid': registrationForm.get('name')?.invalid && registrationForm.get('name')?.dirty}"
+      />
+      <div *ngIf="registrationForm.get('name')?.invalid && registrationForm.get('name')?.dirty" class="invalid-feedback">
+        Name is required and should be at least 3 characters long.
+      </div>
+    </div>
+
+    <!-- Email Field -->
+    <div class="mb-3">
+      <label for="email" class="form-label">Email</label>
+      <input
+        id="email"
+        type="email"
+        class="form-control"
+        formControlName="email"
+        required
+        [ngClass]="{'is-invalid': registrationForm.get('email')?.invalid && registrationForm.get('email')?.dirty}"
+      />
+      <div *ngIf="registrationForm.get('email')?.invalid && registrationForm.get('email')?.dirty" class="invalid-feedback">
+        Please provide a valid email.
+      </div>
+    </div>
+
+    <!-- Phone Number Field -->
+    <div class="mb-3">
+      <label for="phoneNumber" class="form-label">Phone Number</label>
+      <input
+        id="phoneNumber"
+        class="form-control"
+        formControlName="phoneNumber"
+        required
+        [ngClass]="{'is-invalid': registrationForm.get('phoneNumber')?.invalid && registrationForm.get('phoneNumber')?.dirty}"
+      />
+      <div *ngIf="registrationForm.get('phoneNumber')?.invalid && registrationForm.get('phoneNumber')?.dirty" class="invalid-feedback">
+        Please provide a valid 11-digit phone number.
+      </div>
+    </div>
+
+    <!-- Office ID Field -->
+    <div class="mb-3">
+      <label for="officeId" class="form-label">Office ID</label>
+      <input
+        id="officeId"
+        type="number"
+        class="form-control"
+        formControlName="officeId"
+        required
+        [ngClass]="{'is-invalid': registrationForm.get('officeId')?.invalid && registrationForm.get('officeId')?.dirty}"
+      />
+      <div *ngIf="registrationForm.get('officeId')?.invalid && registrationForm.get('officeId')?.dirty" class="invalid-feedback">
+        Office ID is required.
+      </div>
+    </div>
+
+    <!-- Password Field -->
+    <div class="mb-3">
+      <label for="password" class="form-label">Password</label>
+      <input
+        id="password"
+        type="password"
+        class="form-control"
+        formControlName="password"
+        required
+        [ngClass]="{'is-invalid': registrationForm.get('password')?.invalid && registrationForm.get('password')?.dirty}"
+      />
+      <div *ngIf="registrationForm.get('password')?.invalid && registrationForm.get('password')?.dirty" class="invalid-feedback">
+        Password is required and should be at least 6 characters long.
+      </div>
+    </div>
+
+    <!-- Designation Field -->
+    <div class="mb-3">
+      <label for="designation" class="form-label">Designation</label>
+      <select
+        id="designation"
+        class="form-select"
+        formControlName="designation"
+        required
+        [ngClass]="{'is-invalid': registrationForm.get('designation')?.invalid && registrationForm.get('designation')?.dirty}"
+      >
+        <option value="" disabled>Select Designation</option>
+        <option value="OFFICER">OFFICER</option>
+        <option value="MANAGER">MANAGER</option>
+      </select>
+      <div *ngIf="registrationForm.get('designation')?.invalid && registrationForm.get('designation')?.dirty" class="invalid-feedback">
+        Designation is required.
+      </div>
+    </div>
+
+    <!-- Submit Button -->
+    <button type="submit" class="btn btn-primary w-100 mb-2" [disabled]="registrationForm.invalid">
+      Register
+    </button>
+
+    <!-- Login Button -->
+    <button
+      type="button"
+      class="btn btn-secondary w-100"
+      (click)="navigateToLogin()"
+    >
+      Already have an account? Login
+    </button>
+  </form>
+</div>

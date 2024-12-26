@@ -5,6 +5,7 @@
     <content url="file://$MODULE_DIR$/Client">
       <excludeFolder url="file://$MODULE_DIR$/Client/dist" />
       <excludeFolder url="file://$MODULE_DIR$/Client/tmp" />
+      <excludeFolder url="file://$MODULE_DIR$/Client/.idea" />
     </content>
     <orderEntry type="sourceFolder" forTests="false" />
   </component>

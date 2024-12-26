@@ -2,6 +2,7 @@ import {Component, EventEmitter, Output, SimpleChanges} from '@angular/core';
 import {Issue} from '../../model/Issue.model';
 import {IssueService} from '../services/issue.service';
 import {ActivatedRoute, Router} from '@angular/router';
+import {IntercepterService} from '../services/intercepter.service';
 
 @Component({
   selector: 'app-issue-form',
@@ -15,6 +16,7 @@ export class IssueFormComponent {
     private issueService: IssueService,
     private router: Router,
     private activatedRoute: ActivatedRoute,
+    private intercepter: IntercepterService
   ) {}
 
   trackingNumber: string = '';
@@ -32,6 +34,7 @@ export class IssueFormComponent {
   ];
 
   ngOnInit(): void {
+    this.intercepter.validateRoutePermission();
     this.generateTrackingNumber();
   }
 

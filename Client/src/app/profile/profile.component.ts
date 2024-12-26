@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import {ProfileService} from '../services/profile.service';
 import {ActivatedRoute} from '@angular/router';
 import {User} from '../../model/user.model';
+import {IntercepterService} from '../services/intercepter.service';
 
 @Component({
   selector: 'app-profile',
@@ -12,9 +13,14 @@ import {User} from '../../model/user.model';
 export class ProfileComponent {
   user: User;
 
-  constructor(private router: ActivatedRoute, private profileService: ProfileService) { }
+  constructor(
+    private router: ActivatedRoute,
+    private profileService: ProfileService,
+    private intercepter: IntercepterService
+  ) { }
 
   ngOnInit() {
+    this.intercepter.validateRoutePermission();
     this.user = this.profileService.getUserById(this.router.snapshot.params['id']);
   }
 

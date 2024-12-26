@@ -4,8 +4,10 @@ import com.grs.helpdeskmodule.base.BaseEntity;
 import com.grs.helpdeskmodule.dto.IssueDTO;
 import com.grs.helpdeskmodule.dto.Response;
 import com.grs.helpdeskmodule.entity.*;
+import com.grs.helpdeskmodule.repository.OfficeRepository;
 import com.grs.helpdeskmodule.service.AttachmentService;
 import com.grs.helpdeskmodule.service.IssueService;
+import com.grs.helpdeskmodule.service.OfficeService;
 import com.grs.helpdeskmodule.service.UserService;
 import com.grs.helpdeskmodule.utils.AttachmentUtils;
 import com.grs.helpdeskmodule.utils.IssueUtils;
@@ -29,6 +31,7 @@ public class IssueController {
     private final IssueService issueService;
     private final UserService userService;
     private final AttachmentService attachmentService;
+    private final OfficeService officeService;
 
     /**
      * Creates a new issue with the given title, description, and status. Optionally allows attaching files.
@@ -48,6 +51,7 @@ public class IssueController {
             @RequestPart("title") String title,
             @RequestPart("description") String description,
             @RequestPart("category") String category,
+            @RequestPart("officeId") String officeId,
             @RequestPart(value = "attachments", required = false) List<MultipartFile> attachments) {
 
         IssueDTO issueDto = IssueDTO.builder()
@@ -65,6 +69,7 @@ public class IssueController {
                 .title(issueDto.getTitle())
                 .description(issueDto.getDescription())
                 .status(issueDto.getStatus())
+                .office(officeService.getOffice(Long.parseLong(officeId)))
                 .trackingNumber(AttachmentUtils.generateTrackingNumber())
                 .issueCategory(IssueCategory.valueOf(category.toUpperCase()))
                 .postedBy(postedByUser)
@@ -77,8 +82,10 @@ public class IssueController {
 
         Map<Long,String> filenames = new HashMap<>();
 
-        for (Attachment a : savedIssue.getAttachments()){
-            filenames.put(a.getId(),a.getFileName());
+        if (attachments != null && !attachments.isEmpty()) {
+            for (Attachment a : savedIssue.getAttachments()){
+                filenames.put(a.getId(),a.getFileName());
+            }
         }
 
         IssueDTO savedIssueDTO = IssueDTO.builder()
@@ -89,6 +96,7 @@ public class IssueController {
                 .trackingNumber(savedIssue.getTrackingNumber())
                 .postedOn(savedIssue.getCreateDate())
                 .updatedOn(savedIssue.getUpdateDate())
+                .officeId(savedIssue.getOffice() != null ? savedIssue.getOffice().getId() : null)
                 .postedBy(savedIssue.getPostedBy().getId())
                 .category(savedIssue.getIssueCategory())
                 .attachments(filenames)
@@ -122,6 +130,7 @@ public class IssueController {
             @RequestPart("description") String description,
             @RequestPart("status") String  status,
             @RequestPart("category") String category,
+            @RequestPart("officeId") String officeId,
             @RequestPart(value = "attachments", required = false) List<MultipartFile> attachments
     ){
         Issue issue = issueService.findById(id);
@@ -138,6 +147,7 @@ public class IssueController {
         issue.setStatus(IssueStatus.valueOf(status));
         issue.setTitle(title);
         issue.setDescription(description);
+        issue.setOffice(officeService.getOffice(Long.parseLong(officeId)));
         issue.setIssueCategory(IssueCategory.valueOf(category.toUpperCase()));
         issue.setUpdateDate(new Date());
 
@@ -147,10 +157,11 @@ public class IssueController {
 
         Map<Long,String> filenames = new HashMap<>();
 
-        for (Attachment a : updatedIssue.getAttachments()){
-            filenames.put(a.getId(),a.getFileName());
+        if (attachments != null && !attachments.isEmpty()) {
+            for (Attachment a : updatedIssue.getAttachments()){
+                filenames.put(a.getId(),a.getFileName());
+            }
         }
-
 
         return Response.builder()
                 .status(HttpStatus.OK)
@@ -163,6 +174,7 @@ public class IssueController {
                                 .description(updatedIssue.getDescription())
                                 .postedBy(updatedIssue.getPostedBy().getId())
                                 .postedOn(updatedIssue.getCreateDate())
+                                .officeId(updatedIssue.getOffice() != null ? updatedIssue.getOffice().getId() : null)
                                 .updatedOn(updatedIssue.getUpdateDate())
                                 .trackingNumber(updatedIssue.getTrackingNumber())
                                 .category(updatedIssue.getIssueCategory())
@@ -224,8 +236,10 @@ public class IssueController {
 
             Map<Long,String> filenames = new HashMap<>();
 
-            for (Attachment a : findIssue.getAttachments()){
-                filenames.put(a.getId(),a.getFileName());
+            if (findIssue.getAttachments() != null && !findIssue.getAttachments().isEmpty()){
+                for (Attachment a : findIssue.getAttachments()){
+                    filenames.put(a.getId(),a.getFileName());
+                }
             }
 
             IssueDTO issueDTO = IssueDTO.builder()
@@ -236,6 +250,7 @@ public class IssueController {
                     .postedBy(findIssue.getPostedBy().getId())
                     .postedOn(findIssue.getCreateDate())
                     .updatedOn(findIssue.getUpdateDate())
+                    .officeId(findIssue.getOffice() != null ? findIssue.getOffice().getId() : null)
                     .trackingNumber(findIssue.getTrackingNumber())
                     .category(findIssue.getIssueCategory())
                     .attachments(filenames)
@@ -279,8 +294,10 @@ public class IssueController {
             Issue correspondingIssue = issueMap.get(issueDTO.getId());
             if (correspondingIssue != null) {
                 Map<Long, String> filenames = new HashMap<>();
-                for (Attachment attachment : correspondingIssue.getAttachments()) {
-                    filenames.put(attachment.getId(), attachment.getFileName());
+                if (correspondingIssue.getAttachments() != null && !correspondingIssue.getAttachments().isEmpty()){
+                    for (Attachment attachment : correspondingIssue.getAttachments()) {
+                        filenames.put(attachment.getId(), attachment.getFileName());
+                    }
                 }
                 issueDTO.setAttachments(filenames);
             }

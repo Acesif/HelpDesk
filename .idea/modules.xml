@@ -5,6 +5,7 @@
       <module fileurl="file://$PROJECT_DIR$/Client.iml" filepath="$PROJECT_DIR$/Client.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/HelpDesk-Module.iml" filepath="$PROJECT_DIR$/.idea/HelpDesk-Module.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/base-module/HelpDesk-Module.base-module.iml" filepath="$PROJECT_DIR$/.idea/modules/base-module/HelpDesk-Module.base-module.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/Server.iml" filepath="$PROJECT_DIR$/.idea/modules/Server.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/Server.main.iml" filepath="$PROJECT_DIR$/.idea/modules/Server.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/com.grs.HelpDesk-Module.iml" filepath="$PROJECT_DIR$/.idea/modules/com.grs.HelpDesk-Module.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/com.grs.HelpDesk-Module.main.iml" filepath="$PROJECT_DIR$/.idea/modules/com.grs.HelpDesk-Module.main.iml" />

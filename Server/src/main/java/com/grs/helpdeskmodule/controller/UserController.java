@@ -3,11 +3,14 @@ package com.grs.helpdeskmodule.controller;
 import com.grs.helpdeskmodule.dto.LoginRequest;
 import com.grs.helpdeskmodule.dto.Response;
 import com.grs.helpdeskmodule.dto.UserDTO;
+import com.grs.helpdeskmodule.dto.UserInformation;
 import com.grs.helpdeskmodule.entity.User;
+import com.grs.helpdeskmodule.repository.OfficeRepository;
 import com.grs.helpdeskmodule.service.UserService;
 import com.grs.helpdeskmodule.utils.UserUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,6 +23,8 @@ public class UserController {
 
     private final UserService userService;
     private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
+    private final UserUtils userUtils;
+    private final OfficeRepository officeRepository;
 
     /**
      * Creates a new user with the details provided in the UserDTO. Checks if a user with the same email
@@ -30,7 +35,7 @@ public class UserController {
      * @return A response containing the created user's details or a message if the user already exists.
      */
     @PostMapping("/create")
-    public Response<UserDTO> createUser(@RequestBody UserDTO userDto){
+    public Response<?> createUser(@RequestBody UserDTO userDto){
 
         boolean existingUser = userService.findUserByEmail(userDto.getEmail()) != null || userService.findUserByPhoneNumber(userDto.getPhoneNumber()) != null;
         if (existingUser){
@@ -45,25 +50,30 @@ public class UserController {
                 .name(userDto.getName())
                 .email(userDto.getEmail())
                 .phoneNumber(userDto.getPhoneNumber())
-                .officeId(userDto.getOfficeId())
+                .office(officeRepository.findById(userDto.getOfficeId()).orElse(null))
                 .designation(userDto.getDesignation())
                 .password(passwordEncoder.encode(userDto.getPassword()))
                 .build();
 
         User createdUser = userService.save(user);
-        UserDTO returnedDto = UserDTO.builder()
-                .name(createdUser.getName())
-                .email(createdUser.getEmail())
-                .phoneNumber(createdUser.getPhoneNumber())
-                .officeId(createdUser.getOfficeId())
-                .designation(createdUser.getDesignation())
-                .password("***")
-                .createdOn(createdUser.getCreateDate())
+        LoginRequest loginRequest = LoginRequest.builder()
+                .email(userDto.getEmail())
+                .password(userDto.getPassword())
                 .build();
-        return Response.<UserDTO>builder()
+        String token = userService.verify(loginRequest);
+
+        Map<String,Object> response = new LinkedHashMap<>();
+        response.put("name",createdUser.getName());
+        response.put("email",createdUser.getName());
+        response.put("phoneNumber",createdUser.getPhoneNumber());
+        response.put("officeId",createdUser.getOffice() != null ? createdUser.getOffice().getId() : null);
+        response.put("designation",createdUser.getDesignation());
+        response.put("token", token);
+
+        return Response.builder()
                 .status(HttpStatus.CREATED)
                 .message("User successfully created")
-                .data(returnedDto)
+                .data(response)
                 .build();
     }
 
@@ -84,7 +94,7 @@ public class UserController {
         response.put("name",user.getName());
         response.put("email",user.getName());
         response.put("phoneNumber",user.getPhoneNumber());
-        response.put("officeId",user.getOfficeId());
+        response.put("officeId",user.getOffice() != null ? user.getOffice().getId() : null);
         response.put("designation",user.getDesignation());
         response.put("token", token);
 
@@ -105,7 +115,7 @@ public class UserController {
     @GetMapping("/auth/all")
     public Response<List<UserDTO>> findAllUsers(){
         List<User> userList = userService.findAll();
-        List<UserDTO> userDTOList = userList.stream().map(UserUtils::maptoDTO).toList();
+        List<UserDTO> userDTOList = userList.stream().map(userUtils::maptoDTO).toList();
         return Response.<List<UserDTO>>builder()
                 .status(HttpStatus.OK)
                 .message("All users retrieved")
@@ -139,7 +149,7 @@ public class UserController {
         existingUser.setName(userDto.getName() == null ? existingUser.getName() : userDto.getName());
         existingUser.setEmail(userDto.getEmail() == null ? existingUser.getEmail() : userDto.getEmail());
         existingUser.setPhoneNumber(userDto.getPhoneNumber() == null ? existingUser.getPhoneNumber() : userDto.getPhoneNumber());
-        existingUser.setOfficeId(userDto.getOfficeId() == null ? existingUser.getOfficeId() : userDto.getOfficeId());
+        existingUser.setOffice(existingUser.getOffice());
         existingUser.setDesignation(existingUser.getDesignation());
         existingUser.setPassword(userDto.getPassword() == null ? existingUser.getPassword() : passwordEncoder.encode(userDto.getPassword()));
 
@@ -149,7 +159,7 @@ public class UserController {
                 .name(updatedUser.getName())
                 .email(updatedUser.getEmail())
                 .phoneNumber(updatedUser.getPhoneNumber())
-                .officeId(updatedUser.getOfficeId())
+                .officeId(updatedUser.getOffice() != null ? updatedUser.getOffice().getId() : null)
                 .designation(updatedUser.getDesignation())
                 .password("***")
                 .createdOn(updatedUser.getCreateDate())
@@ -159,6 +169,32 @@ public class UserController {
                 .status(HttpStatus.CREATED)
                 .message("User successfully updated")
                 .data(updatedDTO)
+                .build();
+    }
+    @GetMapping("/{id}")
+    public Response<UserInformation> findById(
+            @PathVariable("id") Long id,
+            Authentication authentication
+    ){
+        UserInformation userInformation = userUtils.extractUserInformation(authentication);
+        if (userInformation == null){
+            return Response.<UserInformation>builder()
+                    .status(HttpStatus.CONFLICT)
+                    .message("User doesn't exists")
+                    .data(null)
+                    .build();
+        }
+        if (!Objects.equals(userInformation.getId(), id)){
+            return Response.<UserInformation>builder()
+                    .status(HttpStatus.UNAUTHORIZED)
+                    .message("Not allowed to view this user")
+                    .data(null)
+                    .build();
+        }
+        return Response.<UserInformation>builder()
+                .status(HttpStatus.OK)
+                .message("User data shown successfully")
+                .data(userInformation)
                 .build();
     }
 }

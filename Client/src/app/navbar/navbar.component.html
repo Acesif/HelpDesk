@@ -12,7 +12,10 @@
             Home
           </a>
           <a class="nav-link" aria-current="page" [routerLink]='["issues","list"]' routerLinkActive="active">
-            Issue List
+            My Issues
+          </a>
+          <a class="nav-link" *ngIf="isAdmin()" aria-current="page" [routerLink]='["admin","inbox"]' routerLinkActive="active">
+            Inbox
           </a>
         </li>
       </ul>
@@ -24,7 +27,7 @@
           <li><a class="dropdown-item" [routerLink]='["profile", getUserId()]'>Profile</a></li>
           <li><a class="dropdown-item" [routerLink]='["issues","list"]'>My Issues</a></li>
           <li><a class="dropdown-item" [routerLink]='["issues","new"]'>New Issue</a></li>
-          <li><a class="dropdown-item" [routerLink]='["logout"]'>Log out</a></li>
+          <li><a class="dropdown-item" (click)="logout()">Log out</a></li>
         </ul>
       </div>
     </div>

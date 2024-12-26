@@ -1,6 +1,7 @@
 package com.grs.helpdeskmodule.config;
 
 import com.grs.helpdeskmodule.jwt.JWTFilter;
+import com.grs.helpdeskmodule.utils.Endpoints;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -19,6 +20,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 import java.util.List;
 
+import static com.grs.helpdeskmodule.utils.Endpoints.*;
 import static org.springframework.security.config.Customizer.withDefaults;
 
 @Configuration
@@ -34,35 +36,16 @@ public class SecurityConfig {
     private final UserDetailsService userDetailsService;
     private final JWTFilter jwtFilter;
 
-    private final String[] SUPERADMIN_PATHS = new String[]{
-            "/api/auth/su/**",
-    };
-    private final String[] ADMIN_PATHS = new String[]{
-            "/api/user/**",
-            "/api/issue_reply/**",
-            "/api/auth/all",
-            "/api/dashboard/**"
-    };
-    private final String[] OFFICER_PATHS = new String[]{
-            "/api/attachments",
-            "/api/issue/user/**",
-            "/api/issue/new"
-    };
-    private final String[] PERMITALL_PATHS = new String[]{
-            "/api/user/create",
-            "/api/user/login",
-            "/api/settings/**"
-    };
-
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http.authorizeHttpRequests(requests ->
                 requests
-                        .requestMatchers(PERMITALL_PATHS).permitAll()
-                        .requestMatchers(ADMIN_PATHS).hasAnyAuthority("ADMIN","SUPERADMIN")
-                        .requestMatchers(SUPERADMIN_PATHS).hasAnyAuthority("SUPERADMIN","VENDOR")
-                        .requestMatchers(OFFICER_PATHS).hasAnyAuthority("OFFICER","ADMIN","SUPERADMIN")
-                        .anyRequest().authenticated()
+//                        .requestMatchers(PERMITALL_PATHS).permitAll()
+//                        .requestMatchers(ADMIN_PATHS).hasAnyAuthority("ADMIN","SUPERADMIN")
+//                        .requestMatchers(SUPERADMIN_PATHS).hasAnyAuthority("SUPERADMIN","VENDOR")
+//                        .requestMatchers(OFFICER_PATHS).hasAnyAuthority("OFFICER","ADMIN","SUPERADMIN")
+                        .anyRequest().permitAll()
+//                        .anyRequest().authenticated()
                 )
                 .httpBasic(withDefaults())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

@@ -1,30 +1,56 @@
 package com.grs.helpdeskmodule.utils;
 
 import com.grs.helpdeskmodule.dto.UserDTO;
+import com.grs.helpdeskmodule.dto.UserInformation;
 import com.grs.helpdeskmodule.entity.User;
+import com.grs.helpdeskmodule.repository.OfficeRepository;
+import com.grs.helpdeskmodule.service.UserService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
+import org.springframework.stereotype.Component;
 
+@Component
 public class UserUtils {
 
-    public static User mapToUser(UserDTO dto){
+    private static UserService userService;
+    private static OfficeRepository officeRepository;
+
+    public UserUtils(OfficeRepository officeRepository, UserService userService) {
+        UserUtils.officeRepository = officeRepository;
+        UserUtils.userService = userService;
+    }
+
+    public User mapToUser(UserDTO dto){
         return User.builder()
                 .name(dto.getName())
                 .email(dto.getEmail())
                 .designation(dto.getDesignation())
-                .officeId(dto.getOfficeId())
+                .office(officeRepository.findById(dto.getOfficeId()).orElse(null))
                 .phoneNumber(dto.getPhoneNumber())
                 .password(dto.getPassword())
                 .build();
     }
 
-    public static UserDTO maptoDTO(User user){
+    public UserDTO maptoDTO(User user){
         return UserDTO.builder()
                 .createdOn(user.getCreateDate())
                 .password("***")
                 .name(user.getName())
                 .email(user.getEmail())
                 .designation(user.getDesignation())
-                .officeId(user.getOfficeId())
+                .officeId(user.getOffice() != null ? user.getOffice().getId() : null)
                 .phoneNumber(user.getPhoneNumber())
+                .build();
+    }
+    public UserInformation extractUserInformation(Authentication authentication){
+        User user = userService.findUserByEmail(authentication.getName());
+        return UserInformation.builder()
+                .id(user.getId())
+                .name(user.getName())
+                .email(user.getEmail())
+                .phoneNumber(user.getPhoneNumber())
+                .officeId(user.getOffice() != null ? user.getOffice().getId() : null)
+                .designation(user.getDesignation())
                 .build();
     }
 }

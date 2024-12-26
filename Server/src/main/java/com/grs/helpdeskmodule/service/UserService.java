@@ -57,7 +57,7 @@ public class UserService extends BaseService<User> {
                 return jwtService.generateToken(loginRequest.getEmail(), user);
             }
         } catch (Exception e){
-            return (Arrays.toString(e.getStackTrace()));
+            throw new RuntimeException(e);
         }
         return null;
     }

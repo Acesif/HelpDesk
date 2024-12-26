@@ -24,7 +24,7 @@ public class JWTService {
         claims.put("name",user.getName());
         claims.put("email",user.getEmail());
         claims.put("phone_number",user.getPhoneNumber());
-        claims.put("office_id",user.getOfficeId());
+        claims.put("office_id",user.getOffice() != null ? user.getOffice().getId() : null);
         claims.put("designation",user.getDesignation());
 
         return Jwts.builder()

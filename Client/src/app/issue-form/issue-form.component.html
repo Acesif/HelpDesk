@@ -1,67 +1,68 @@
-<form class="mb-5" #issueForm="ngForm" (ngSubmit)="onSubmit(issueForm.value)">
+<form class="mb-5" #issueForm="ngForm" (ngSubmit)="onSubmit(issueForm)">
   <div class="mb-3">
-    <label for="tracking_number" class="form-label">Tracking Number</label>
+    <label for="title" class="form-label">Title</label>
     <input
       type="text"
       class="form-control"
-      id="tracking_number"
-      name="trackingNumber"
-      [(ngModel)]="trackingNumber"
-      readonly
+      id="title"
+      name="title"
+      [(ngModel)]="title"
+      placeholder="Enter the issue title"
+      required
     />
   </div>
+
   <div class="mb-3">
-    <label for="subject" class="form-label">Subject</label>
+    <label for="description" class="form-label">Description</label>
+    <textarea
+      class="form-control"
+      id="description"
+      name="description"
+      [(ngModel)]="description"
+      placeholder="Enter a description of the issue"
+      rows="4"
+      required
+    ></textarea>
+  </div>
+
+  <div class="mb-3">
+    <label for="category" class="form-label">Category</label>
     <input
       type="text"
       class="form-control"
-      id="subject"
-      placeholder="Enter a subject of your complaint"
-      name="subject"
-      [(ngModel)]="subject"
+      id="category"
+      name="category"
+      [(ngModel)]="category"
+      placeholder="Enter the issue category"
       required
     />
   </div>
+
   <div class="mb-3">
-    <label for="status" class="form-label">Status</label>
-    <select
-      class="form-control"
-      id="status"
-      name="status"
-      [(ngModel)]="status"
-      required
-    >
-      <option value="" disabled selected>
-        Select a status
-      </option>
-      <option *ngFor="let status of statuses" [value]="status">
-        {{ status }}
-      </option>
-    </select>
-  </div>
-  <div class="mb-3">
-    <label for="office" class="form-label">Office</label>
+    <label for="officeId" class="form-label">Office ID</label>
     <input
       type="text"
       class="form-control"
-      id="office"
-      name="office"
-      placeholder="Select an office"
-      [(ngModel)]="office"
+      id="officeId"
+      name="officeId"
+      [(ngModel)]="officeId"
+      placeholder="Enter the Office ID"
       required
     />
   </div>
+
   <div class="mb-3">
-    <label for="date" class="form-label">Date</label>
+    <label for="attachments" class="form-label">Attachments</label>
     <input
-      type="date"
+      type="file"
       class="form-control"
-      id="date"
-      name="date"
-      [(ngModel)]="date"
-      required
+      id="attachments"
+      name="attachments"
+      (change)="onFileSelected($event)"
+      multiple
     />
   </div>
+
   <button type="submit" class="btn btn-success mt-3">
     Submit
   </button>

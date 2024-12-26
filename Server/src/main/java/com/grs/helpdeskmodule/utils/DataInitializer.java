@@ -1,7 +1,11 @@
 package com.grs.helpdeskmodule.utils;
 
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.grs.helpdeskmodule.entity.*;
 import com.grs.helpdeskmodule.repository.*;
+import com.grs.helpdeskmodule.service.OfficeService;
 import com.grs.helpdeskmodule.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -9,6 +13,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -26,7 +31,7 @@ public class DataInitializer implements CommandLineRunner {
     private final SettingsRepository settingsRepository;
     private final RoleRepository roleRepository;
     private final PermissionRepository permissionRepository;
-    private final OfficeRepository officeRepository;
+    private final OfficeService officeService;
 
     private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
 
@@ -36,7 +41,7 @@ public class DataInitializer implements CommandLineRunner {
         initiatePriority();
         initiateSettings();
         initiateRolePermissions();
-//        initializeOffices();
+        initializeOffices();
     }
     private void initiateUser(){
         if (userService.findUserByEmail("superadmin@admin.com") == null){
@@ -45,7 +50,7 @@ public class DataInitializer implements CommandLineRunner {
                             .flag(true)
                             .name("SUPERADMIN")
                             .email("superadmin@admin.com")
-                            .officeId(null)
+                            .office(null)
                             .password(passwordEncoder.encode("12345678"))
                             .phoneNumber(null)
                             .designation("SUPERADMIN")
@@ -259,11 +264,12 @@ public class DataInitializer implements CommandLineRunner {
             roles.add(
                     Role.builder()
                             .id(1L)
-                            .role("ADMIN")
+                            .role("GRO")
                             .permissions(List.of(
                                     viewDashboaard,
                                     replyToIssues,
                                     viewIssues,
+                                    postIssues,
                                     setPriorities)
                             )
                             .build()
@@ -296,6 +302,7 @@ public class DataInitializer implements CommandLineRunner {
                                     editSettings,
                                     setUserRoles,
                                     editUsers,
+                                    postIssues,
                                     viewIssues,
                                     createUser)
                             )
@@ -317,8 +324,9 @@ public class DataInitializer implements CommandLineRunner {
             roleRepository.saveAll(roles);
         }
     }
-//    public void initializeOffices() throws IOException {
+    public void initializeOffices() throws IOException {
 //        ObjectMapper mapper = new ObjectMapper();
+//        mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 //        File jsonFile = new File("Server/db_tables/offices.json");
 //
 //        List<Office> offices = mapper.readValue(jsonFile, mapper.getTypeFactory().constructCollectionType(List.class, Office.class));
@@ -329,20 +337,28 @@ public class DataInitializer implements CommandLineRunner {
 //                System.out.printf("Populated "+(index++)+" of "+offices.size()+" entries in the Office Table\n");
 //                Office saveOffice = Office.builder()
 //                        .id(office.getId())
-//                        .status(office.getStatus())
-//                        .geo_district_id(office.getGeo_district_id())
-//                        .geo_division_id(office.getGeo_division_id())
-//                        .office_name_bng(office.getOffice_name_bng())
+//                        .flag(true)
 //                        .office_name_eng(office.getOffice_name_eng())
 //                        .office_layer_id(office.getOffice_layer_id())
 //                        .office_ministry_id(office.getOffice_ministry_id())
-//                        .office_origin_id(office.getOffice_origin_id())
 //                        .parent_office_id(office.getParent_office_id())
-//                        .geo_upazila_id(office.getGeo_upazila_id())
-//                        .office_web(office.getOffice_web())
+//                        .office_origin_id(office.getOffice_origin_id())
 //                        .build();
 //                officeRepository.save(saveOffice);
 //            }
 //        }
-//    }
+        if (officeService.getAllOffices().isEmpty()){
+            for (long i = 0; i < 10; i++) {
+                officeService.save(Office.builder()
+                        .id(i)
+                        .office_name_eng("office name"+i)
+                        .office_layer_id(i)
+                        .office_ministry_id(i)
+                        .office_origin_id(i)
+                        .parent_office_id(i)
+                        .build());
+                System.out.println("Office populated "+i+" of "+10);
+            }
+        }
+    }
 }

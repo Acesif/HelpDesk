@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import {Issue} from '../../model/Issue.model';
 import {ActivatedRoute} from '@angular/router';
 import {IssueService} from '../services/issue.service';
+import {IntercepterService} from '../services/intercepter.service';
 
 @Component({
   selector: 'app-issue-details',
@@ -11,9 +12,14 @@ import {IssueService} from '../services/issue.service';
 export class IssueDetailsComponent {
   issue: Issue;
 
-  constructor(private route: ActivatedRoute, private issueService: IssueService) {}
+  constructor(
+    private route: ActivatedRoute,
+    private issueService: IssueService,
+    private intercepter: IntercepterService
+  ) {}
 
   ngOnInit(){
+    this.intercepter.validateRoutePermission();
     this.issue = this.issueService.getIssues().find(issue => this.route.snapshot.params['id'] === issue.tracking_number);
     this.route.params.subscribe(params => {
       this.issue = this.issueService.getIssues().find(issue => issue.tracking_number === params['id']);

@@ -1,12 +1,13 @@
 package com.grs.helpdeskmodule.entity;
 
 import com.grs.helpdeskmodule.base.BaseEntity;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
-import jakarta.persistence.UniqueConstraint;
-import jakarta.validation.constraints.*;
-import lombok.*;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.Pattern;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
 @Entity
@@ -31,8 +32,9 @@ public class User extends BaseEntity {
     @Pattern(regexp = "\\d{11}")
     private String phoneNumber;
 
-    @Column(name = "office_id")
-    private Long officeId;
+    @JoinColumn(name = "office_id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Office office;
 
     private String designation;
 

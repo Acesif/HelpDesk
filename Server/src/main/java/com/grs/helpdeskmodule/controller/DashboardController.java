@@ -2,19 +2,22 @@ package com.grs.helpdeskmodule.controller;
 
 import com.grs.helpdeskmodule.dto.IssueDTO;
 import com.grs.helpdeskmodule.dto.Response;
+import com.grs.helpdeskmodule.dto.UserInformation;
 import com.grs.helpdeskmodule.entity.Attachment;
 import com.grs.helpdeskmodule.entity.Issue;
 import com.grs.helpdeskmodule.entity.IssueStatus;
 import com.grs.helpdeskmodule.service.DashboardService;
-import com.grs.helpdeskmodule.utils.AttachmentUtils;
 import com.grs.helpdeskmodule.utils.IssueUtils;
+import com.grs.helpdeskmodule.utils.UserUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Slf4j
 @RestController
@@ -23,6 +26,7 @@ import java.util.*;
 public class DashboardController {
 
     private final DashboardService dashboardService;
+    private final UserUtils userUtils;
 
     /**
      * Retrieves the count of issues grouped by status and other statistical metrics, including
@@ -32,21 +36,35 @@ public class DashboardController {
      * @return A response containing a map with the count of issues by status, total count,
      *         previous month's issues, and current month's issues.
      */
-    @GetMapping("/count")
-    public Response<?> getCount(){
-        Map<String,Integer> countList = new HashMap<>();
-        Integer OPEN = dashboardService.findIssuesByStatus("OPEN").size();
-        countList.put("open", OPEN);
-        Integer RESOLVED = dashboardService.findIssuesByStatus("RESOLVED").size();
-        countList.put("resolved", RESOLVED);
-        Integer REJECTED = dashboardService.findIssuesByStatus("REJECTED").size();
-        countList.put("rejected", REJECTED);
-        Integer ONGOING = dashboardService.findIssuesByStatus("ONGOING").size();
-        countList.put("ongoing", ONGOING);
-        Integer CLOSED = dashboardService.findIssuesByStatus("CLOSED").size();
-        countList.put("closed", CLOSED);
+    @PostMapping("/count")
+    public Response<?> getCount(Authentication authentication){
 
-        Integer totalCount = OPEN+REJECTED+RESOLVED+ONGOING+CLOSED;
+        // todo: only view logged in user's office's dashboard info
+        UserInformation user = userUtils.extractUserInformation(authentication);
+        Long officeId = user.getOfficeId();
+
+        Map<String,Integer> countList = new HashMap<>();
+        List<Issue> OPEN = dashboardService.findIssuesByStatus("OPEN");
+        List<Issue> RESOLVED = dashboardService.findIssuesByStatus("RESOLVED");
+        List<Issue> REJECTED = dashboardService.findIssuesByStatus("REJECTED");
+        List<Issue> ONGOING = dashboardService.findIssuesByStatus("ONGOING");
+        List<Issue> CLOSED = dashboardService.findIssuesByStatus("CLOSED");
+
+        if (officeId != null) {
+            OPEN = OPEN.stream().filter(i -> Objects.equals(i.getOffice().getId(), officeId)).toList();
+            RESOLVED = RESOLVED.stream().filter(i -> Objects.equals(i.getOffice().getId(), officeId)).toList();
+            REJECTED = REJECTED.stream().filter(i -> Objects.equals(i.getOffice().getId(), officeId)).toList();
+            ONGOING = ONGOING.stream().filter(i -> Objects.equals(i.getOffice().getId(), officeId)).toList();
+            CLOSED = CLOSED.stream().filter(i -> Objects.equals(i.getOffice().getId(), officeId)).toList();
+        }
+
+        countList.put("open", OPEN.size());
+        countList.put("resolved", RESOLVED.size());
+        countList.put("rejected", REJECTED.size());
+        countList.put("ongoing", ONGOING.size());
+        countList.put("closed", CLOSED.size());
+
+        Integer totalCount = OPEN.size() + REJECTED.size() + RESOLVED.size() + ONGOING.size() + CLOSED.size();
         countList.put("total", totalCount);
 
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
@@ -77,8 +95,12 @@ public class DashboardController {
      */
     @PostMapping("/status")
     public Response<?> findIssuesByStatus(
+            Authentication authentication,
             @RequestParam(value = "status", required = false) String status
     ){
+        UserInformation user = userUtils.extractUserInformation(authentication);
+        Long officeId = user.getOfficeId();
+
         if (status == null){
             return Response.builder()
                     .status(HttpStatus.BAD_REQUEST)
@@ -107,6 +129,8 @@ public class DashboardController {
                     .build();
         }
 
+        issues = issues.stream().filter(i -> Objects.equals(i.getOffice().getId(), officeId)).toList();
+
         return Response.builder()
                 .status(HttpStatus.OK)
                 .message("All "+status+" issues found")
@@ -123,8 +147,12 @@ public class DashboardController {
      */
     @PostMapping("/current_month")
     public Response<?> findIssuesByYearMonth(
+            Authentication authentication,
             @RequestParam(value = "YearMonth", required = false) String YearMonth
     ){
+
+        UserInformation user = userUtils.extractUserInformation(authentication);
+        Long officeId = user.getOfficeId();
 
         List<Issue> issues;
 
@@ -141,6 +169,8 @@ public class DashboardController {
                     .data(null)
                     .build();
         }
+
+        issues = issues.stream().filter(i -> Objects.equals(i.getOffice().getId(), officeId)).toList();
 
         return Response.builder()
                 .status(HttpStatus.OK)
@@ -160,9 +190,13 @@ public class DashboardController {
      */
     @PostMapping("/between_month")
     public Response<?> findIssuesBetweenYearMonths(
+            Authentication authentication,
             @RequestParam(value = "startYearMonth", required = false) String startYearMonth,
             @RequestParam(value = "endYearMonth",required = false) String endYearMonth
     ){
+
+        UserInformation user = userUtils.extractUserInformation(authentication);
+        Long officeId = user.getOfficeId();
 
         if (startYearMonth == null || endYearMonth == null){
             return Response.builder()
@@ -182,6 +216,8 @@ public class DashboardController {
                     .build();
         }
 
+        issues = issues.stream().filter(i -> Objects.equals(i.getOffice().getId(), officeId)).toList();
+
         return Response.builder()
                 .status(HttpStatus.OK)
                 .message("All issues found between "+startYearMonth+" and "+endYearMonth)
@@ -197,8 +233,12 @@ public class DashboardController {
      */
     @PostMapping("/tracking")
     public Response<?> findIssuesByTrackingNumber(
+            Authentication authentication,
             @RequestParam(value = "trackingNumber", required = false) String trackingNumber
     ){
+
+        UserInformation user = userUtils.extractUserInformation(authentication);
+        Long officeId = user.getOfficeId();
 
         if (trackingNumber == null){
             return Response.builder()
@@ -209,6 +249,9 @@ public class DashboardController {
         }
 
         Issue issue = dashboardService.findIssuesByTrackingNumber(trackingNumber);
+        if (issue.getOffice().getId().equals(officeId)){
+            issue = null;
+        }
 
         if (issue == null){
             return Response.builder()
@@ -218,10 +261,7 @@ public class DashboardController {
                     .build();
         }
 
-        Map<Long,String> filenames = new HashMap<>();
-        for (Attachment a : issue.getAttachments()){
-            filenames.put(a.getId(),a.getFileName());
-        }
+        Map<Long,String> filenames = getAttachmentFilenames(issue);
         IssueDTO issueDTO = IssueUtils.convertToIssueDTO(issue);
         issueDTO.setAttachments(filenames);
 
@@ -241,8 +281,12 @@ public class DashboardController {
      */
     @PostMapping("/find")
     public Response<?> findIssuesByTitleOrDescription(
+            Authentication authentication,
             @RequestParam(value = "input", required = false) String input
     ){
+
+        UserInformation user = userUtils.extractUserInformation(authentication);
+        Long officeId = user.getOfficeId();
 
         if (input == null){
             return Response.builder()
@@ -262,6 +306,8 @@ public class DashboardController {
                     .build();
         }
 
+        issues = issues.stream().filter(i -> Objects.equals(i.getOffice().getId(), officeId)).toList();
+
         List<IssueDTO> issueDTOList = withAttachments(issues);
 
         return Response.builder()
@@ -275,11 +321,7 @@ public class DashboardController {
         return issues.stream().map(
                 issue -> {
 
-                    Map<Long,String> filenames = new HashMap<>();
-
-                    for (Attachment a : issue.getAttachments()){
-                        filenames.put(a.getId(),a.getFileName());
-                    }
+                    Map<Long,String> filenames = getAttachmentFilenames(issue);
 
                     IssueDTO convertedIssue = IssueUtils.convertToIssueDTO(issue);
                     convertedIssue.setAttachments(filenames);
@@ -287,5 +329,13 @@ public class DashboardController {
                     return convertedIssue;
                 }
         ).toList();
+    }
+
+    private Map<Long, String> getAttachmentFilenames(Issue issue){
+        Map<Long,String> filenames = new HashMap<>();
+        for (Attachment a : issue.getAttachments()){
+            filenames.put(a.getId(),a.getFileName());
+        }
+        return filenames;
     }
 }

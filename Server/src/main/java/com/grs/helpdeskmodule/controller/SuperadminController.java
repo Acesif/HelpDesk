@@ -52,7 +52,7 @@ public class SuperadminController {
         existingUser.setName(userDTO.getName() == null ? existingUser.getName() : userDTO.getName());
         existingUser.setEmail(userDTO.getEmail() == null ? existingUser.getEmail() : userDTO.getEmail());
         existingUser.setPhoneNumber(userDTO.getPhoneNumber() == null ? existingUser.getPhoneNumber() : userDTO.getPhoneNumber());
-        existingUser.setOfficeId(userDTO.getOfficeId() == null ? existingUser.getOfficeId() : userDTO.getOfficeId());
+        existingUser.setOffice(existingUser.getOffice());
         existingUser.setDesignation(userDTO.getDesignation() == null ? existingUser.getDesignation() : userDTO.getDesignation());
         existingUser.setPassword(userDTO.getPassword() == null ? existingUser.getPassword() : passwordEncoder.encode(userDTO.getPassword()));
 
@@ -62,7 +62,7 @@ public class SuperadminController {
                 .name(updatedUser.getName())
                 .email(updatedUser.getEmail())
                 .phoneNumber(updatedUser.getPhoneNumber())
-                .officeId(updatedUser.getOfficeId())
+                .officeId(updatedUser.getOffice() != null ? updatedUser.getOffice().getId() : null)
                 .designation(updatedUser.getDesignation())
                 .password(updatedUser.getPassword())
                 .createdOn(updatedUser.getCreateDate())

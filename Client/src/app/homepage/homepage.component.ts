@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import {IntercepterService} from '../services/intercepter.service';
 
 @Component({
   selector: 'app-homepage',
@@ -6,6 +7,13 @@ import { Component } from '@angular/core';
   styleUrl: './homepage.component.scss'
 })
 export class HomepageComponent {
+
+  constructor(private intercepter: IntercepterService) {}
+
+  ngOnInit(): void {
+    this.intercepter.validateRoutePermission();
+  }
+
   view: [number, number] = [700, 400];
 
   pieData: {name: string, value: number}[] = [

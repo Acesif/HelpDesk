@@ -1,5 +1,6 @@
 package com.grs.helpdeskmodule.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.grs.helpdeskmodule.base.BaseEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -15,23 +16,12 @@ import lombok.experimental.SuperBuilder;
 @Setter
 @RequiredArgsConstructor
 @AllArgsConstructor
-public class Office {
+public class Office extends BaseEntity {
 
-    @Id
-    private Long id;
-    private Long geo_district_id;
-    private Long geo_division_id;
     @Column(columnDefinition = "VARCHAR(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci")
     private String office_name_eng;
-    @Column(columnDefinition = "VARCHAR(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci")
-    private String office_name_bng;
     private Long office_layer_id;
     private Long office_ministry_id;
     private Long office_origin_id;
     private Long parent_office_id;
-    @Column(columnDefinition = "VARCHAR(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci")
-    private String status;
-    private Long geo_upazila_id;
-    @Column(columnDefinition = "VARCHAR(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci")
-    private String office_web;
 }

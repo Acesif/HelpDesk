@@ -25,6 +25,7 @@ public class IssueDTO {
     private IssueStatus status;
     private IssueCategory category;
     private Long postedBy;
+    private Long officeId;
     @JsonFormat(pattern = "dd-MM-yyyy HH:mm:ss", timezone = "Asia/Dhaka")
     private Date postedOn;
     @JsonFormat(pattern = "dd-MM-yyyy HH:mm:ss", timezone = "Asia/Dhaka")
