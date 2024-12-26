@@ -69,7 +69,7 @@ const routes: Route[] = [
     ReactiveFormsModule,
     RouterModule.forRoot(routes)
   ],
-  providers: [IssueService, provideHttpClient()],
+  providers: [provideHttpClient()],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
