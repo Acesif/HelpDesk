@@ -33,6 +33,67 @@
         </div>
       </div>
     </div>
+
+    <!-- Replies Section -->
+    <div class="card mt-4">
+      <div class="card-header bg-secondary text-white">
+        <h5>Replies</h5>
+      </div>
+      <div class="card-body">
+        <div *ngIf="replies.length > 0; else noReplies">
+          <div class="reply" *ngFor="let reply of replies">
+            <div class="border-bottom pb-2 mb-2">
+              <p><strong>{{ reply.postedBy }}</strong> - {{ reply.postedOn | date: 'short' }}</p>
+              <p>{{ reply.message }}</p>
+            </div>
+          </div>
+        </div>
+        <ng-template #noReplies>
+          <p>No replies yet. Be the first to respond!</p>
+        </ng-template>
+      </div>
+    </div>
+
+    <!-- Reply Form -->
+    <div *ngIf="isAdminAndisNotSelf()" class="card mt-3">
+      <div class="card-header bg-light">
+        <h5>Post a Reply</h5>
+      </div>
+      <div class="card-body">
+        <form (ngSubmit)="postReply()">
+          <div class="form-group">
+        <textarea
+          [(ngModel)]="newReply.message"
+          name="message"
+          class="form-control"
+          rows="3"
+          placeholder="Write your reply..."
+          required
+        ></textarea>
+          </div>
+          <div class="d-flex justify-content-end align-items-end">
+            <!-- Dropdown -->
+            <div class="mx-3">
+              <select
+                [(ngModel)]="newReply.status"
+                name="status"
+                class="form-select"
+                [ngClass]="getStatusColor()"
+                required>
+                <option value="" disabled>Select Status</option>
+                <option value="OPENED">OPENED</option>
+                <option value="RESOLVED">RESOLVED</option>
+                <option value="REJECTED">REJECTED</option>
+                <option value="PENDING">PENDING</option>
+              </select>
+            </div>
+            <!-- Submit Button -->
+            <button type="submit" class="btn btn-primary mt-2">Submit Reply</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
   </div>
 
   <ng-template #notFound>
@@ -41,4 +102,3 @@
     </div>
   </ng-template>
 </div>
-

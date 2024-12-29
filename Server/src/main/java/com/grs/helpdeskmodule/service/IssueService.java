@@ -25,6 +25,11 @@ public class IssueService extends BaseService<Issue> {
     public List<Issue> findIssueByUser(Long id){
         return issueRepository.findIssuesByUser(id);
     }
+
+    public List<Issue> findIssueByOffice(Long id){
+        return issueRepository.findIssuesByOffice(id);
+    }
+
     public Issue findByTrackingNumber(String trackingNumber){
         return issueRepository.findIssuesByTrackingNumber(trackingNumber);
     }

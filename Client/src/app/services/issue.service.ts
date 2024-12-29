@@ -10,7 +10,6 @@ import {map, Observable} from 'rxjs';
 })
 export class IssueService {
   statusChanged: EventEmitter<boolean> = new EventEmitter();
-  issueChanged = new EventEmitter<Issue[]>();
 
   private issues: Issue[] = [];
 
@@ -21,7 +20,6 @@ export class IssueService {
     private authService: AuthService,
   ) {}
 
-  // createIssue(issue: Issue): Observable<any> {
   createIssue(issue: Issue): any {
     const issueData = new FormData();
 
@@ -70,7 +68,11 @@ export class IssueService {
     );
   }
 
-  getIssueDetails(issueId: string): any {
-    return this.http.get<any>(`${this.apiUrl}/${issueId}`);
+  getIssueDetails(trackingNumber: string): any {
+    return this.http.get<any>(`${this.apiUrl}/${trackingNumber}`);
+  }
+
+  getIssueReplies(issueId: string): any {
+
   }
 }

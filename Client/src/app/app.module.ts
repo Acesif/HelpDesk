@@ -19,6 +19,7 @@ import { ProfileComponent } from './profile/profile.component';
 import { RegistrationComponent } from './registration/registration.component';
 import { provideHttpClient } from '@angular/common/http';
 import { LoginComponent } from './login/login.component';
+import { AdminInboxComponent } from './admin-inbox/admin-inbox.component';
 
 const routes: Route[] = [
   { path: '', component: RegistrationComponent },
@@ -31,7 +32,7 @@ const routes: Route[] = [
   { path: 'admin',
     children: [
       { path: 'dashboard', component: HomepageComponent },
-      { path: 'inbox', component: IssuesComponent },
+      { path: 'inbox', component: AdminInboxComponent },
     ]
   },
   { path: 'profile', component: ProfileComponent },
@@ -59,6 +60,7 @@ const routes: Route[] = [
     ProfileComponent,
     RegistrationComponent,
     LoginComponent,
+    AdminInboxComponent,
   ],
   imports: [
     BrowserModule,

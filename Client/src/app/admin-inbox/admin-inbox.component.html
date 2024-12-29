@@ -1,0 +1,51 @@
+<div class="mt-3 mb-5 d-flex justify-content-between">
+  <h2>Pending Issues</h2>
+</div>
+
+<div class="issues-container" *ngIf="issues.length > 0; else noIssues">
+  <table class="table table-striped">
+    <thead>
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">Tracking Number</th>
+      <th scope="col">Subject</th>
+      <th scope="col">Status</th>
+      <th scope="col">Issue Category</th>
+      <!--      <th scope="col">Submission Date</th>-->
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let issue of issues; let i = index" (click)="openInboxIssue(issue.tracking_number)" style="cursor: pointer">
+      <th scope="row">{{ i + 1 }}</th>
+      <td>{{ issue.tracking_number }}</td>
+      <td>{{ issue.title.length > 10 ? issue.title.slice(0,10)+" ...": issue.title }}</td>
+      <td>{{ issue.status }}</td>
+      <td>{{ issue.issueCategory }}</td>
+    </tr>
+    </tbody>
+  </table>
+</div>
+
+<ng-template #noIssues>
+  <table class="table">
+    <thead>
+    <!--    <tr>-->
+    <!--      <th scope="col">#</th>-->
+    <!--      <th scope="col">Tracking Number</th>-->
+    <!--      <th scope="col">Subject</th>-->
+    <!--      <th scope="col">Status</th>-->
+    <!--      <th scope="col">Office</th>-->
+    <!--      <th scope="col">Submission Date</th>-->
+    <!--    </tr>-->
+    </thead>
+    <tbody>
+    <tr>
+      <td colspan="6" class="text-center align-middle p-5">
+        <img src="assets/no_issues.png" alt="no issues found" class="img-40px">
+        <h4 class="mt-2">No Issues Pending</h4>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+</ng-template>
+

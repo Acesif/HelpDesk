@@ -16,7 +16,7 @@ export class IssuesComponent {
   constructor(
     private issueService: IssueService,
     private router: Router,
-    private intercepter: IntercepterService
+    private intercepter: IntercepterService,
   ) {
     this.issueService.statusChanged.subscribe(statusChanged => {
       this.status = statusChanged;

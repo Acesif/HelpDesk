@@ -313,4 +313,48 @@ public class IssueController {
                 .data(issueDTOList)
                 .build();
     }
+
+    @GetMapping("/inbox")
+    public Response<?> getIssuesByOffice(){
+
+        String loggedInUserEmail = SecurityContextHolder.getContext().getAuthentication().getName();
+        User postedByUser = userService.findUserByEmail(loggedInUserEmail);
+        Long officeId = postedByUser.getOffice().getId();
+
+        List<Issue> issueList = issueService.findIssueByOffice(officeId);
+
+        if (issueList.isEmpty()){
+            return Response.builder()
+                    .status(HttpStatus.NO_CONTENT)
+                    .message("No issues found for this office")
+                    .data(null)
+                    .build();
+        }
+
+        List<Issue> sortedIssueDTOList = issueList.stream().sorted(Comparator.comparing(BaseEntity::getUpdateDate)).toList();
+
+        List<IssueDTO> issueDTOList = sortedIssueDTOList.stream().map(IssueUtils::convertToIssueDTO).toList();
+
+        Map<Long, Issue> issueMap = issueList.stream()
+                .collect(Collectors.toMap(Issue::getId, issue -> issue));
+
+        for (IssueDTO issueDTO : issueDTOList) {
+            Issue correspondingIssue = issueMap.get(issueDTO.getId());
+            if (correspondingIssue != null) {
+                Map<Long, String> filenames = new HashMap<>();
+                if (correspondingIssue.getAttachments() != null && !correspondingIssue.getAttachments().isEmpty()){
+                    for (Attachment attachment : correspondingIssue.getAttachments()) {
+                        filenames.put(attachment.getId(), attachment.getFileName());
+                    }
+                }
+                issueDTO.setAttachments(filenames);
+            }
+        }
+
+        return Response.builder()
+                .status(HttpStatus.OK)
+                .message("Issues for office id "+postedByUser.getOffice().getId()+" has been retrieved")
+                .data(issueDTOList)
+                .build();
+    }
 }

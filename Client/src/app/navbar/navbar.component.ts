@@ -14,10 +14,6 @@ export class NavbarComponent {
     private auth: AuthService,
   ) {}
 
-  getUserId() {
-    return 0;
-  }
-
   isAdmin(): boolean {
     const designation = this.auth.getUserDesignation();
     return designation === 'GRO' || designation === 'VENDOR';

@@ -24,7 +24,7 @@
           <img src="assets/profile.jpg" alt="user profile" id="profile-icon" class="img-40px rounded-circle">
         </button>
         <ul class="dropdown-menu">
-          <li><a class="dropdown-item" [routerLink]='["profile", getUserId()]'>Profile</a></li>
+          <li><a class="dropdown-item" [routerLink]='["profile"]'>Profile</a></li>
           <li><a class="dropdown-item" [routerLink]='["issues","list"]'>My Issues</a></li>
           <li><a class="dropdown-item" [routerLink]='["issues","new"]'>New Issue</a></li>
           <li><a class="dropdown-item" (click)="logout()">Log out</a></li>
