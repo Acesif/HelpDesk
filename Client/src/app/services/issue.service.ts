@@ -1,7 +1,8 @@
 import {Issue} from '../../model/Issue.model';
 import {EventEmitter, Injectable} from '@angular/core';
-import {HttpClient} from '@angular/common/http';
-import {Observable} from 'rxjs';
+import {HttpClient, HttpHeaders} from '@angular/common/http';
+import {AuthService} from './auth.service';
+import {map, Observable} from 'rxjs';
 
 
 @Injectable({
@@ -11,52 +12,23 @@ export class IssueService {
   statusChanged: EventEmitter<boolean> = new EventEmitter();
   issueChanged = new EventEmitter<Issue[]>();
 
-  private issues: Issue[] = [
-    new Issue(
-      "Network Outage",
-      "There is a network outage in office 1 affecting all employees.",
-      "office_1",
-      "Network",
-    ),
-    new Issue(
-      "System Downtime",
-      "The payroll system was down during the weekend.",
-      "office_2",
-      "System",
-    ),
-    new Issue(
-      "Broken Printer",
-      "The printer in the third-floor office is broken and needs replacement.",
-      "office_3",
-      "Equipment",
-    ),
-    new Issue(
-      "Power Outage",
-      "A sudden power outage caused work delays in office 4.",
-      "office_4",
-      "Power",
-    ),
-    new Issue(
-      "Security Breach",
-      "Unauthorized access to the server detected.",
-      "office_5",
-      "Security",
-    ),
-  ];
+  private issues: Issue[] = [];
 
-  status: boolean = false;
+  private apiUrl = 'http://localhost:7890/api/issue';
 
-  private apiUrl = 'http://localhost:7890/api/issue'; // Replace with your backend API URL
+  constructor(
+    private http: HttpClient,
+    private authService: AuthService,
+  ) {}
 
-  constructor(private http: HttpClient) {}
-
-  createIssue(issue: Issue): Observable<any> {
+  // createIssue(issue: Issue): Observable<any> {
+  createIssue(issue: Issue): any {
     const issueData = new FormData();
 
     issueData.append('title', issue.title);
     issueData.append('description', issue.description);
     issueData.append('category', issue.issueCategory);
-    issueData.append('officeId', issue.office);
+    issueData.append('officeId', issue.office.toString());
 
     if (issue.attachments && issue.attachments.length > 0) {
       issue.attachments.forEach((file) => {
@@ -64,9 +36,41 @@ export class IssueService {
       });
     }
 
-    return this.http.post(`${this.apiUrl}/new`, issueData);
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${this.authService.getToken()}`,
+    });
+
+    return this.http.post(`${this.apiUrl}/new`, issueData, {headers}).subscribe((res) => console.log(res));
   }
-  getIssues() {
-    return this.issues.slice();
+
+  getIssues(): Observable<Issue[]> {
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${this.authService.getToken()}`,
+    });
+
+    return this.http.get<any>(`${this.apiUrl}/user`, { headers }).pipe(
+      map((res) => {
+        if (res.status === 'OK') {
+          return res.data.map(
+            (issue: any) =>
+              new Issue(
+                issue.trackingNumber,
+                issue.title,
+                issue.description,
+                issue.category,
+                issue.status,
+                issue.officeId
+              )
+          );
+        } else {
+          console.error('Failed to retrieve issues:', res.message);
+          return [];
+        }
+      })
+    );
+  }
+
+  getIssueDetails(issueId: string): any {
+    return this.http.get<any>(`${this.apiUrl}/${issueId}`);
   }
 }

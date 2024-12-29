@@ -34,12 +34,12 @@ const routes: Route[] = [
       { path: 'inbox', component: IssuesComponent },
     ]
   },
-  { path: 'profile/:id', component: ProfileComponent },
+  { path: 'profile', component: ProfileComponent },
   { path: 'issues',
     children: [
       { path: 'new', component: IssueFormComponent },
       { path: 'list', component: IssuesComponent },
-      { path: ':id', component: IssueDetailsComponent },
+      { path: 'details', component: IssueDetailsComponent },
     ]
   },
 ];
@@ -69,7 +69,7 @@ const routes: Route[] = [
     ReactiveFormsModule,
     RouterModule.forRoot(routes)
   ],
-  providers: [provideHttpClient()],
+  providers: [IssueService, provideHttpClient()],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

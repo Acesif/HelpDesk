@@ -13,18 +13,19 @@
       <th scope="col">Tracking Number</th>
       <th scope="col">Subject</th>
       <th scope="col">Status</th>
+      <th scope="col">Issue Category</th>
       <th scope="col">Office</th>
-      <th scope="col">Submission Date</th>
+<!--      <th scope="col">Submission Date</th>-->
     </tr>
     </thead>
     <tbody>
     <tr *ngFor="let issue of issues; let i = index" (click)="openIssueDetails(issue.tracking_number)" style="cursor: pointer">
       <th scope="row">{{ i + 1 }}</th>
       <td>{{ issue.tracking_number }}</td>
-      <td>{{ issue.subject.length > 10 ? issue.subject.slice(0,10)+"...": issue.subject }}</td>
+      <td>{{ issue.title.length > 10 ? issue.title.slice(0,10)+" ...": issue.title }}</td>
       <td>{{ issue.status }}</td>
-      <td>{{ issue.office.length > 10 ? issue.office.slice(0,10)+"...": issue.office }}</td>
-      <td>{{ issue.date }}</td>
+      <td>{{ issue.issueCategory }}</td>
+      <td>{{ issue.office > 10 ? issue.office: issue.office }}</td>
     </tr>
     </tbody>
   </table>

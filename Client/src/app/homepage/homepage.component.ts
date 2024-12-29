@@ -18,9 +18,9 @@ export class HomepageComponent {
 
   pieData: {name: string, value: number}[] = [
     { name: 'OPENED', value: 1 },
-    { name: 'RESOLVED', value: 20 },
-    { name: 'REJECTED', value: 30 },
-    { name: 'PENDING', value: 10 },
+    { name: 'RESOLVED', value: 1 },
+    { name: 'REJECTED', value: 1 },
+    { name: 'PENDING', value: 1 },
   ];
 
   gradient: boolean = true;

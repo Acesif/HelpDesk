@@ -18,14 +18,23 @@ export class IntercepterService {
       let designation:string = this.authService.getUserDesignation();
       if (designation === 'GRO' || designation === 'VENDOR') {
         const currentRoute = this.router.url;
-        if (currentRoute.includes("admin") || currentRoute.includes("issues")) {
+        if
+        (
+          currentRoute.includes("admin") ||
+          currentRoute.includes("issues") ||
+          currentRoute.includes("profile")
+        ) {
           this.router.navigate([currentRoute]);
         } else {
           this.router.navigate(["admin","dashboard"]);
         }
       } else {
         const currentRoute = this.router.url;
-        if (currentRoute.includes("issues") || currentRoute.includes("profile")) {
+        if
+        (
+          currentRoute.includes("issues") ||
+          currentRoute.includes("profile")
+        ) {
           this.router.navigate([currentRoute]);
         } else {
           this.router.navigate(["issues","list"]);

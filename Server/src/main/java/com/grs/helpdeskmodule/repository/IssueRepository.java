@@ -2,7 +2,6 @@ package com.grs.helpdeskmodule.repository;
 
 import com.grs.helpdeskmodule.base.BaseEntityRepository;
 import com.grs.helpdeskmodule.entity.Issue;
-import com.grs.helpdeskmodule.entity.IssueStatus;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
@@ -19,8 +18,8 @@ public interface IssueRepository extends BaseEntityRepository<Issue> {
     @Query(value = "SELECT * FROM helpdesk.issue WHERE DATE_FORMAT(created_at, '%Y-%m') BETWEEN DATE_FORMAT(:startYearMonth, '%Y-%m') AND DATE_FORMAT(:endYearMonth, '%Y-%m')", nativeQuery = true)
     List<Issue> findIssuesBetweenYearMonths(@Param("startYearMonth") String startYearMonth, @Param("endYearMonth") String endYearMonth);
 
-    @Query(value = "SELECT * FROM helpdesk.issue WHERE tracking_number = :trx", nativeQuery = true)
-    Issue findIssuesByTrackingNumber(@Param("trx") String trackingNumber);
+    @Query(value = "SELECT * FROM helpdesk.issue WHERE tracking_number = :tracking_number", nativeQuery = true)
+    Issue findIssuesByTrackingNumber(String tracking_number);
 
     @Query(value = "SELECT * FROM helpdesk.issue WHERE title LIKE CONCAT('%', :input, '%') OR description LIKE CONCAT('%', :input, '%')", nativeQuery = true)
     List<Issue> findIssuesByTitleOrDescription(@Param("input") String input);

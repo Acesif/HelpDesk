@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import {Component} from '@angular/core';
 import {Issue} from '../../model/Issue.model';
 import {ActivatedRoute} from '@angular/router';
 import {IssueService} from '../services/issue.service';
@@ -11,25 +11,32 @@ import {IntercepterService} from '../services/intercepter.service';
 })
 export class IssueDetailsComponent {
   issue: Issue;
+  issueId: any;
 
   constructor(
-    private route: ActivatedRoute,
     private issueService: IssueService,
-    private intercepter: IntercepterService
+    private intercepter: IntercepterService,
+    private route: ActivatedRoute
   ) {}
+  ngOnInit(): void {
+    this.route.queryParamMap.subscribe((params) => {
+      this.issueId = params.get('id');
+      if (this.issueId) {
+        this.fetchIssueDetails(this.issueId);
+      }
+    });
+  }
 
-  ngOnInit(){
-    this.intercepter.validateRoutePermission();
-    // this.issue = this.issueService.getIssues().find(issue => this.route.snapshot.params['id'] === issue.tracking_number);
-    this.route.params.subscribe(params => {
-      // this.issue = this.issueService.getIssues().find(issue => issue.tracking_number === params['id']);
-    })
-    // this.issue = {
-    //   tracking_number: this.route.snapshot.params['id'],
-    //   status: "",
-    //   subject: "",
-    //   office: "",
-    //   date: ""
-    // }
+  fetchIssueDetails(issueId: string): void {
+    this.issueService.getIssueDetails(issueId).subscribe((issue: any) => {
+      this.issue = new Issue(
+        issue.data.trackingNumber,
+        issue.data.title,
+        issue.data.description,
+        issue.data.category,
+        issue.data.status,
+        issue.data.officeId);
+      }
+    );
   }
 }

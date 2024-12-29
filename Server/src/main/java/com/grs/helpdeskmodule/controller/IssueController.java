@@ -48,11 +48,12 @@ public class IssueController {
     @Transactional
     @PostMapping(value = "/new", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public Response<?> createIssue(
-            @RequestPart("title") String title,
-            @RequestPart("description") String description,
-            @RequestPart("category") String category,
-            @RequestPart("officeId") String officeId,
-            @RequestPart(value = "attachments", required = false) List<MultipartFile> attachments) {
+            @RequestParam("title") String title,
+            @RequestParam("description") String description,
+            @RequestParam("category") String category,
+            @RequestParam("officeId") Long officeId,
+            @RequestParam(value = "attachments", required = false) List<MultipartFile> attachments)
+    {
 
         IssueDTO issueDto = IssueDTO.builder()
                 .title(title)
@@ -69,7 +70,7 @@ public class IssueController {
                 .title(issueDto.getTitle())
                 .description(issueDto.getDescription())
                 .status(issueDto.getStatus())
-                .office(officeService.getOffice(Long.parseLong(officeId)))
+                .office(officeService.getOffice(officeId))
                 .trackingNumber(AttachmentUtils.generateTrackingNumber())
                 .issueCategory(IssueCategory.valueOf(category.toUpperCase()))
                 .postedBy(postedByUser)
@@ -215,9 +216,9 @@ public class IssueController {
      * @return A response containing the issue details or an error message if not found.
      */
     @GetMapping("/{id}")
-    public Response<?> getIssueDetails(@PathVariable("id") Long id){
+    public Response<?> getIssueDetails(@PathVariable("id") String id){
 
-        Issue findIssue = issueService.findById(id);
+        Issue findIssue = issueService.findByTrackingNumber(id);
 
         if (findIssue == null){
             return Response.builder()
@@ -268,12 +269,15 @@ public class IssueController {
      * Retrieves a list of issues created by a specific user, sorted by update date.
      * Handles HTTP GET requests to the "/user/{id}" endpoint.
      *
-     * @param id The ID of the user whose issues are to be retrieved.
      * @return A list of issues for the specified user, or a message indicating no issues found.
      */
-    @GetMapping("/user/{id}")
-    public Response<?> getIssuesByUser(@PathVariable("id") Long id){
-        List<Issue> issueList = issueService.findIssueByUser(id);
+    @GetMapping("/user")
+    public Response<?> getIssuesByUser(){
+
+        String loggedInUserEmail = SecurityContextHolder.getContext().getAuthentication().getName();
+        User postedByUser = userService.findUserByEmail(loggedInUserEmail);
+
+        List<Issue> issueList = issueService.findIssueByUser(postedByUser.getId());
 
         if (issueList.isEmpty()){
             return Response.builder()
@@ -305,7 +309,7 @@ public class IssueController {
 
         return Response.builder()
                 .status(HttpStatus.OK)
-                .message("Issues for user id "+id+" has been retrieved")
+                .message("Issues for user id "+postedByUser.getId()+" has been retrieved")
                 .data(issueDTOList)
                 .build();
     }

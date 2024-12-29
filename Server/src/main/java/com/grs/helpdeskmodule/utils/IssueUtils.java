@@ -11,6 +11,7 @@ public class IssueUtils {
                 .id(issue.getId())
                 .title(issue.getTitle())
                 .status(issue.getStatus())
+                .officeId(issue.getOffice().getId())
                 .postedOn(issue.getCreateDate())
                 .updatedOn(issue.getUpdateDate())
                 .postedBy(issue.getPostedBy().getId())

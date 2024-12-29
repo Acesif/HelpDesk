@@ -1,8 +1,9 @@
 import {Component} from '@angular/core';
 import {Issue} from '../../model/Issue.model';
 import {IssueService} from '../services/issue.service';
-import {Router} from '@angular/router';
+import {NavigationEnd, Router} from '@angular/router';
 import {IntercepterService} from '../services/intercepter.service';
+import {filter} from 'rxjs';
 
 @Component({
   selector: 'app-issues',
@@ -30,13 +31,27 @@ export class IssuesComponent {
 
   ngOnInit() {
     this.intercepter.validateRoutePermission();
-    this.issues = this.issueService.getIssues();
-    this.issueService.issueChanged.subscribe(issueList => {
-      this.issues = issueList;
-    })
+    this.router.events
+      .pipe(filter((event) => event instanceof NavigationEnd && event.url === '/issues/list'))
+      .subscribe(() => {
+        this.loadIssues();
+      });
+
+    this.loadIssues();
   }
 
-  openIssueDetails(i: string) {
-    this.router.navigate(['issues', i]);
+  loadIssues(): void {
+    this.issueService.getIssues().subscribe(
+      (issues: Issue[]) => {
+        this.issues = issues;
+      },
+      (error) => {
+        console.error('Error loading issues:', error);
+      }
+    );
+  }
+
+  openIssueDetails(id: string) {
+    this.router.navigate(['issues','details'], { queryParams: { id: id } });
   }
 }

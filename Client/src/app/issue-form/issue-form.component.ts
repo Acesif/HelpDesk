@@ -23,7 +23,7 @@ export class IssueFormComponent {
   title: string = '';
   description: string = '';
   category: string = '';
-  officeId: string = '';
+  officeId: number = null;
   attachments: File[] = [];
 
   onFileSelected(event: Event): void {
@@ -33,12 +33,12 @@ export class IssueFormComponent {
     }
   }
 
-  statuses: string[] = [
-    'OPEN',
-    'RESOLVED',
-    'REJECTED',
-    'ONGOING',
-    'CLOSED'
+  categories: string[] = [
+    'REPORT',
+    'SUBMISSION',
+    'LOGIN',
+    'ACTION',
+    'OTHERS'
   ];
 
   ngOnInit(): void {
@@ -74,15 +74,18 @@ export class IssueFormComponent {
       // }
 
       let issue: Issue = new Issue(
+        "123456789",
         formData.value.title,
         formData.value.description,
         formData.value.category,
+        formData.value.status,
         formData.value.officeId,
         this.attachments
       );
 
       this.issueService.createIssue(issue);
       this.resetFormData();
+      this.router.navigate(['/issues','list']);
     // }
   }
 
@@ -90,7 +93,7 @@ export class IssueFormComponent {
     this.title = '';
     this.description = '';
     this.category = '';
-    this.officeId = '';
+    this.officeId = null;
     this.attachments = [];
 
     const fileInput = document.getElementById('attachments') as HTMLInputElement;
