@@ -7,7 +7,7 @@ select option:hover {
   background-color: var(--hover-bg-color, lightgray); /* Default hover background */
 }
 
-select option[value="OPENED"]:hover {
+select option[value="OPEN"]:hover {
   background-color: #0d6efd; /* Blue background */
   color: white; /* White text for better contrast */
 }
@@ -22,7 +22,7 @@ select option[value="REJECTED"]:hover {
   color: white;
 }
 
-select option[value="PENDING"]:hover {
+select option[value="ONGOING"]:hover {
   background-color: #ffc107; /* Yellow background */
   color: black; /* Dark text for contrast */
 }

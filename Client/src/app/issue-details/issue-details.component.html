@@ -69,7 +69,7 @@
     </div>
 
     <!-- Reply Form -->
-    <div *ngIf="isAdminAndisNotSelf()" class="card mt-3">
+    <div *ngIf="isAdminAndisNotSelf()" class="card mt-3 mb-5">
       <div class="card-header bg-light">
         <h5>Post a Reply</h5>
       </div>
@@ -95,10 +95,10 @@
                 [ngClass]="getStatusColor()"
                 required>
                 <option value="" disabled>Select Status</option>
-                <option value="OPENED">OPENED</option>
+                <option value="OPEN">OPENED</option>
                 <option value="RESOLVED">RESOLVED</option>
                 <option value="REJECTED">REJECTED</option>
-                <option value="PENDING">PENDING</option>
+                <option value="ONGOING">ONGOING</option>
               </select>
             </div>
             <!-- Submit Button -->

@@ -78,4 +78,11 @@ export class IssueService {
   getIssueReplies(issueId: number): any {
     return this.http.get<any>(`${this.issueReplyApiUrl}/${issueId}`);
   }
+
+  postIssueReply(issueId: number, body: { comment: string; updatedStatus: string }): Observable<any>{
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${this.authService.getToken()}`,
+    });
+    return this.http.post(`${this.issueReplyApiUrl}/${issueId}`,body,{headers});
+  }
 }

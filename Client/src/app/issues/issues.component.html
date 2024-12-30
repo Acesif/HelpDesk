@@ -1,6 +1,6 @@
 <div class="mt-3 mb-5 d-flex justify-content-between">
   <h2>My Issues</h2>
-  <a [routerLink]='["/issues","new"]' class="btn btn-success text-decoration-none ps-4 pe-4 py-2">
+  <a [routerLink]='["/issues","new"]' class="btn btn-primary text-decoration-none ps-4 pe-4 py-2">
     New Issue
   </a>
 </div>
@@ -22,7 +22,7 @@
     <tr *ngFor="let issue of issues; let i = index" (click)="openIssueDetails(issue.id)" style="cursor: pointer">
       <th scope="row">{{ i + 1 }}</th>
       <td>{{ issue.trackingNumber }}</td>
-      <td>{{ issue.title.length > 10 ? issue.title.slice(0,10)+" ...": issue.title }}</td>
+      <td>{{ issue.title.length > 20 ? issue.title.slice(0,20)+" ...": issue.title }}</td>
       <td>{{ issue.status }}</td>
       <td>{{ issue.category }}</td>
       <td>{{ issue.officeId > 10 ? issue.officeId: issue.officeId }}</td>

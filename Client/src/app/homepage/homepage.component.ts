@@ -20,7 +20,7 @@ export class HomepageComponent {
     { name: 'OPENED', value: 1 },
     { name: 'RESOLVED', value: 1 },
     { name: 'REJECTED', value: 1 },
-    { name: 'PENDING', value: 1 },
+    { name: 'ONGOING', value: 1 },
   ];
 
   gradient: boolean = true;

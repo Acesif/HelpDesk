@@ -14,8 +14,6 @@ import {IntercepterService} from '../services/intercepter.service';
 export class AdminInboxComponent {
 
   issues: Issue[] = [];
-  replies: Array<any> = [];
-  newReply = { message: '', postedBy: 'You', postedOn: new Date(), status: '' };
 
   constructor(
     private adminService: AdminService,
@@ -43,35 +41,6 @@ export class AdminInboxComponent {
         console.error('Error loading issues:', error);
       }
     );
-  }
-
-
-  isAdminAndisNotSelf(): boolean {
-    const designation = this.auth.getUserDesignation();
-    return designation === 'GRO' || designation === 'VENDOR';
-  }
-
-  postReply() {
-
-  }
-
-  fetchIssueReplies(){
-
-  }
-
-  getStatusColor(): string {
-    switch (this.newReply.status) {
-      case 'OPENED':
-        return 'bg-primary text-white';
-      case 'RESOLVED':
-        return 'bg-success text-white';
-      case 'REJECTED':
-        return 'bg-danger text-white';
-      case 'PENDING':
-        return 'bg-warning text-dark';
-      default:
-        return '';
-    }
   }
 
   openInboxIssue(id: number) {

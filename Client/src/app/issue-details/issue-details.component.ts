@@ -4,6 +4,7 @@ import {ActivatedRoute} from '@angular/router';
 import {IssueService} from '../services/issue.service';
 import {AuthService} from '../services/auth.service';
 import {ProfileService} from '../services/profile.service';
+import {log} from '@angular-devkit/build-angular/src/builders/ssr-dev-server';
 
 @Component({
   selector: 'app-issue-details',
@@ -14,7 +15,7 @@ export class IssueDetailsComponent {
   issue: Issue;
   issueId: any;
   replies: Array<any> = [];
-  newReply = { message: '', postedBy: 'You', postedOn: new Date(), status: '' };
+  newReply: { message: string, status: string } = { message: '', status: '' };
 
   constructor(
     private issueService: IssueService,
@@ -35,13 +36,13 @@ export class IssueDetailsComponent {
 
   getStatusLabelClass(status: string): string {
     switch (status) {
-      case 'OPENED':
+      case 'OPEN':
         return 'badge bg-primary text-white';
       case 'RESOLVED':
         return 'badge bg-success text-white';
       case 'REJECTED':
         return 'badge bg-danger text-white';
-      case 'PENDING':
+      case 'ONGOING':
         return 'badge bg-warning text-dark';
       default:
         return 'badge bg-secondary text-white';
@@ -97,19 +98,37 @@ export class IssueDetailsComponent {
     );
   }
 
-  postReply() {
+  postReply(): void {
+    let requestBody = {
+      comment: this.newReply.message,
+      updatedStatus: this.newReply.status,
+    };
 
+    this.issueService.postIssueReply(this.issueId, requestBody).subscribe(
+      (response: any) => {
+        this.fetchIssueDetails(this.issueId);
+        this.fetchIssueReplies(this.issueId);
+
+        this.newReply.message = '';
+        this.newReply.status = '';
+      },
+      (error: any) => {
+        console.error('Error posting reply:', error);
+      }
+    );
   }
+
+
 
   getStatusColor(): string {
     switch (this.newReply.status) {
-      case 'OPENED':
+      case 'OPEN':
         return 'bg-primary text-white';
       case 'RESOLVED':
         return 'bg-success text-white';
       case 'REJECTED':
         return 'bg-danger text-white';
-      case 'PENDING':
+      case 'ONGOING':
         return 'bg-warning text-dark';
       default:
         return '';
