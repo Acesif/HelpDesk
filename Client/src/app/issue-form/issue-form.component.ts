@@ -74,12 +74,16 @@ export class IssueFormComponent {
       // }
 
       let issue: Issue = new Issue(
-        "123456789",
+        null,
+        null,
         formData.value.title,
         formData.value.description,
         formData.value.category,
         formData.value.status,
         formData.value.officeId,
+        null,
+        null,
+        null,
         this.attachments
       );
 

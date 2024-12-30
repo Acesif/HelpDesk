@@ -1,27 +1,39 @@
 export class Issue {
-  public tracking_number: string;
+  public id: number;
+  public trackingNumber: string;
   public title: string;
   public description: string;
-  public issueCategory: string;
+  public category: string;
   public status: string;
-  public office: number;
+  public officeId: number;
+  public postedOn: string;
+  public postedBy: string;
+  public updatedOn: string;
   public attachments: File[];
 
   constructor(
-    tracking_number: string,
+    id: number,
+    trackingNumber: string,
     title: string,
     description: string,
-    issueCategory: string,
+    category: string,
     status: string,
-    office: number,
+    officeId: number,
+    postedOn: string,
+    postedBy: string,
+    updatedOn: string,
     attachments: File[] = [],
   ) {
-    this.tracking_number = tracking_number;
+    this.id = id;
+    this.trackingNumber = trackingNumber;
     this.title = title;
     this.description = description;
-    this.issueCategory = issueCategory;
+    this.category = category;
     this.status = status;
-    this.office = office;
+    this.officeId = officeId;
+    this.postedOn = postedOn;
+    this.postedBy = postedBy;
+    this.updatedOn = updatedOn;
     this.attachments = attachments;
   }
 }

@@ -21,7 +21,7 @@ export class ProfileComponent {
 
   ngOnInit() {
     this.intercepter.validateRoutePermission();
-    this.user = this.profileService.getUserById(this.router.snapshot.params['id']);
+    this.user = this.profileService.getUserInfo(this.router.snapshot.params['id']);
   }
 
 }

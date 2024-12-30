@@ -27,12 +27,16 @@ export class AdminService {
           return res.data.map(
             (issue: any) =>
               new Issue(
+                issue.id,
                 issue.trackingNumber,
                 issue.title,
                 issue.description,
                 issue.category,
                 issue.status,
-                issue.officeId
+                issue.officeId,
+                issue.postedOn,
+                issue.postedBy,
+                issue.updatedOn
               )
           );
         } else {

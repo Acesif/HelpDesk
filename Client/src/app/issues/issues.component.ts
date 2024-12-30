@@ -51,7 +51,7 @@ export class IssuesComponent {
     );
   }
 
-  openIssueDetails(id: string) {
+  openIssueDetails(id: number) {
     this.router.navigate(['issues','details'], { queryParams: { id: id } });
   }
 }

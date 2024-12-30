@@ -48,7 +48,6 @@ export class AdminInboxComponent {
 
   isAdminAndisNotSelf(): boolean {
     const designation = this.auth.getUserDesignation();
-    const userId = this.auth.getUserId();
     return designation === 'GRO' || designation === 'VENDOR';
   }
 
@@ -75,7 +74,7 @@ export class AdminInboxComponent {
     }
   }
 
-  openInboxIssue(tracking_number: string) {
-    this.router.navigate(['issues','details'], { queryParams: { id: tracking_number } });
+  openInboxIssue(id: number) {
+    this.router.navigate(['issues','details'], { queryParams: { id: id } });
   }
 }

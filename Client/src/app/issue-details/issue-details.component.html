@@ -7,7 +7,7 @@
       <div class="card-body">
         <div class="row">
           <div class="col-md-6">
-            <p><strong>Tracking Number:</strong> {{ issue?.tracking_number }}</p>
+            <p><strong>Tracking Number:</strong> {{ issue?.trackingNumber }}</p>
           </div>
         </div>
         <div class="row">
@@ -15,7 +15,7 @@
             <p><strong>Title:</strong> {{ issue?.title }}</p>
           </div>
           <div class="col-md-6">
-            <p><strong>Category:</strong> {{ issue?.issueCategory }}</p>
+            <p><strong>Category:</strong> {{ issue?.category }}</p>
           </div>
         </div>
         <div class="row">
@@ -23,33 +23,47 @@
             <p><strong>Description:</strong> {{ issue?.description }}</p>
           </div>
           <div class="col-md-6">
-            <p><strong>Status:</strong> {{ issue?.status }}</p>
+            <p><strong>Current Status:</strong> <span class="mx-2 p-2" [ngClass]="getStatusLabelClass(issue?.status)">{{ issue?.status }}</span></p>
           </div>
         </div>
         <div class="row">
           <div class="col-md-6">
-            <p><strong>Office ID:</strong> {{ issue?.office }}</p>
+            <p><strong>Office ID:</strong> {{ issue?.officeId }}</p>
           </div>
         </div>
       </div>
     </div>
 
     <!-- Replies Section -->
-    <div class="card mt-4">
+    <div class="card mt-4 mb-5">
       <div class="card-header bg-secondary text-white">
         <h5>Replies</h5>
       </div>
       <div class="card-body">
         <div *ngIf="replies.length > 0; else noReplies">
-          <div class="reply" *ngFor="let reply of replies">
-            <div class="border-bottom pb-2 mb-2">
-              <p><strong>{{ reply.postedBy }}</strong> - {{ reply.postedOn | date: 'short' }}</p>
-              <p>{{ reply.message }}</p>
+          <div *ngFor="let reply of replies" class="reply card mb-3">
+            <div class="card-body">
+              <div class="d-flex justify-content-between">
+                <div>
+                  <h5 class="card-title">Replied by: <span class="text-primary">{{ reply.repliantName }}</span></h5>
+                  <h6 class="card-subtitle mb-2 text-muted">Updated on: {{ reply.updateDate }}</h6>
+                </div>
+                <div>
+                  <p class="card-text">
+                    <span class="p-2" [ngClass]="getStatusLabelClass(reply.updatedStatus)">{{ reply.updatedStatus }} </span>
+                  </p>
+                </div>
+              </div>
+              <p class="card-text mt-3">
+                <strong>Comment:</strong> {{ reply.comment }}
+              </p>
             </div>
           </div>
         </div>
         <ng-template #noReplies>
-          <p>No replies yet. Be the first to respond!</p>
+          <div class="alert alert-warning">
+            <strong>No Replies Found!</strong> Be the first to add a reply.
+          </div>
         </ng-template>
       </div>
     </div>

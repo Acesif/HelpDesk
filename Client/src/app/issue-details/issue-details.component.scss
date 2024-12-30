@@ -1,0 +1,28 @@
+select option {
+  background-color: white; /* Default background */
+  color: black; /* Default text color */
+}
+
+select option:hover {
+  background-color: var(--hover-bg-color, lightgray); /* Default hover background */
+}
+
+select option[value="OPENED"]:hover {
+  background-color: #0d6efd; /* Blue background */
+  color: white; /* White text for better contrast */
+}
+
+select option[value="RESOLVED"]:hover {
+  background-color: #198754; /* Green background */
+  color: white;
+}
+
+select option[value="REJECTED"]:hover {
+  background-color: #dc3545; /* Red background */
+  color: white;
+}
+
+select option[value="PENDING"]:hover {
+  background-color: #ffc107; /* Yellow background */
+  color: black; /* Dark text for contrast */
+}

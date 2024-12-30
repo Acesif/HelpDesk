@@ -216,9 +216,9 @@ public class IssueController {
      * @return A response containing the issue details or an error message if not found.
      */
     @GetMapping("/{id}")
-    public Response<?> getIssueDetails(@PathVariable("id") String id){
+    public Response<?> getIssueDetails(@PathVariable("id") Long id){
 
-        Issue findIssue = issueService.findByTrackingNumber(id);
+        Issue findIssue = issueService.findById(id);
 
         if (findIssue == null){
             return Response.builder()

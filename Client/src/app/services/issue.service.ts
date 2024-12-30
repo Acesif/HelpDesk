@@ -11,9 +11,8 @@ import {map, Observable} from 'rxjs';
 export class IssueService {
   statusChanged: EventEmitter<boolean> = new EventEmitter();
 
-  private issues: Issue[] = [];
-
-  private apiUrl = 'http://localhost:7890/api/issue';
+  private issueApiUrl = 'http://localhost:7890/api/issue';
+  private issueReplyApiUrl = 'http://localhost:7890/api/issue_reply';
 
   constructor(
     private http: HttpClient,
@@ -25,8 +24,8 @@ export class IssueService {
 
     issueData.append('title', issue.title);
     issueData.append('description', issue.description);
-    issueData.append('category', issue.issueCategory);
-    issueData.append('officeId', issue.office.toString());
+    issueData.append('category', issue.category);
+    issueData.append('officeId', issue.officeId.toString());
 
     if (issue.attachments && issue.attachments.length > 0) {
       issue.attachments.forEach((file) => {
@@ -38,7 +37,7 @@ export class IssueService {
       'Authorization': `Bearer ${this.authService.getToken()}`,
     });
 
-    return this.http.post(`${this.apiUrl}/new`, issueData, {headers}).subscribe((res) => console.log(res));
+    return this.http.post(`${this.issueApiUrl}/new`, issueData, {headers}).subscribe((res) => console.log(res));
   }
 
   getIssues(): Observable<Issue[]> {
@@ -46,18 +45,22 @@ export class IssueService {
       'Authorization': `Bearer ${this.authService.getToken()}`,
     });
 
-    return this.http.get<any>(`${this.apiUrl}/user`, { headers }).pipe(
+    return this.http.get<any>(`${this.issueApiUrl}/user`, { headers }).pipe(
       map((res) => {
         if (res.status === 'OK') {
           return res.data.map(
             (issue: any) =>
               new Issue(
+                issue.id,
                 issue.trackingNumber,
                 issue.title,
                 issue.description,
                 issue.category,
                 issue.status,
-                issue.officeId
+                issue.officeId,
+                issue.postedOn,
+                issue.postedBy,
+                issue.updatedOn
               )
           );
         } else {
@@ -69,10 +72,10 @@ export class IssueService {
   }
 
   getIssueDetails(trackingNumber: string): any {
-    return this.http.get<any>(`${this.apiUrl}/${trackingNumber}`);
+    return this.http.get<any>(`${this.issueApiUrl}/${trackingNumber}`);
   }
 
-  getIssueReplies(issueId: string): any {
-
+  getIssueReplies(issueId: number): any {
+    return this.http.get<any>(`${this.issueReplyApiUrl}/${issueId}`);
   }
 }

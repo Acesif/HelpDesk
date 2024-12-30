@@ -19,13 +19,13 @@
     </tr>
     </thead>
     <tbody>
-    <tr *ngFor="let issue of issues; let i = index" (click)="openIssueDetails(issue.tracking_number)" style="cursor: pointer">
+    <tr *ngFor="let issue of issues; let i = index" (click)="openIssueDetails(issue.id)" style="cursor: pointer">
       <th scope="row">{{ i + 1 }}</th>
-      <td>{{ issue.tracking_number }}</td>
+      <td>{{ issue.trackingNumber }}</td>
       <td>{{ issue.title.length > 10 ? issue.title.slice(0,10)+" ...": issue.title }}</td>
       <td>{{ issue.status }}</td>
-      <td>{{ issue.issueCategory }}</td>
-      <td>{{ issue.office > 10 ? issue.office: issue.office }}</td>
+      <td>{{ issue.category }}</td>
+      <td>{{ issue.officeId > 10 ? issue.officeId: issue.officeId }}</td>
     </tr>
     </tbody>
   </table>
