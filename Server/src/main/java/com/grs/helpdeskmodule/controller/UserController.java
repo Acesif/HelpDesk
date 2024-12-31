@@ -176,7 +176,17 @@ public class UserController {
             @PathVariable("id") Long id,
             Authentication authentication
     ){
-        UserInformation userInformation = userUtils.extractUserInformation(authentication);
+//        UserInformation userInformation = userUtils.extractUserInformation(authentication);
+        User user = userService.findById(id);
+        UserInformation userInformation = UserInformation.builder()
+                .id(user.getId())
+                .name(user.getName())
+                .email(user.getEmail())
+                .phoneNumber(user.getPhoneNumber())
+                .designation(user.getDesignation())
+                .officeId(user.getOffice() != null ? user.getOffice().getId() : null)
+                .build();
+
         if (userInformation == null){
             return Response.<UserInformation>builder()
                     .status(HttpStatus.CONFLICT)
