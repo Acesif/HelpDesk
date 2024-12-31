@@ -8,7 +8,8 @@ import {AuthService} from './auth.service';
 })
 export class ProfileService {
 
-  private userApiUrl = 'http://localhost:7890/api/user';
+  // private userApiUrl = 'http://localhost:7890/api/user';
+  private userApiUrl = 'http://localhost:7890/helpdesk/api/user';
 
   constructor(
     private http: HttpClient,
