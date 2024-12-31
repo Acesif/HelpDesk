@@ -184,13 +184,13 @@ public class UserController {
                     .data(null)
                     .build();
         }
-        if (!Objects.equals(userInformation.getId(), id)){
-            return Response.<UserInformation>builder()
-                    .status(HttpStatus.UNAUTHORIZED)
-                    .message("Not allowed to view this user")
-                    .data(null)
-                    .build();
-        }
+//        if (!Objects.equals(userInformation.getId(), id)){
+//            return Response.<UserInformation>builder()
+//                    .status(HttpStatus.UNAUTHORIZED)
+//                    .message("Not allowed to view this user")
+//                    .data(null)
+//                    .build();
+//        }
         return Response.<UserInformation>builder()
                 .status(HttpStatus.OK)
                 .message("User data shown successfully")
