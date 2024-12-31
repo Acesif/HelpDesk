@@ -6,8 +6,8 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class RegistrationService {
-  // private apiUrl = 'http://localhost:7890/api/user/create';
-  private apiUrl = 'http://localhost:7890/helpdesk/api/user/create';
+  // private apiUrl = 'http://94.250.203.197:7890/api/user/create';
+  private apiUrl = 'http://94.250.203.197:7890/helpdesk/api/user/create';
 
   constructor(private http: HttpClient) {}
 

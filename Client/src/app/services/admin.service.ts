@@ -14,8 +14,8 @@ export class AdminService {
     private authService: AuthService,
   ) { }
 
-  // private apiUrl = 'http://localhost:7890/api/issue'
-  private apiUrl = 'http://localhost:7890/helpdesk/api/issue'
+  // private apiUrl = 'http://94.250.203.197:7890/api/issue'
+  private apiUrl = 'http://94.250.203.197:7890/helpdesk/api/issue'
 
   getInboxIssues(): Observable<Issue[]> {
     const headers = new HttpHeaders({

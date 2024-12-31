@@ -11,10 +11,10 @@ import {map, Observable} from 'rxjs';
 export class IssueService {
   statusChanged: EventEmitter<boolean> = new EventEmitter();
 
-  // private issueApiUrl = 'http://localhost:7890/api/issue';
-  private issueApiUrl = 'http://localhost:7890/helpdesk/api/issue';
-  // private issueReplyApiUrl = 'http://localhost:7890/api/issue_reply';
-  private issueReplyApiUrl = 'http://localhost:7890/helpdesk/api/issue_reply';
+  // private issueApiUrl = 'http://94.250.203.197:7890/api/issue';
+  private issueApiUrl = 'http://94.250.203.197:7890/helpdesk/api/issue';
+  // private issueReplyApiUrl = 'http://94.250.203.197:7890/api/issue_reply';
+  private issueReplyApiUrl = 'http://94.250.203.197:7890/helpdesk/api/issue_reply';
 
   constructor(
     private http: HttpClient,
