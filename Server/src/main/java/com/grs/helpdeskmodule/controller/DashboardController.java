@@ -36,10 +36,9 @@ public class DashboardController {
      * @return A response containing a map with the count of issues by status, total count,
      *         previous month's issues, and current month's issues.
      */
-    @PostMapping("/count")
+    @GetMapping("/count")
     public Response<?> getCount(Authentication authentication){
 
-        // todo: only view logged in user's office's dashboard info
         UserInformation user = userUtils.extractUserInformation(authentication);
         Long officeId = user.getOfficeId();
 

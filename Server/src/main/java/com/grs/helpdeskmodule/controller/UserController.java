@@ -105,6 +105,20 @@ public class UserController {
                 .build();
     }
 
+    @GetMapping("/refresh/{oldToken}")
+    public Response<?> refreshToken(@PathVariable String oldToken) {
+        String newAccessToken = userService.refreshAccessToken(oldToken);
+        Map<String, Object> response = new LinkedHashMap<>();
+        response.put("refreshToken", newAccessToken);
+
+        return Response.builder()
+                .status(HttpStatus.OK)
+                .message("Token refreshed successfully")
+                .data(response)
+                .build();
+    }
+
+
     /**
      * Retrieves a list of all users in the system.
      * Handles HTTP GET requests to the "/auth/all" endpoint.

@@ -3,19 +3,22 @@ import {map, Observable} from 'rxjs';
 import {Issue} from '../../model/Issue.model';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {AuthService} from './auth.service';
+import {IpconfigService} from '../shared/ipconfig.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AdminService {
 
+  private apiUrl: string;
+
   constructor(
     private http: HttpClient,
     private authService: AuthService,
-  ) { }
-
-  // private apiUrl = 'http://94.250.203.197:7890/api/issue'
-  private apiUrl = 'http://94.250.203.197:7890/helpdesk/api/issue'
+    private ipconfigService: IpconfigService
+  ) {
+    this.apiUrl = `${this.ipconfigService.getAddress()}/api/issue`;
+  }
 
   getInboxIssues(): Observable<Issue[]> {
     const headers = new HttpHeaders({

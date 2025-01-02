@@ -32,10 +32,10 @@ server:
   port: 7890
 
 logging:
-   level:
-     org:
-       springframework:
-          security: DEBUG
+  level:
+    org:
+      springframework:
+        security: DEBUG
 
 jwt:
   secret: 519E632B74F1F6D8DFA3A8548EE78112A3BC967035AEB0277B7CE97D609D08BF

@@ -1,4 +1,4 @@
-<app-filterform></app-filterform>
+<h2>Dashboard</h2>
 <div class="row d-flex align-items-center dashboard">
   <div class="col-6">
     <ngx-charts-pie-chart
@@ -22,24 +22,29 @@
       </thead>
       <tbody>
       <tr>
-        <td><strong>OPEN</strong></td>
-        <td id="open-count">0</td>
-        <td id="open-pcent">0%</td>
+        <td><strong class="text-primary">OPEN</strong></td>
+        <td id="open-count">{{ getValueByName("OPENED") }}</td>
+        <td id="open-pcent">{{ getPercentByName("OPENED") }}%</td>
       </tr>
       <tr>
-        <td><strong>CLOSED</strong></td>
-        <td id="close-count">0</td>
-        <td id="close-pcent">0%</td>
+        <td><strong class="text-warning">ONGOING</strong></td>
+        <td id="ongoing-count">{{ getValueByName("ONGOING") }}</td>
+        <td id="ongoing-pcent">{{ getPercentByName("ONGOING") }}%</td>
       </tr>
       <tr>
-        <td><strong>RESOLVED</strong></td>
-        <td id="resolve-count">0</td>
-        <td id="resolve-pcent">0%</td>
+        <td><strong class="text-secondary">CLOSED</strong></td>
+        <td id="close-count">{{ getValueByName("CLOSED") }}</td>
+        <td id="close-pcent">{{ getPercentByName("CLOSED") }}%</td>
       </tr>
       <tr>
-        <td><strong>REJECTED</strong></td>
-        <td id="reject-count">0</td>
-        <td id="reject-pcent">0%</td>
+        <td><strong class="text-success">RESOLVED</strong></td>
+        <td id="resolve-count">{{ getValueByName("RESOLVED") }}</td>
+        <td id="resolve-pcent">{{ getPercentByName("RESOLVED") }}%</td>
+      </tr>
+      <tr>
+        <td><strong class="text-danger">REJECTED</strong></td>
+        <td id="reject-count">{{ getValueByName("REJECTED") }}</td>
+        <td id="reject-pcent">{{ getPercentByName("REJECTED") }}%</td>
       </tr>
       </tbody>
     </table>

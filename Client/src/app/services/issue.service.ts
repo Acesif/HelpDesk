@@ -3,6 +3,7 @@ import {EventEmitter, Injectable} from '@angular/core';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {AuthService} from './auth.service';
 import {map, Observable} from 'rxjs';
+import {IpconfigService} from '../shared/ipconfig.service';
 
 
 @Injectable({
@@ -11,15 +12,17 @@ import {map, Observable} from 'rxjs';
 export class IssueService {
   statusChanged: EventEmitter<boolean> = new EventEmitter();
 
-  // private issueApiUrl = 'http://94.250.203.197:7890/api/issue';
-  private issueApiUrl = 'http://94.250.203.197:7890/helpdesk/api/issue';
-  // private issueReplyApiUrl = 'http://94.250.203.197:7890/api/issue_reply';
-  private issueReplyApiUrl = 'http://94.250.203.197:7890/helpdesk/api/issue_reply';
+  issueApiUrl: string;
+  issueReplyApiUrl: string;
 
   constructor(
     private http: HttpClient,
     private authService: AuthService,
-  ) {}
+    private ipconfigService: IpconfigService,
+  ) {
+    this.issueApiUrl = `${this.ipconfigService.getAddress()}/api/issue`;
+    this.issueReplyApiUrl = `${this.ipconfigService.getAddress()}/api/issue_reply`;
+  }
 
   createIssue(issue: Issue): any {
     const issueData = new FormData();

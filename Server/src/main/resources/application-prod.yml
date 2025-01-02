@@ -1,15 +1,15 @@
 spring:
   application:
-    name: ${APPLICATION_NAME_PROD}
+    name: GRS_Helpdesk
   servlet:
     multipart:
       enabled: true
       max-request-size: 5000MB
       max-file-size: 5000MB
   datasource:
-    url: ${DB_CONNECTION_PROD}?createDatabaseIfNotExist=true&autoReconnect=true&useSSL=false&useUnicode=yes&characterEncoding=UTF-8&allowPublicKeyRetrieval=true
-    username: ${DB_USERNAME_PROD}
-    password: ${DB_PASSWORD_PROD}
+    url: jdbc:mysql://127.0.0.1:3306/helpdesk?createDatabaseIfNotExist=true&autoReconnect=true&useSSL=false&useUnicode=yes&characterEncoding=UTF-8&allowPublicKeyRetrieval=true
+    username: root
+    password: root
     driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     database-platform: org.hibernate.dialect.MySQLDialect
@@ -24,3 +24,12 @@ management:
         include: health, info, metrics
 server:
   port: 9090
+
+logging:
+  level:
+    org:
+      springframework:
+        security: DEBUG
+
+jwt:
+  secret: 519E632B74F1F6D8DFA3A8548EE78112A3BC967035AEB0277B7CE97D609D08BF

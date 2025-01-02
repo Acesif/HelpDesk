@@ -61,4 +61,11 @@ public class UserService extends BaseService<User> {
         }
         return null;
     }
+
+    public String refreshAccessToken(String token) {
+        String email = jwtService.extractEmail(token);
+        User user = userRepository.findByEmail(email);
+
+        return jwtService.generateToken(email, user);
+    }
 }

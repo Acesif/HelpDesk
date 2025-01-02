@@ -1,3 +1,2 @@
 rootProject.name = 'Server'
-include 'base-module'
 

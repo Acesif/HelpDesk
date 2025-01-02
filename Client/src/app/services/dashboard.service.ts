@@ -1,28 +1,30 @@
 import { Injectable } from '@angular/core';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
-import { Observable } from 'rxjs';
 import {AuthService} from './auth.service';
+import {Router} from '@angular/router';
 import {IpconfigService} from '../shared/ipconfig.service';
 
 @Injectable({
   providedIn: 'root'
 })
-export class ProfileService {
+export class DashboardService {
 
-  private userApiUrl: string;
+  dashboardApiUrl: string;
 
   constructor(
     private http: HttpClient,
     private authService: AuthService,
     private ipconfigService: IpconfigService,
   ) {
-    this.userApiUrl = `${this.ipconfigService.getAddress()}/api/user`;
+    this.dashboardApiUrl = `${this.ipconfigService.getAddress()}/api/dashboard`;
   }
 
-  getUserInfo(userId: number): any {
+  getDashboardData(): any {
+
     const headers = new HttpHeaders({
       'Authorization': `Bearer ${this.authService.getToken()}`,
     });
-    return this.http.get(`${this.userApiUrl}/${userId}`, {headers});
+
+    return this.http.get<any>(`${this.dashboardApiUrl}/count`, {headers});
   }
 }

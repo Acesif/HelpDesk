@@ -46,4 +46,21 @@ export class AdminInboxComponent {
   openInboxIssue(id: number) {
     this.router.navigate(['issues','details'], { queryParams: { id: id } });
   }
+
+  getStatusColor(status: string): string {
+    switch (status) {
+      case 'OPEN':
+        return 'text-primary';
+      case 'RESOLVED':
+        return 'text-success';
+      case 'REJECTED':
+        return 'text-danger';
+      case 'ONGOING':
+        return 'text-warning';
+      case 'CLOSED':
+        return 'text-secondary';
+      default:
+        return '';
+    }
+  }
 }

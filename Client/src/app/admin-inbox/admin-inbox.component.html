@@ -2,6 +2,7 @@
   <h2>Pending Issues</h2>
 </div>
 
+<app-filterform></app-filterform>
 <div class="issues-container" *ngIf="issues.length > 0; else noIssues">
   <table class="table table-striped">
     <thead>
@@ -19,7 +20,7 @@
       <th scope="row">{{ i + 1 }}</th>
       <td>{{ issue.trackingNumber }}</td>
       <td>{{ issue.title.length > 20 ? issue.title.slice(0,20)+" ...": issue.title }}</td>
-      <td>{{ issue.status }}</td>
+      <td [ngClass]="getStatusColor(issue.status)">{{ issue.status }}</td>
       <td>{{ issue.category }}</td>
     </tr>
     </tbody>

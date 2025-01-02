@@ -2,6 +2,7 @@ package com.grs.helpdeskmodule.jwt;
 
 import com.grs.helpdeskmodule.entity.User;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import lombok.extern.slf4j.Slf4j;
@@ -18,6 +19,7 @@ public class JWTService {
 
     @Value("${jwt.secret}")
     String JWT_SECRET;
+
     public String generateToken(String username, User user){
 
         Map<String,Object> claims = new HashMap<>();
@@ -59,11 +61,15 @@ public class JWTService {
     }
 
     private Claims extractAllClaims(String token){
-        return Jwts.parser()
-                .verifyWith(getSigninKey())
-                .build()
-                .parseSignedClaims(token)
-                .getPayload();
+        try {
+            return Jwts.parser()
+                    .verifyWith(getSigninKey())
+                    .build()
+                    .parseSignedClaims(token)
+                    .getPayload();
+        } catch (ExpiredJwtException e) {
+            return e.getClaims();
+        }
     }
 
     public boolean validateToken(String token, UserDetails userDetails){

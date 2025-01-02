@@ -1,17 +1,25 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import {IpconfigService} from '../shared/ipconfig.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class LoginService {
-  // private apiUrl = 'http://94.250.203.197:7890/api/user/login';
-  private apiUrl = 'http://94.250.203.197:7890/helpdesk/api/user/login';
+  apiUrl: string;
 
-  constructor(private http: HttpClient) {}
+  constructor(
+    private http: HttpClient,
+    private ipconfigService: IpconfigService,
+  ) {
+    this.apiUrl = `${this.ipconfigService.getAddress()}/api/user`;
+  }
 
   login(userData: any): Observable<any> {
-    return this.http.post(this.apiUrl, userData);
+    return this.http.post(`${this.apiUrl}/login`, userData);
+  }
+  refreshToken(oldToken: string) {
+    return this.http.get(`${this.apiUrl}/refresh/${oldToken}`);
   }
 }

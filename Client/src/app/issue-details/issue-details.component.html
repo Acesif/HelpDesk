@@ -54,7 +54,7 @@
                   </p>
                 </div>
               </div>
-              <p class="card-text mt-3">
+              <p *ngIf="reply.comment" class="card-text mt-3">
                 <strong>Comment:</strong> {{ reply.comment }}
               </p>
             </div>
@@ -99,6 +99,7 @@
                 <option value="RESOLVED">RESOLVED</option>
                 <option value="REJECTED">REJECTED</option>
                 <option value="ONGOING">ONGOING</option>
+                <option value="CLOSED">CLOSED</option>
               </select>
             </div>
             <!-- Submit Button -->

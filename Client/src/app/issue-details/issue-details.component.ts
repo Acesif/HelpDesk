@@ -118,8 +118,6 @@ export class IssueDetailsComponent {
     );
   }
 
-
-
   getStatusColor(): string {
     switch (this.newReply.status) {
       case 'OPEN':
@@ -130,6 +128,8 @@ export class IssueDetailsComponent {
         return 'bg-danger text-white';
       case 'ONGOING':
         return 'bg-warning text-dark';
+      case 'CLOSED':
+        return 'bg-secondary text-white';
       default:
         return '';
     }
