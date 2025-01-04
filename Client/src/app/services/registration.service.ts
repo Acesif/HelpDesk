@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import {IpconfigService} from '../shared/ipconfig.service';
+import {ipConfigService} from '../shared/ip-config.service';
 
 @Injectable({
   providedIn: 'root'
@@ -11,9 +11,9 @@ export class RegistrationService {
 
   constructor(
     private http: HttpClient,
-    private ipconfigService: IpconfigService,
+    private ipConfigService: ipConfigService,
   ) {
-    this.apiUrl = `${this.ipconfigService.getAddress()}/api/user/create`
+    this.apiUrl = `${this.ipConfigService.getAddress()}/api/user/create`
   }
 
   register(userData: any): Observable<any> {

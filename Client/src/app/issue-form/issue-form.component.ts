@@ -2,7 +2,8 @@ import {Component, EventEmitter, Output, SimpleChanges} from '@angular/core';
 import {Issue} from '../../model/Issue.model';
 import {IssueService} from '../services/issue.service';
 import {ActivatedRoute, Router} from '@angular/router';
-import {IntercepterService} from '../services/intercepter.service';
+import {InterceptorService} from '../services/interceptor.service';
+import {HttpResponse} from '@angular/common/http';
 
 @Component({
   selector: 'app-issue-form',
@@ -15,8 +16,7 @@ export class IssueFormComponent {
   constructor(
     private issueService: IssueService,
     private router: Router,
-    private activatedRoute: ActivatedRoute,
-    private intercepter: IntercepterService
+    private interceptor: InterceptorService
   ) {}
 
   trackingNumber: string = '';
@@ -42,7 +42,7 @@ export class IssueFormComponent {
   ];
 
   ngOnInit(): void {
-    this.intercepter.validateRoutePermission();
+    this.interceptor.validateRoutePermission();
   }
 
   // validateForm(formData: any): [boolean,string[]] {
@@ -87,10 +87,11 @@ export class IssueFormComponent {
         this.attachments
       );
 
-      this.issueService.createIssue(issue);
+      this.issueService.createIssue(issue).subscribe();
       this.resetFormData();
-      this.router.navigate(['/issues','list']);
-    // }
+      this.router.navigate(['/issues', 'list']).then(res => {
+        console.log("Navigating to /issues/list", res);
+      });
   }
 
   resetFormData(){

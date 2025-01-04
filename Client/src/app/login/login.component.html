@@ -1,4 +1,4 @@
-<div class="container mt-5">
+<div class="container mt-5 w-50">
   <form [formGroup]="loginForm" (ngSubmit)="onLogin()" class="needs-validation" novalidate>
     <!-- Email Field -->
     <div class="mb-3">
@@ -8,6 +8,7 @@
         type="email"
         class="form-control"
         formControlName="email"
+        placeholder="Please enter your email"
         required
         [ngClass]="{'is-invalid': loginForm.get('email')?.invalid && loginForm.get('email')?.dirty}"
       />
@@ -24,6 +25,7 @@
         type="password"
         class="form-control"
         formControlName="password"
+        placeholder="Please enter your password"
         required
         [ngClass]="{'is-invalid': loginForm.get('password')?.invalid && loginForm.get('password')?.dirty}"
       />

@@ -5,6 +5,7 @@
   </a>
 </div>
 <app-filterform></app-filterform>
+<app-loading-spinner *ngIf="loading"></app-loading-spinner>
 <div class="issues-container" *ngIf="issues.length > 0; else noIssues">
   <table class="table table-striped">
     <thead>

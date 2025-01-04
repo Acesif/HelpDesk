@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import {IntercepterService} from '../services/intercepter.service';
+import {InterceptorService} from '../services/interceptor.service';
 import {DashboardService} from '../services/dashboard.service';
 
 @Component({
@@ -11,9 +11,10 @@ export class HomepageComponent {
 
   pieData: { name: string, value: number }[] = [];
   total: number;
+  loading: boolean = true;
 
   constructor(
-    private intercepter: IntercepterService,
+    private interceptor: InterceptorService,
     private dashboardService: DashboardService,
   ) {}
 
@@ -28,8 +29,9 @@ export class HomepageComponent {
   }
 
   ngOnInit(): void {
-    this.intercepter.validateRoutePermission();
+    this.interceptor.validateRoutePermission();
     this.dashboardService.getDashboardData().subscribe((res: any) => {
+      this.loading = false;
 
       this.pieData = [
         { name: 'OPENED', value: res.data.open },

@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {AuthService} from './auth.service';
 import {Router} from '@angular/router';
-import {IpconfigService} from '../shared/ipconfig.service';
+import {ipConfigService} from '../shared/ip-config.service';
 
 @Injectable({
   providedIn: 'root'
@@ -14,9 +14,9 @@ export class DashboardService {
   constructor(
     private http: HttpClient,
     private authService: AuthService,
-    private ipconfigService: IpconfigService,
+    private ipConfigService: ipConfigService,
   ) {
-    this.dashboardApiUrl = `${this.ipconfigService.getAddress()}/api/dashboard`;
+    this.dashboardApiUrl = `${this.ipConfigService.getAddress()}/api/dashboard`;
   }
 
   getDashboardData(): any {

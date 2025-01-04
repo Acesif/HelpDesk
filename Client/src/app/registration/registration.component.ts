@@ -1,9 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { RegistrationService } from '../services/registration.service';
 import {Router} from '@angular/router';
 import {AuthService} from '../services/auth.service';
-import {IntercepterService} from '../services/intercepter.service';
+import {InterceptorService} from '../services/interceptor.service';
 
 @Component({
   selector: 'app-registration',
@@ -18,12 +18,11 @@ export class RegistrationComponent {
     private registrationService: RegistrationService,
     private router: Router,
     private tokenService: AuthService,
-    private intercepter: IntercepterService,
+    private interceptor: InterceptorService,
   ) { }
 
   ngOnInit(): void {
-
-    this.intercepter.validateRoutePermission();
+    this.interceptor.validateRoutePermission();
 
     this.registrationForm = this.fb.group({
       name: ['', [Validators.required, Validators.minLength(3)]],
@@ -43,7 +42,7 @@ export class RegistrationComponent {
           if (response.status === 'CREATED') {
             this.tokenService.saveToken(response.data.token);
             this.registrationForm.reset();
-            this.router.navigate(['/admin/dashboard'])
+            this.router.navigate(['admin','dashboard'])
               .then(() => {
               })
               .catch((err) => {
@@ -59,6 +58,6 @@ export class RegistrationComponent {
   }
 
   navigateToLogin(): void {
-    this.router.navigate(['/auth/login']);
+    this.router.navigate(['auth','login']);
   }
 }

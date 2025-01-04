@@ -16,6 +16,7 @@ export class IssueDetailsComponent {
   issueId: any;
   replies: Array<any> = [];
   newReply: { message: string, status: string } = { message: '', status: '' };
+  loading: boolean = true;
 
   constructor(
     private issueService: IssueService,
@@ -63,6 +64,7 @@ export class IssueDetailsComponent {
         issue.data.postedBy,
         issue.data.updatedOn
         );
+      this.loading = false;
       }
     );
   }
@@ -77,7 +79,6 @@ export class IssueDetailsComponent {
       (response: any) => {
         this.replies = response.data;
 
-        // Fetch user info for each reply
         this.replies.forEach((reply) => {
           this.profileService.getUserInfo(reply.repliantId).subscribe(
             (userInfo: any) => {
@@ -89,7 +90,7 @@ export class IssueDetailsComponent {
             }
           );
         });
-
+        this.loading = false;
         console.log('Replies with user info:', this.replies);
       },
       (error: any) => {

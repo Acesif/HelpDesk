@@ -3,7 +3,7 @@ import {map, Observable} from 'rxjs';
 import {Issue} from '../../model/Issue.model';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {AuthService} from './auth.service';
-import {IpconfigService} from '../shared/ipconfig.service';
+import {ipConfigService} from '../shared/ip-config.service';
 
 @Injectable({
   providedIn: 'root'
@@ -15,9 +15,9 @@ export class AdminService {
   constructor(
     private http: HttpClient,
     private authService: AuthService,
-    private ipconfigService: IpconfigService
+    private ipConfigService: ipConfigService
   ) {
-    this.apiUrl = `${this.ipconfigService.getAddress()}/api/issue`;
+    this.apiUrl = `${this.ipConfigService.getAddress()}/api/issue`;
   }
 
   getInboxIssues(): Observable<Issue[]> {

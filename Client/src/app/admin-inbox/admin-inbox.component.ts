@@ -4,7 +4,7 @@ import {AuthService} from '../services/auth.service';
 import {AdminService} from '../services/admin.service';
 import {filter} from 'rxjs';
 import {NavigationEnd, Router} from '@angular/router';
-import {IntercepterService} from '../services/intercepter.service';
+import {InterceptorService} from '../services/interceptor.service';
 
 @Component({
   selector: 'app-admin-inbox',
@@ -14,16 +14,17 @@ import {IntercepterService} from '../services/intercepter.service';
 export class AdminInboxComponent {
 
   issues: Issue[] = [];
+  loading: boolean = true;
 
   constructor(
     private adminService: AdminService,
     private router: Router,
-    private intercepter: IntercepterService,
+    private interceptor: InterceptorService,
     private auth: AuthService,
   ) {}
 
   ngOnInit() {
-    this.intercepter.validateRoutePermission();
+    this.interceptor.validateRoutePermission();
     this.router.events
       .pipe(filter((event) => event instanceof NavigationEnd && event.url === '/admin/inbox'))
       .subscribe(() => {
@@ -36,6 +37,7 @@ export class AdminInboxComponent {
     this.adminService.getInboxIssues().subscribe(
       (issues: Issue[]) => {
         this.issues = issues;
+        this.loading = false;
       },
       (error) => {
         console.error('Error loading issues:', error);

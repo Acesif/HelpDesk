@@ -2,7 +2,7 @@ import {Component, ViewChild} from '@angular/core';
 import {Issue} from '../../model/Issue.model';
 import {IssueService} from '../services/issue.service';
 import {NavigationEnd, Router} from '@angular/router';
-import {IntercepterService} from '../services/intercepter.service';
+import {InterceptorService} from '../services/interceptor.service';
 import {filter} from 'rxjs';
 import {FilterformComponent} from '../filterform/filterform.component';
 
@@ -17,7 +17,7 @@ export class IssuesComponent {
   constructor(
     private issueService: IssueService,
     private router: Router,
-    private intercepter: IntercepterService,
+    private interceptor: InterceptorService,
   ) {
     this.issueService.statusChanged.subscribe(statusChanged => {
       this.status = statusChanged;
@@ -31,9 +31,10 @@ export class IssuesComponent {
   // }
 
   @ViewChild(FilterformComponent) filterFormComponent!: FilterformComponent;
+  loading: boolean = true;
 
   ngOnInit() {
-    this.intercepter.validateRoutePermission();
+    this.interceptor.validateRoutePermission();
     this.router.events
       .pipe(filter((event) => event instanceof NavigationEnd && event.url === '/issues/list'))
       .subscribe(() => {
@@ -52,6 +53,7 @@ export class IssuesComponent {
     this.issueService.getIssues().subscribe(
       (issues: Issue[]) => {
         this.issues = issues;
+        this.loading = false;
       },
       (error) => {
         console.error('Error loading issues:', error);

@@ -3,7 +3,7 @@ import {EventEmitter, Injectable} from '@angular/core';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {AuthService} from './auth.service';
 import {map, Observable} from 'rxjs';
-import {IpconfigService} from '../shared/ipconfig.service';
+import {ipConfigService} from '../shared/ip-config.service';
 
 
 @Injectable({
@@ -18,10 +18,10 @@ export class IssueService {
   constructor(
     private http: HttpClient,
     private authService: AuthService,
-    private ipconfigService: IpconfigService,
+    private ipConfigService: ipConfigService,
   ) {
-    this.issueApiUrl = `${this.ipconfigService.getAddress()}/api/issue`;
-    this.issueReplyApiUrl = `${this.ipconfigService.getAddress()}/api/issue_reply`;
+    this.issueApiUrl = `${this.ipConfigService.getAddress()}/api/issue`;
+    this.issueReplyApiUrl = `${this.ipConfigService.getAddress()}/api/issue_reply`;
   }
 
   createIssue(issue: Issue): any {

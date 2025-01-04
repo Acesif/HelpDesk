@@ -1,4 +1,4 @@
-<div class="container mt-5">
+<div class="container mt-5 w-50">
   <form [formGroup]="registrationForm" (ngSubmit)="onSubmit()" class="needs-validation" novalidate>
     <!-- Name Field -->
     <div class="mb-3">
@@ -7,6 +7,7 @@
         id="name"
         class="form-control"
         formControlName="name"
+        placeholder="Please enter your name here"
         required
         [ngClass]="{'is-invalid': registrationForm.get('name')?.invalid && registrationForm.get('name')?.dirty}"
       />
@@ -23,6 +24,7 @@
         type="email"
         class="form-control"
         formControlName="email"
+        placeholder="Please enter your email here"
         required
         [ngClass]="{'is-invalid': registrationForm.get('email')?.invalid && registrationForm.get('email')?.dirty}"
       />
@@ -38,6 +40,7 @@
         id="phoneNumber"
         class="form-control"
         formControlName="phoneNumber"
+        placeholder="Please enter your phone number here"
         required
         [ngClass]="{'is-invalid': registrationForm.get('phoneNumber')?.invalid && registrationForm.get('phoneNumber')?.dirty}"
       />
@@ -54,6 +57,7 @@
         type="number"
         class="form-control"
         formControlName="officeId"
+        placeholder="Please enter your office id here"
         required
         [ngClass]="{'is-invalid': registrationForm.get('officeId')?.invalid && registrationForm.get('officeId')?.dirty}"
       />
@@ -70,6 +74,7 @@
         type="password"
         class="form-control"
         formControlName="password"
+        placeholder="Please enter your password here"
         required
         [ngClass]="{'is-invalid': registrationForm.get('password')?.invalid && registrationForm.get('password')?.dirty}"
       />

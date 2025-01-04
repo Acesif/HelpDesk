@@ -5,7 +5,7 @@ import {AuthService} from './auth.service';
 @Injectable({
   providedIn: 'root'
 })
-export class IntercepterService {
+export class InterceptorService {
 
   constructor(
     private router: Router,

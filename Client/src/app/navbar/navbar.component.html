@@ -19,7 +19,7 @@
           </a>
         </li>
       </ul>
-      <div appDropdown class="dropdown">
+      <div *ngIf="isAuthenticated()" appDropdown class="dropdown">
         <button class="btn" type="button" data-bs-toggle="dropdown" aria-expanded="false">
           <img src="assets/profile.jpg" alt="user profile" id="profile-icon" class="img-40px rounded-circle">
         </button>

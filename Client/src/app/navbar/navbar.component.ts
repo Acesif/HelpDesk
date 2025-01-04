@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import {AuthService} from '../services/auth.service';
-import {IntercepterService} from '../services/intercepter.service';
+import {InterceptorService} from '../services/interceptor.service';
 
 @Component({
   selector: 'app-navbar',
@@ -26,5 +26,9 @@ export class NavbarComponent {
 
   logout() {
     this.auth.logout();
+  }
+
+  isAuthenticated() {
+    return this.auth.isAuthenticated();
   }
 }

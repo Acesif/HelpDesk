@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { LoginService } from '../services/login.service';
 import { Router } from '@angular/router';
-import {IntercepterService} from '../services/intercepter.service';
+import {InterceptorService} from '../services/interceptor.service';
 import {AuthService} from '../services/auth.service'; // Optional: For navigation after login
 
 @Component({
@@ -17,7 +17,7 @@ export class LoginComponent {
   constructor(
     private fb: FormBuilder,
     private loginService: LoginService,
-    private intercepter: IntercepterService,
+    private interceptor: InterceptorService,
     private authService: AuthService,
     private router: Router
   ) {
@@ -28,7 +28,7 @@ export class LoginComponent {
   }
 
   ngOnInit() {
-    this.intercepter.validateRoutePermission();
+    this.interceptor.validateRoutePermission();
   }
 
   onLogin(): void {
@@ -40,7 +40,7 @@ export class LoginComponent {
         next: (response) => {
           console.log('Login successful:', response);
           this.authService.saveToken(response.data.token);
-          this.intercepter.validateRoutePermission();
+          this.interceptor.validateRoutePermission();
         },
         error: (error) => {
           console.error('Login failed:', error);

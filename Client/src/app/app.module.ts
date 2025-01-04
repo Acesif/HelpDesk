@@ -20,6 +20,7 @@ import { RegistrationComponent } from './registration/registration.component';
 import { provideHttpClient } from '@angular/common/http';
 import { LoginComponent } from './login/login.component';
 import { AdminInboxComponent } from './admin-inbox/admin-inbox.component';
+import { LoadingSpinnerComponent } from './loading-spinner/loading-spinner.component';
 
 const routes: Route[] = [
   { path: '', component: RegistrationComponent },
@@ -61,6 +62,7 @@ const routes: Route[] = [
     RegistrationComponent,
     LoginComponent,
     AdminInboxComponent,
+    LoadingSpinnerComponent,
   ],
   imports: [
     BrowserModule,
