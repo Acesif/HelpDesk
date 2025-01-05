@@ -11,6 +11,7 @@ import com.grs.helpdeskmodule.utils.UserUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
@@ -187,10 +188,8 @@ public class UserController {
     }
     @GetMapping("/{id}")
     public Response<UserInformation> findById(
-            @PathVariable("id") Long id,
-            Authentication authentication
+            @PathVariable("id") Long id
     ){
-//        UserInformation userInformation = userUtils.extractUserInformation(authentication);
         User user = userService.findById(id);
         UserInformation userInformation = UserInformation.builder()
                 .id(user.getId())
@@ -208,16 +207,21 @@ public class UserController {
                     .data(null)
                     .build();
         }
-//        if (!Objects.equals(userInformation.getId(), id)){
-//            return Response.<UserInformation>builder()
-//                    .status(HttpStatus.UNAUTHORIZED)
-//                    .message("Not allowed to view this user")
-//                    .data(null)
-//                    .build();
-//        }
+
         return Response.<UserInformation>builder()
                 .status(HttpStatus.OK)
                 .message("User data shown successfully")
+                .data(userInformation)
+                .build();
+    }
+
+    @GetMapping("/auth/extract")
+    public Response<UserInformation> extractUser(){
+        UserInformation userInformation = userUtils.extractUserInformation();
+
+        return Response.<UserInformation>builder()
+                .status(HttpStatus.OK)
+                .message("User information retrieved")
                 .data(userInformation)
                 .build();
     }

@@ -7,6 +7,7 @@ import com.grs.helpdeskmodule.repository.OfficeRepository;
 import com.grs.helpdeskmodule.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -42,8 +43,10 @@ public class UserUtils {
                 .phoneNumber(user.getPhoneNumber())
                 .build();
     }
-    public UserInformation extractUserInformation(Authentication authentication){
-        User user = userService.findUserByEmail(authentication.getName());
+    public UserInformation extractUserInformation(){
+        User user = userService.findUserByEmail(
+                SecurityContextHolder.getContext().getAuthentication().getName()
+        );
         return UserInformation.builder()
                 .id(user.getId())
                 .name(user.getName())

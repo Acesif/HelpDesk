@@ -13,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.text.SimpleDateFormat;
@@ -37,9 +38,9 @@ public class DashboardController {
      *         previous month's issues, and current month's issues.
      */
     @GetMapping("/count")
-    public Response<?> getCount(Authentication authentication){
+    public Response<?> getCount(){
 
-        UserInformation user = userUtils.extractUserInformation(authentication);
+        UserInformation user = userUtils.extractUserInformation();
         Long officeId = user.getOfficeId();
 
         Map<String,Integer> countList = new HashMap<>();
@@ -94,10 +95,9 @@ public class DashboardController {
      */
     @PostMapping("/status")
     public Response<?> findIssuesByStatus(
-            Authentication authentication,
             @RequestParam(value = "status", required = false) String status
     ){
-        UserInformation user = userUtils.extractUserInformation(authentication);
+        UserInformation user = userUtils.extractUserInformation();
         Long officeId = user.getOfficeId();
 
         if (status == null){
@@ -146,11 +146,10 @@ public class DashboardController {
      */
     @PostMapping("/current_month")
     public Response<?> findIssuesByYearMonth(
-            Authentication authentication,
             @RequestParam(value = "YearMonth", required = false) String YearMonth
     ){
 
-        UserInformation user = userUtils.extractUserInformation(authentication);
+        UserInformation user = userUtils.extractUserInformation();
         Long officeId = user.getOfficeId();
 
         List<Issue> issues;
@@ -189,12 +188,11 @@ public class DashboardController {
      */
     @PostMapping("/between_month")
     public Response<?> findIssuesBetweenYearMonths(
-            Authentication authentication,
             @RequestParam(value = "startYearMonth", required = false) String startYearMonth,
             @RequestParam(value = "endYearMonth",required = false) String endYearMonth
     ){
 
-        UserInformation user = userUtils.extractUserInformation(authentication);
+        UserInformation user = userUtils.extractUserInformation();
         Long officeId = user.getOfficeId();
 
         if (startYearMonth == null || endYearMonth == null){
@@ -232,11 +230,10 @@ public class DashboardController {
      */
     @PostMapping("/tracking")
     public Response<?> findIssuesByTrackingNumber(
-            Authentication authentication,
             @RequestParam(value = "trackingNumber", required = false) String trackingNumber
     ){
 
-        UserInformation user = userUtils.extractUserInformation(authentication);
+        UserInformation user = userUtils.extractUserInformation();
         Long officeId = user.getOfficeId();
 
         if (trackingNumber == null){
@@ -280,11 +277,10 @@ public class DashboardController {
      */
     @PostMapping("/find")
     public Response<?> findIssuesByTitleOrDescription(
-            Authentication authentication,
             @RequestParam(value = "input", required = false) String input
     ){
 
-        UserInformation user = userUtils.extractUserInformation(authentication);
+        UserInformation user = userUtils.extractUserInformation();
         Long officeId = user.getOfficeId();
 
         if (input == null){

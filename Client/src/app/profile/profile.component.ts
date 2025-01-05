@@ -12,6 +12,7 @@ import {InterceptorService} from '../services/interceptor.service';
 })
 export class ProfileComponent {
   user: User;
+  loading: boolean = true;
 
   constructor(
     private router: ActivatedRoute,
@@ -22,6 +23,20 @@ export class ProfileComponent {
   ngOnInit() {
     this.interceptor.validateRoutePermission();
     this.user = this.profileService.getUserInfo(this.router.snapshot.params['id']);
+    this.profileService.getProfile().subscribe((profile: any) => {
+      if(profile.status === "OK"){
+        this.user = new User(
+          profile.data.id,
+          profile.data.name,
+          profile.data.email,
+          profile.data.phoneNumber,
+          profile.data.officeId,
+          profile.data.designation,
+          null
+        );
+        this.loading = false;
+      }
+    })
   }
 
 }

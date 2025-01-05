@@ -9,7 +9,7 @@ import {ipConfigService} from '../shared/ip-config.service';
 })
 export class ProfileService {
 
-  private userApiUrl: string;
+  userApiUrl: string;
 
   constructor(
     private http: HttpClient,
@@ -24,5 +24,12 @@ export class ProfileService {
       'Authorization': `Bearer ${this.authService.getToken()}`,
     });
     return this.http.get(`${this.userApiUrl}/${userId}`, {headers});
+  }
+
+  getProfile(): any {
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${this.authService.getToken()}`,
+    });
+    return this.http.get(`${this.userApiUrl}/auth/extract`, {headers});
   }
 }

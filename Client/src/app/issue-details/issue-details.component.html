@@ -41,7 +41,7 @@
         <h5>Replies</h5>
       </div>
       <div class="card-body">
-        <div *ngIf="replies.length > 0; else noReplies">
+        <div *ngIf="replies?.length > 0; else noReplies">
           <div *ngFor="let reply of replies" class="reply card mb-3">
             <div class="card-body">
               <div class="d-flex justify-content-between">

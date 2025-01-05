@@ -20,13 +20,13 @@
     </tr>
     </thead>
     <tbody>
-    <tr *ngFor="let issue of issues; let i = index" (click)="openIssueDetails(issue.id)" style="cursor: pointer">
+    <tr *ngFor="let issue of issues; let i = index" (click)="openIssueDetails(issue?.id)" style="cursor: pointer">
       <th scope="row">{{ i + 1 }}</th>
-      <td>{{ issue.trackingNumber }}</td>
-      <td>{{ issue.title.length > 20 ? issue.title.slice(0,20)+" ...": issue.title }}</td>
+      <td>{{ issue?.trackingNumber }}</td>
+      <td>{{ issue?.title.length > 20 ? issue.title.slice(0,20)+" ...": issue.title }}</td>
       <td [ngClass]="getStatusColor(issue.status)">{{ issue.status }}</td>
-      <td>{{ issue.category }}</td>
-      <td>{{ issue.officeId > 10 ? issue.officeId: issue.officeId }}</td>
+      <td>{{ issue?.category }}</td>
+      <td>{{ issue?.officeId > 10 ? issue.officeId: issue.officeId }}</td>
     </tr>
     </tbody>
   </table>
@@ -35,14 +35,6 @@
 <ng-template #noIssues>
   <table class="table">
     <thead>
-<!--    <tr>-->
-<!--      <th scope="col">#</th>-->
-<!--      <th scope="col">Tracking Number</th>-->
-<!--      <th scope="col">Subject</th>-->
-<!--      <th scope="col">Status</th>-->
-<!--      <th scope="col">Office</th>-->
-<!--      <th scope="col">Submission Date</th>-->
-<!--    </tr>-->
     </thead>
     <tbody>
     <tr>
