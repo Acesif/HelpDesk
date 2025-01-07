@@ -12,7 +12,7 @@ import { DropdownDirective } from './shared/dropdown.directive';
 import { IssueService } from './services/issue.service';
 import { Route, RouterModule } from '@angular/router';
 import { NgxChartsModule } from '@swimlane/ngx-charts';
-import { FilterformComponent } from './filterform/filterform.component';
+import { FilterFormComponent } from './filterform/filter-form.component';
 import { TitleComponent } from './shared/title/title.component';
 import { HomepageComponent } from './homepage/homepage.component';
 import { ProfileComponent } from './profile/profile.component';
@@ -56,7 +56,7 @@ const routes: Route[] = [
     IssueFormComponent,
     DropdownDirective,
     HomepageComponent,
-    FilterformComponent,
+    FilterFormComponent,
     TitleComponent,
     ProfileComponent,
     RegistrationComponent,

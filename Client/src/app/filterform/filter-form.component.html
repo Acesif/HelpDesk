@@ -1,11 +1,12 @@
 <div class="mt-3"></div>
-<form class="d-flex align-items-center justify-content-around mt-5" #filterForm="ngForm" (change)="onSubmit(filterForm.value)">
+<form class="d-flex align-items-center justify-content-around mt-5">
   <div class="mb-3">
     <label for="floatingSelect" class="form-label">Status</label>
     <select
       class="form-select"
       id="floatingSelect"
       name="status"
+      (change)="onChange()"
       [(ngModel)]="status"
     >
       <option value="" disabled>Select Status</option>
@@ -24,6 +25,7 @@
       id="trackingNumber"
       name="trackingNumber"
       placeholder="Enter tracking number"
+      (input)="onChange()"
       [(ngModel)]="trackingNumber"
     >
   </div>
@@ -35,7 +37,8 @@
       id="titleOrDescription"
       name="textdesc"
       placeholder="Enter title or description"
-      [(ngModel)]="textdesc"
+      (input)="onChange()"
+      [(ngModel)]="textDesc"
     >
   </div>
   <div class="mb-3">
@@ -46,8 +49,8 @@
       id="startDate"
       name="startDate"
       [(ngModel)]="startDate"
+      (input)="onChange()"
       [max]="maxDate"
-      (change)="validateDates()"
       required
     />
   </div>
@@ -59,8 +62,8 @@
       id="endDate"
       name="endDate"
       [(ngModel)]="endDate"
+      (input)="onChange()"
       [max]="maxDate"
-      (change)="validateDates()"
       required
     />
   </div>

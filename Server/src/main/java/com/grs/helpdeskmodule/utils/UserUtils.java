@@ -43,9 +43,12 @@ public class UserUtils {
                 .phoneNumber(user.getPhoneNumber())
                 .build();
     }
-    public UserInformation extractUserInformation(){
+    public UserInformation extractUserInformation(Authentication authentication){
+//        User user = userService.findUserByEmail(
+//                SecurityContextHolder.getContext().getAuthentication().getName()
+//        );
         User user = userService.findUserByEmail(
-                SecurityContextHolder.getContext().getAuthentication().getName()
+                authentication.getName()
         );
         return UserInformation.builder()
                 .id(user.getId())

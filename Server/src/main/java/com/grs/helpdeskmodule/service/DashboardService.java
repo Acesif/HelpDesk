@@ -33,16 +33,4 @@ public class DashboardService extends BaseService<Issue> {
     public List<Issue> findIssuesByYearMonth(){
         return issueRepository.findIssuesByYearMonth(new SimpleDateFormat("yyyy-MM-dd").format(new Date()));
     }
-
-    public List<Issue> findIssuesBetweenYearMonths(String startYearMonth, String endYearMonth){
-        return issueRepository.findIssuesBetweenYearMonths(startYearMonth,endYearMonth);
-    }
-
-    public Issue findIssuesByTrackingNumber(String trackingNumber){
-        return issueRepository.findIssuesByTrackingNumber(trackingNumber);
-    }
-
-    public List<Issue> findIssuesByTitleOrDescription(String input){
-        return issueRepository.findIssuesByTitleOrDescription(input);
-    }
 }

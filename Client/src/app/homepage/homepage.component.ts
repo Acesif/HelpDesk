@@ -25,7 +25,7 @@ export class HomepageComponent {
 
   getPercentByName(name: string): number | undefined {
     const entry: { name: string, value: number } = this.pieData.find(item => item.name === name);
-    return entry ? (entry.value/this.total)*100 : undefined;
+    return entry ? parseFloat((entry.value * 100 / this.total).toFixed(2)) : undefined;
   }
 
   ngOnInit(): void {

@@ -30,7 +30,15 @@ public class IssueService extends BaseService<Issue> {
         return issueRepository.findIssuesByOffice(id);
     }
 
-    public Issue findByTrackingNumber(String trackingNumber){
+    public List<Issue> findByTrackingNumber(String trackingNumber){
         return issueRepository.findIssuesByTrackingNumber(trackingNumber);
+    }
+
+    public List<Issue> findIssuesBetweenYearMonths(String startYearMonth, String endYearMonth){
+        return issueRepository.findIssuesBetweenYearMonths(startYearMonth,endYearMonth);
+    }
+
+    public List<Issue> findIssuesByTitleOrDescription(String input){
+        return issueRepository.findIssuesByTitleOrDescription(input);
     }
 }

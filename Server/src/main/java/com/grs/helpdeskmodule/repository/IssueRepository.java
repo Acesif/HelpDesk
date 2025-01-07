@@ -18,8 +18,8 @@ public interface IssueRepository extends BaseEntityRepository<Issue> {
     @Query(value = "SELECT * FROM helpdesk.issue WHERE DATE_FORMAT(created_at, '%Y-%m') BETWEEN DATE_FORMAT(:startYearMonth, '%Y-%m') AND DATE_FORMAT(:endYearMonth, '%Y-%m')", nativeQuery = true)
     List<Issue> findIssuesBetweenYearMonths(String startYearMonth, String endYearMonth);
 
-    @Query(value = "SELECT * FROM helpdesk.issue WHERE tracking_number = :tracking_number", nativeQuery = true)
-    Issue findIssuesByTrackingNumber(String tracking_number);
+    @Query(value = "SELECT * FROM helpdesk.issue WHERE tracking_number LIKE %:tracking_number%", nativeQuery = true)
+    List<Issue> findIssuesByTrackingNumber(String tracking_number);
 
     @Query(value = "SELECT * FROM helpdesk.issue WHERE title LIKE CONCAT('%', :input, '%') OR description LIKE CONCAT('%', :input, '%')", nativeQuery = true)
     List<Issue> findIssuesByTitleOrDescription(String input);

@@ -3,22 +3,23 @@ package com.grs.helpdeskmodule.controller;
 import com.grs.helpdeskmodule.base.BaseEntity;
 import com.grs.helpdeskmodule.dto.IssueDTO;
 import com.grs.helpdeskmodule.dto.Response;
+import com.grs.helpdeskmodule.dto.UserInformation;
 import com.grs.helpdeskmodule.entity.*;
 import com.grs.helpdeskmodule.repository.OfficeRepository;
-import com.grs.helpdeskmodule.service.AttachmentService;
-import com.grs.helpdeskmodule.service.IssueService;
-import com.grs.helpdeskmodule.service.OfficeService;
-import com.grs.helpdeskmodule.service.UserService;
+import com.grs.helpdeskmodule.service.*;
 import com.grs.helpdeskmodule.utils.AttachmentUtils;
 import com.grs.helpdeskmodule.utils.IssueUtils;
+import com.grs.helpdeskmodule.utils.UserUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -32,6 +33,8 @@ public class IssueController {
     private final UserService userService;
     private final AttachmentService attachmentService;
     private final OfficeService officeService;
+    private final DashboardService dashboardService;
+    private final UserUtils userUtils;
 
     /**
      * Creates a new issue with the given title, description, and status. Optionally allows attaching files.
@@ -356,5 +359,289 @@ public class IssueController {
                 .message("Issues for office id "+postedByUser.getOffice().getId()+" has been retrieved")
                 .data(issueDTOList)
                 .build();
+    }
+
+    /**
+     * Finds issues by a specified status. If the status is invalid or missing, returns a bad request response.
+     * Handles HTTP POST requests to the "/status" endpoint.
+     *
+     * @param status The status of the issues to retrieve (e.g., "OPEN", "RESOLVED").
+     * @return A response containing a list of issues with the specified status or a message if no issues are found.
+     */
+
+    @PostMapping("/{userType}/status/{status}")
+    public Response<?> findIssuesByStatus(
+            @PathVariable String status,
+            @PathVariable Long userType,
+            Authentication authentication
+    ){
+        UserInformation user = userUtils.extractUserInformation(authentication);
+        Long userId = user.getId();
+        Long officeId = user.getOfficeId();
+
+        if (status == null){
+            return Response.builder()
+                    .status(HttpStatus.BAD_REQUEST)
+                    .message("Status parameter missing")
+                    .data(null)
+                    .build();
+        }
+        status = status.toUpperCase();
+        try {
+            IssueStatus.valueOf(status);
+        } catch (Exception e){
+            return Response.builder()
+                    .status(HttpStatus.BAD_REQUEST)
+                    .message("Invalid status")
+                    .data(null)
+                    .build();
+        }
+
+        List<Issue> issues = dashboardService.findIssuesByStatus(status);
+
+        if (issues.isEmpty()){
+            return Response.builder()
+                    .status(HttpStatus.NO_CONTENT)
+                    .message("No "+status+" issues found")
+                    .data(null)
+                    .build();
+        }
+
+        if(userType == 0L){
+            issues = issues.stream().filter(i -> Objects.equals(i.getOffice().getId(), officeId)).toList();
+        } else {
+            issues = issues.stream().filter(i -> Objects.equals(i.getPostedBy().getId(), userId)).toList();
+        }
+
+        return Response.builder()
+                .status(HttpStatus.OK)
+                .message("All "+status+" issues found")
+                .data(withAttachments(issues))
+                .build();
+    }
+
+    /**
+     * Finds issues based on a specified year and month. If no parameter is provided, defaults to the current month.
+     * Handles HTTP POST requests to the "/current_month" endpoint.
+     *
+     * @param YearMonth The year and month (in "yyyy-MM" format) to filter issues by. Optional.
+     * @return A response containing a list of issues from the specified month or a message if no issues are found.
+     */
+
+    @PostMapping("/{userType}/current_month/{YearMonth}")
+    public Response<?> findIssuesByYearMonth(
+            @PathVariable String YearMonth,
+            @PathVariable Long userType,
+            Authentication authentication
+    ){
+
+        UserInformation user = userUtils.extractUserInformation(authentication);
+        Long officeId = user.getOfficeId();
+        Long userId = user.getId();
+
+        List<Issue> issues;
+
+        if (YearMonth == null){
+            issues = dashboardService.findIssuesByYearMonth();
+        } else {
+            issues = dashboardService.findIssuesByYearMonth(YearMonth);
+        }
+
+        if (issues.isEmpty()){
+            return Response.builder()
+                    .status(HttpStatus.NO_CONTENT)
+                    .message("No issues on "+YearMonth+" found")
+                    .data(null)
+                    .build();
+        }
+
+        if(userType == 0L){
+            issues = issues.stream().filter(i -> Objects.equals(i.getOffice().getId(), officeId)).toList();
+        } else {
+            issues = issues.stream().filter(i -> Objects.equals(i.getPostedBy().getId(), userId)).toList();
+        }
+
+        return Response.builder()
+                .status(HttpStatus.OK)
+                .message("All issues on "+(YearMonth == null ? new SimpleDateFormat("yyyy-MM-dd").format(new Date()) : YearMonth)+" found")
+                .data(withAttachments(issues))
+                .build();
+    }
+
+    /**
+     * Finds issues between two specified year-months (inclusive).
+     * Both parameters are required; returns a bad request response if either is missing.
+     * Handles HTTP POST requests to the "/between_month" endpoint.
+     *
+     * @param startYearMonth The start year and month (in "yyyy-MM" format) for filtering issues.
+     * @param endYearMonth   The end year and month (in "yyyy-MM" format) for filtering issues.
+     * @return A response containing a list of issues found within the specified date range, or a message if no issues are found.
+     */
+
+    @PostMapping("/{userType}/between_month/{startYearMonth}/{endYearMonth}")
+    public Response<?> findIssuesBetweenYearMonths(
+            @PathVariable String startYearMonth,
+            @PathVariable String endYearMonth,
+            @PathVariable Long userType,
+            Authentication authentication
+    ){
+
+        UserInformation user = userUtils.extractUserInformation(authentication);
+        Long officeId = user.getOfficeId();
+        Long userId = user.getId();
+
+        if (startYearMonth == null || endYearMonth == null){
+            return Response.builder()
+                    .status(HttpStatus.BAD_REQUEST)
+                    .message("startYearMonth or endYearMonth parameter missing")
+                    .data(null)
+                    .build();
+        }
+
+        List<Issue> issues = issueService.findIssuesBetweenYearMonths(startYearMonth,endYearMonth);
+
+        if (issues.isEmpty()){
+            return Response.builder()
+                    .status(HttpStatus.NO_CONTENT)
+                    .message("No issues found between "+startYearMonth+" and "+endYearMonth)
+                    .data(null)
+                    .build();
+        }
+
+        if(userType == 0L){
+            issues = issues.stream().filter(i -> Objects.equals(i.getOffice().getId(), officeId)).toList();
+        } else {
+            issues = issues.stream().filter(i -> Objects.equals(i.getPostedBy().getId(), userId)).toList();
+        }
+
+        return Response.builder()
+                .status(HttpStatus.OK)
+                .message("All issues found between "+startYearMonth+" and "+endYearMonth)
+                .data(withAttachments(issues))
+                .build();
+    }
+
+    /**
+     * Finds an issue based on a specified tracking number. Returns a message if no issue is found with the provided tracking number.
+     * Handles HTTP POST requests to the "/tracking" endpoint.
+     *
+     * @param trackingNumber The tracking number of the issue to retrieve.
+     * @return A response containing the issue details, including attachments, or a message if the issue is not found.
+     */
+
+    @PostMapping("/{userType}/tracking/{trackingNumber}")
+    public Response<?> findIssuesByTrackingNumber(
+            @PathVariable String trackingNumber,
+            @PathVariable Long userType,
+            Authentication authentication
+    ){
+
+        UserInformation user = userUtils.extractUserInformation(authentication);
+        Long userId = user.getId();
+        Long officeId = user.getOfficeId();
+
+        if (trackingNumber == null){
+            return Response.builder()
+                    .status(HttpStatus.BAD_REQUEST)
+                    .message("trackingNumber parameter missing")
+                    .data(null)
+                    .build();
+        }
+
+        List<Issue> issues = issueService.findByTrackingNumber(trackingNumber);
+        if(userType == 0L){
+            issues = issues.stream().filter(i -> Objects.equals(i.getOffice().getId(), officeId)).toList();
+        } else {
+            issues = issues.stream().filter(i -> Objects.equals(i.getPostedBy().getId(), userId)).toList();
+        }
+        List<IssueDTO> issueDTOList = issues.stream().map(IssueUtils::convertToIssueDTO).toList();
+
+        if (issueDTOList.isEmpty()){
+            return Response.builder()
+                    .status(HttpStatus.NO_CONTENT)
+                    .message("No issues found with tracking number "+trackingNumber)
+                    .data(null)
+                    .build();
+        }
+
+        return Response.builder()
+                .status(HttpStatus.OK)
+                .message("Issues found with tracking number "+trackingNumber)
+                .data(issueDTOList)
+                .build();
+    }
+
+    /**
+     * Finds issues that contain a specified text in their title or description.
+     * Handles HTTP POST requests to the "/find" endpoint.
+     *
+     * @param input The text to search for in issue titles or descriptions.
+     * @return A response containing a list of issues that match the specified text, or a message if no matches are found.
+     */
+
+    @PostMapping("/{userType}/find/{input}")
+    public Response<?> findIssuesByTitleOrDescription(
+            @PathVariable String input,
+            @PathVariable Long userType,
+            Authentication authentication
+    ){
+
+        UserInformation user = userUtils.extractUserInformation(authentication);
+        Long userId = user.getId();
+        Long officeId = user.getOfficeId();
+
+        if (input == null){
+            return Response.builder()
+                    .status(HttpStatus.BAD_REQUEST)
+                    .message("Input parameter missing")
+                    .data(null)
+                    .build();
+        }
+
+        List<Issue> issues = issueService.findIssuesByTitleOrDescription(input);
+
+        if (issues.isEmpty()){
+            return Response.builder()
+                    .status(HttpStatus.NO_CONTENT)
+                    .message("No issues found with with the text "+input)
+                    .data(null)
+                    .build();
+        }
+
+        if(userType == 0L){
+            issues = issues.stream().filter(i -> Objects.equals(i.getOffice().getId(), officeId)).toList();
+        } else {
+            issues = issues.stream().filter(i -> Objects.equals(i.getPostedBy().getId(), userId)).toList();
+        }
+
+        List<IssueDTO> issueDTOList = withAttachments(issues);
+
+        return Response.builder()
+                .status(HttpStatus.OK)
+                .message("Issues found with the text "+input)
+                .data(issueDTOList)
+                .build();
+    }
+
+    private List<IssueDTO> withAttachments(List<Issue> issues) {
+        return issues.stream().map(
+                issue -> {
+
+                    Map<Long,String> filenames = getAttachmentFilenames(issue);
+
+                    IssueDTO convertedIssue = IssueUtils.convertToIssueDTO(issue);
+                    convertedIssue.setAttachments(filenames);
+
+                    return convertedIssue;
+                }
+        ).toList();
+    }
+
+    private Map<Long, String> getAttachmentFilenames(Issue issue){
+        Map<Long,String> filenames = new HashMap<>();
+        for (Attachment a : issue.getAttachments()){
+            filenames.put(a.getId(),a.getFileName());
+        }
+        return filenames;
     }
 }

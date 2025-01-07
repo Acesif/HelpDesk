@@ -86,8 +86,40 @@ export class IssueService {
 
   postIssueReply(issueId: number, body: { comment: string; updatedStatus: string }): Observable<any>{
     const headers = new HttpHeaders({
-      'Authorization': `Bearer ${this.authService.getToken()}`,
+      'Authorization': `Bearer ${this.authService.getToken()}`
     });
-    return this.http.post(`${this.issueReplyApiUrl}/${issueId}`,body,{headers});
+    return this.http.post(`${this.issueReplyApiUrl}/${issueId}`,body,{ headers });
+  }
+
+  filterByTrx(tracking_number: string, userType: number): any {
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${this.authService.getToken()}`
+    });
+
+    return this.http.post<any>(`${this.issueApiUrl}/${userType}/tracking/${tracking_number}`, null ,{ headers });
+  }
+
+  filterByStatus(status: string, userType: number): any {
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${this.authService.getToken()}`
+    });
+
+    return this.http.post<any>(`${this.issueApiUrl}/${userType}/status/${status}`, null, { headers });
+  }
+
+  filterByTextDesc(text_desc: string, userType: number): any {
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${this.authService.getToken()}`
+    });
+
+    return this.http.post<any>(`${this.issueApiUrl}/${userType}/find/${text_desc}`, null, { headers });
+  }
+
+  filterByDateRange(start_date: string, end_date: string, userType: number): any {
+    const headers = new HttpHeaders({
+    'Authorization': `Bearer ${this.authService.getToken()}`,
+    });
+
+    return this.http.post<any>(`${this.issueApiUrl}/${userType}/between_month/${start_date}/${end_date}`, null, { headers });
   }
 }

@@ -216,8 +216,8 @@ public class UserController {
     }
 
     @GetMapping("/auth/extract")
-    public Response<UserInformation> extractUser(){
-        UserInformation userInformation = userUtils.extractUserInformation();
+    public Response<UserInformation> extractUser(Authentication authentication){
+        UserInformation userInformation = userUtils.extractUserInformation(authentication);
 
         return Response.<UserInformation>builder()
                 .status(HttpStatus.OK)

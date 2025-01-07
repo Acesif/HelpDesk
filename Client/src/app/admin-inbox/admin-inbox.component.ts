@@ -2,9 +2,10 @@ import { Component } from '@angular/core';
 import {Issue} from '../../model/Issue.model';
 import {AuthService} from '../services/auth.service';
 import {AdminService} from '../services/admin.service';
-import {filter} from 'rxjs';
+import {filter, forkJoin} from 'rxjs';
 import {NavigationEnd, Router} from '@angular/router';
 import {InterceptorService} from '../services/interceptor.service';
+import {IssueService} from '../services/issue.service';
 
 @Component({
   selector: 'app-admin-inbox',
@@ -14,13 +15,14 @@ import {InterceptorService} from '../services/interceptor.service';
 export class AdminInboxComponent {
 
   issues: Issue[] = [];
+  allIssues: Issue[] = [];
   loading: boolean = true;
 
   constructor(
     private adminService: AdminService,
     private router: Router,
     private interceptor: InterceptorService,
-    private auth: AuthService,
+    private issueService: IssueService
   ) {}
 
   ngOnInit() {
@@ -36,7 +38,8 @@ export class AdminInboxComponent {
   loadIssues(): void {
     this.adminService.getInboxIssues().subscribe(
       (issues: Issue[]) => {
-        this.issues = issues;
+        this.allIssues = issues;
+        this.issues = [...issues];
         this.loading = false;
       },
       (error) => {
@@ -64,5 +67,41 @@ export class AdminInboxComponent {
       default:
         return '';
     }
+  }
+
+  onFilterChange(filter: any): void {
+    const requests: any[] = [];
+
+    if (filter.tracking_number) {
+      requests.push(this.issueService.filterByTrx(filter.tracking_number, 0));
+    }
+
+    if (filter.status) {
+      requests.push(this.issueService.filterByStatus(filter.status, 0));
+    }
+
+    if (filter.start_date && filter.end_date) {
+      requests.push(this.issueService.filterByDateRange(filter.start_date, filter.end_date, 0));
+    }
+
+    if (filter.text_desc) {
+      requests.push(this.issueService.filterByTextDesc(filter.text_desc, 0));
+    }
+
+    forkJoin(requests).subscribe((responses: any[]) => {
+      const issuesByTracking_number: Issue[] = responses[0]?.data || [];
+      const issuesByStatus: Issue[] = responses[1]?.data || [];
+      const issuesByDateRange: Issue[] = responses[2]?.data || [];
+      const issuesByTextDesc: Issue[] = responses[3]?.data || [];
+
+      this.issues = this.allIssues.filter(issue =>
+        (!issuesByTracking_number.length || issuesByTracking_number.some(filteredIssue => filteredIssue.id === issue.id)) &&
+        (!issuesByStatus.length || issuesByStatus.some(filteredIssue => filteredIssue.id === issue.id)) &&
+        (!issuesByDateRange.length || issuesByDateRange.some(filteredIssue => filteredIssue.id === issue.id)) &&
+        (!issuesByTextDesc.length || issuesByTextDesc.some(filteredIssue => filteredIssue.id === issue.id))
+      );
+    }, error => {
+      console.error('Error fetching filtered issues:', error);
+    });
   }
 }
