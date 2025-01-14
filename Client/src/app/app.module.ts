@@ -21,6 +21,8 @@ import { provideHttpClient } from '@angular/common/http';
 import { LoginComponent } from './login/login.component';
 import { AdminInboxComponent } from './admin-inbox/admin-inbox.component';
 import { LoadingSpinnerComponent } from './loading-spinner/loading-spinner.component';
+import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
+import {ToastrModule} from 'ngx-toastr';
 
 const routes: Route[] = [
   { path: '', component: RegistrationComponent },
@@ -71,7 +73,13 @@ const routes: Route[] = [
     NgxChartsModule,
     FormsModule,
     ReactiveFormsModule,
-    RouterModule.forRoot(routes)
+    RouterModule.forRoot(routes),
+    BrowserAnimationsModule,
+    ToastrModule.forRoot({
+      positionClass: 'toast-top-right',
+      preventDuplicates: true,
+      timeOut: 2000,
+    }),
   ],
   providers: [IssueService, provideHttpClient()],
   bootstrap: [AppComponent]

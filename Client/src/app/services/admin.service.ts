@@ -40,7 +40,8 @@ export class AdminService {
                 issue.officeId,
                 issue.postedOn,
                 issue.postedBy,
-                issue.updatedOn
+                issue.updatedOn,
+                null
               )
           );
         } else {

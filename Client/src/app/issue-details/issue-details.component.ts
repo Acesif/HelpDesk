@@ -1,10 +1,11 @@
 import {Component} from '@angular/core';
 import {Issue} from '../../model/Issue.model';
-import {ActivatedRoute} from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 import {IssueService} from '../services/issue.service';
 import {AuthService} from '../services/auth.service';
 import {ProfileService} from '../services/profile.service';
 import {log} from '@angular-devkit/build-angular/src/builders/ssr-dev-server';
+import {DomSanitizer, SafeUrl} from '@angular/platform-browser';
 
 @Component({
   selector: 'app-issue-details',
@@ -17,9 +18,13 @@ export class IssueDetailsComponent {
   replies: Array<any> = [];
   newReply: { message: string, status: string } = { message: '', status: '' };
   loading: boolean = true;
+  previewUrl: SafeUrl | null = null;
+  previewType: string = '';
+  isPreviewVisible = false;
 
   constructor(
     private issueService: IssueService,
+    private sanitizer: DomSanitizer,
     private route: ActivatedRoute,
     private auth: AuthService,
     private profileService: ProfileService,
@@ -52,24 +57,33 @@ export class IssueDetailsComponent {
 
   fetchIssueDetails(trackingNumber: string): void {
     this.issueService.getIssueDetails(trackingNumber).subscribe((issue: any) => {
-      this.issue = new Issue(
-        issue.data.id,
-        issue.data.trackingNumber,
-        issue.data.title,
-        issue.data.description,
-        issue.data.category,
-        issue.data.status,
-        issue.data.officeId,
-        issue.data.postedOn,
-        issue.data.postedBy,
-        issue.data.updatedOn
-        );
+      this.issueService.getAttachments(issue.data.id).subscribe({
+        next: (attachment: any) => {
+          this.issue = new Issue(
+            issue.data.id,
+            issue.data.trackingNumber,
+            issue.data.title,
+            issue.data.description,
+            issue.data.category,
+            issue.data.status,
+            issue.data.officeId,
+            issue.data.postedOn,
+            issue.data.postedBy,
+            issue.data.updatedOn,
+            attachment.data
+          );
+          console.log(this.issue);
+        },
+        error: (err: any) => {
+          console.error('Error fetching attachments:', err);
+        },
+      });
       this.loading = false;
       }
     );
   }
 
-  isAdminAndisNotSelf(): boolean {
+  isAdminAndIsNotSelf(): boolean {
     const designation = this.auth.getUserDesignation();
     return designation === 'GRO' || designation === 'VENDOR';
   }
@@ -106,7 +120,7 @@ export class IssueDetailsComponent {
     };
 
     this.issueService.postIssueReply(this.issueId, requestBody).subscribe(
-      (response: any) => {
+      () => {
         this.fetchIssueDetails(this.issueId);
         this.fetchIssueReplies(this.issueId);
 
@@ -136,4 +150,39 @@ export class IssueDetailsComponent {
     }
   }
 
+  downloadFile(fileName: string, id: number): void {
+    this.issueService.getFile(fileName, id);
+  }
+
+  previewFile(id: number): void {
+    this.issueService.getFilePreview(id).subscribe(
+      (blob) => {
+        const mimeType = blob.type;
+
+        // Set preview type based on MIME type
+        if (mimeType.startsWith('image/')) {
+          this.previewType = 'image';
+        } else if (mimeType === 'application/pdf') {
+          this.previewType = 'pdf';
+        } else {
+          this.previewType = 'other';
+        }
+
+        const url = window.URL.createObjectURL(blob);
+        this.previewUrl = this.sanitizer.bypassSecurityTrustUrl(url);
+
+        // Show modal
+        this.isPreviewVisible = true;
+      },
+      (error) => {
+        console.error('Error previewing file:', error);
+      }
+    );
+  }
+
+  closePreview(): void {
+    this.isPreviewVisible = false;
+    this.previewUrl = null;
+    this.previewType = '';
+  }
 }

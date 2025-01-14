@@ -21,7 +21,7 @@ export class AppComponent {
 
   ngOnInit() {
     const unixTimestamp: number = Math.floor(Date.now() / 1000);
-    if (unixTimestamp > this.authService.getValidity()) {
+    if (unixTimestamp > this.authService.getValidity() && this.authService.isAuthenticated()) {
       this.loginService.refreshToken(this.authService.getToken())
         .subscribe((response: any) => {
           this.authService.saveToken(response.data.refreshToken);

@@ -3,7 +3,8 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { LoginService } from '../services/login.service';
 import { Router } from '@angular/router';
 import {InterceptorService} from '../services/interceptor.service';
-import {AuthService} from '../services/auth.service'; // Optional: For navigation after login
+import {AuthService} from '../services/auth.service';
+import {ToastrService} from 'ngx-toastr';
 
 @Component({
   selector: 'app-login',
@@ -19,7 +20,8 @@ export class LoginComponent {
     private loginService: LoginService,
     private interceptor: InterceptorService,
     private authService: AuthService,
-    private router: Router
+    private router: Router,
+    private toast: ToastrService,
   ) {
     this.loginForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
@@ -38,13 +40,14 @@ export class LoginComponent {
 
       this.loginService.login(loginData).subscribe({
         next: (response) => {
-          console.log('Login successful:', response);
+          this.toast.success('Login successful!', 'Success');
           this.authService.saveToken(response.data.token);
           this.interceptor.validateRoutePermission();
         },
         error: (error) => {
-          console.error('Login failed:', error);
-          this.errorMessage = error.error.message || 'An error occurred. Please try again.';
+          this.toast.error('Wrong credentials', 'Login Failed');
+          console.error(error.message);
+          this.loginForm.reset();
         }
       });
     } else {
@@ -54,5 +57,9 @@ export class LoginComponent {
 
   navigateToRegister(): void {
     this.router.navigate(['/auth/register']);
+  }
+
+  onForget() {
+    this.toast.error("Forgot Password");
   }
 }

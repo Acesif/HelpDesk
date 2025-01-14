@@ -4,6 +4,7 @@ import {IssueService} from '../services/issue.service';
 import {ActivatedRoute, Router} from '@angular/router';
 import {InterceptorService} from '../services/interceptor.service';
 import {HttpResponse} from '@angular/common/http';
+import {ToastrService} from 'ngx-toastr';
 
 @Component({
   selector: 'app-issue-form',
@@ -16,7 +17,8 @@ export class IssueFormComponent {
   constructor(
     private issueService: IssueService,
     private router: Router,
-    private interceptor: InterceptorService
+    private interceptor: InterceptorService,
+    private toast: ToastrService
   ) {}
 
   trackingNumber: string = '';
@@ -87,7 +89,17 @@ export class IssueFormComponent {
         this.attachments
       );
 
-      this.issueService.createIssue(issue).subscribe();
+      this.issueService.createIssue(issue).subscribe({
+          next: (res: any) => {
+            console.log(res)
+            this.toast.success('Issue submitted successfully.');
+          },
+          error: (err: any) => {
+            console.log(err);
+            this.toast.error('Failed to submit Issue');
+          }
+        }
+      );
       this.resetFormData();
       this.router.navigate(['/issues', 'list']).then(res => {
         console.log("Navigating to /issues/list", res);

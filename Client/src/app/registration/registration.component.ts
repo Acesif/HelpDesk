@@ -4,6 +4,7 @@ import { RegistrationService } from '../services/registration.service';
 import {Router} from '@angular/router';
 import {AuthService} from '../services/auth.service';
 import {InterceptorService} from '../services/interceptor.service';
+import {ToastrService} from 'ngx-toastr';
 
 @Component({
   selector: 'app-registration',
@@ -19,6 +20,7 @@ export class RegistrationComponent {
     private router: Router,
     private tokenService: AuthService,
     private interceptor: InterceptorService,
+    private toast: ToastrService
   ) { }
 
   ngOnInit(): void {
@@ -44,9 +46,11 @@ export class RegistrationComponent {
             this.registrationForm.reset();
             this.router.navigate(['admin','dashboard'])
               .then(() => {
+                this.toast.success('Registration successful!', 'Success');
               })
               .catch((err) => {
                 console.log(err.message);
+                this.toast.error('Registration Failed!', 'Success');
               });
           }
         },

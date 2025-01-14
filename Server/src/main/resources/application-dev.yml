@@ -22,6 +22,9 @@ spring:
 #          useUnicode: true
 #          characterEncoding: utf8
 #          characterSetResults: utf8mb4
+  mail:
+    username: "asif@karoothitbd.com"
+    password: "dzdl idsq vxuc hshg"
 
 management:
   endpoints:

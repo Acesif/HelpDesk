@@ -2,10 +2,10 @@ package com.grs.helpdeskmodule.controller;
 
 import com.grs.helpdeskmodule.base.BaseEntity;
 import com.grs.helpdeskmodule.dto.IssueDTO;
+import com.grs.helpdeskmodule.dto.MailBody;
 import com.grs.helpdeskmodule.dto.Response;
 import com.grs.helpdeskmodule.dto.UserInformation;
 import com.grs.helpdeskmodule.entity.*;
-import com.grs.helpdeskmodule.repository.OfficeRepository;
 import com.grs.helpdeskmodule.service.*;
 import com.grs.helpdeskmodule.utils.AttachmentUtils;
 import com.grs.helpdeskmodule.utils.IssueUtils;
@@ -18,7 +18,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -35,6 +34,7 @@ public class IssueController {
     private final OfficeService officeService;
     private final DashboardService dashboardService;
     private final UserUtils userUtils;
+    private final EmailService emailService;
 
     /**
      * Creates a new issue with the given title, description, and status. Optionally allows attaching files.
@@ -84,13 +84,14 @@ public class IssueController {
 
         Issue savedIssue = issueService.save(issue);
 
-        Map<Long,String> filenames = new HashMap<>();
-
-        if (attachments != null && !attachments.isEmpty()) {
-            for (Attachment a : savedIssue.getAttachments()){
-                filenames.put(a.getId(),a.getFileName());
-            }
-        }
+//        Map<Long,String> filenames = new HashMap<>();
+//
+//        if (attachments != null && !attachments.isEmpty()) {
+//            for (Attachment a: savedIssue.getAttachments()){
+//                filenames.put(a.getId(),a.getFileName());
+//            }
+//        }
+        List<Map<String, Object>> transformedAttachments = getAttachmentFilenames(savedIssue);
 
         IssueDTO savedIssueDTO = IssueDTO.builder()
                 .id(savedIssue.getId())
@@ -103,8 +104,14 @@ public class IssueController {
                 .officeId(savedIssue.getOffice() != null ? savedIssue.getOffice().getId() : null)
                 .postedBy(savedIssue.getPostedBy().getId())
                 .category(savedIssue.getIssueCategory())
-                .attachments(filenames)
+                .attachments(transformedAttachments)
                 .build();
+
+//        emailService.sendEmail(MailBody.builder()
+//                        .to(savedIssue.getPostedBy().getEmail())
+//                        .subject("ইসু সফলভাবে জমাদানকৃত")
+//                        .body(MailBody.sendIssueSubmittedEmail(savedIssue.getPostedBy().getName(), savedIssue.getTrackingNumber()))
+//                .build());
 
         return Response.builder()
                 .status(HttpStatus.CREATED)
@@ -159,11 +166,14 @@ public class IssueController {
 
         Issue updatedIssue = issueService.update(issue);
 
-        Map<Long,String> filenames = new HashMap<>();
+        List<Map<String, Object>> transformedAttachments = new ArrayList<>();
 
         if (attachments != null && !attachments.isEmpty()) {
-            for (Attachment a : updatedIssue.getAttachments()){
-                filenames.put(a.getId(),a.getFileName());
+            for (Attachment a : updatedIssue.getAttachments()) {
+                Map<String, Object> attachmentData = new HashMap<>();
+                attachmentData.put("fileName", a.getFileName());
+                attachmentData.put("id", a.getId());
+                transformedAttachments.add(attachmentData);
             }
         }
 
@@ -182,7 +192,7 @@ public class IssueController {
                                 .updatedOn(updatedIssue.getUpdateDate())
                                 .trackingNumber(updatedIssue.getTrackingNumber())
                                 .category(updatedIssue.getIssueCategory())
-                                .attachments(filenames)
+                                .attachments(transformedAttachments)
                                 .build()
                 )
                 .build();
@@ -238,13 +248,7 @@ public class IssueController {
                         .build();
             }
 
-            Map<Long,String> filenames = new HashMap<>();
-
-            if (findIssue.getAttachments() != null && !findIssue.getAttachments().isEmpty()){
-                for (Attachment a : findIssue.getAttachments()){
-                    filenames.put(a.getId(),a.getFileName());
-                }
-            }
+            List<Map<String, Object>> transformedAttachments = getAttachmentFilenames(findIssue);
 
             IssueDTO issueDTO = IssueDTO.builder()
                     .id(findIssue.getId())
@@ -257,7 +261,7 @@ public class IssueController {
                     .officeId(findIssue.getOffice() != null ? findIssue.getOffice().getId() : null)
                     .trackingNumber(findIssue.getTrackingNumber())
                     .category(findIssue.getIssueCategory())
-                    .attachments(filenames)
+                    .attachments(transformedAttachments)
                     .build();
 
             return Response.builder()
@@ -297,16 +301,32 @@ public class IssueController {
         Map<Long, Issue> issueMap = issueList.stream()
                 .collect(Collectors.toMap(Issue::getId, issue -> issue));
 
+//        for (IssueDTO issueDTO : issueDTOList) {
+//            Issue correspondingIssue = issueMap.get(issueDTO.getId());
+//            if (correspondingIssue != null) {
+//                Map<Long, String> filenames = new HashMap<>();
+//                if (correspondingIssue.getAttachments() != null && !correspondingIssue.getAttachments().isEmpty()){
+//                    for (Attachment attachment : correspondingIssue.getAttachments()) {
+//                        filenames.put(attachment.getId(), attachment.getFileName());
+//                    }
+//                }
+//                issueDTO.setAttachments(filenames);
+//            }
+//        }
+        List<Map<String, Object>> transformedAttachments = new ArrayList<>();
+
         for (IssueDTO issueDTO : issueDTOList) {
             Issue correspondingIssue = issueMap.get(issueDTO.getId());
             if (correspondingIssue != null) {
-                Map<Long, String> filenames = new HashMap<>();
-                if (correspondingIssue.getAttachments() != null && !correspondingIssue.getAttachments().isEmpty()){
+                if (correspondingIssue.getAttachments() != null && !correspondingIssue.getAttachments().isEmpty()) {
                     for (Attachment attachment : correspondingIssue.getAttachments()) {
-                        filenames.put(attachment.getId(), attachment.getFileName());
+                        Map<String, Object> attachmentData = new HashMap<>();
+                        attachmentData.put("fileName", attachment.getFileName());
+                        attachmentData.put("id", attachment.getId());
+                        transformedAttachments.add(attachmentData);
                     }
                 }
-                issueDTO.setAttachments(filenames);
+                issueDTO.setAttachments(transformedAttachments);
             }
         }
 
@@ -341,16 +361,20 @@ public class IssueController {
         Map<Long, Issue> issueMap = issueList.stream()
                 .collect(Collectors.toMap(Issue::getId, issue -> issue));
 
+        List<Map<String, Object>> transformedAttachments = new ArrayList<>();
+
         for (IssueDTO issueDTO : issueDTOList) {
             Issue correspondingIssue = issueMap.get(issueDTO.getId());
             if (correspondingIssue != null) {
-                Map<Long, String> filenames = new HashMap<>();
-                if (correspondingIssue.getAttachments() != null && !correspondingIssue.getAttachments().isEmpty()){
+                if (correspondingIssue.getAttachments() != null && !correspondingIssue.getAttachments().isEmpty()) {
                     for (Attachment attachment : correspondingIssue.getAttachments()) {
-                        filenames.put(attachment.getId(), attachment.getFileName());
+                        Map<String, Object> attachmentData = new HashMap<>();
+                        attachmentData.put("fileName", attachment.getFileName());
+                        attachmentData.put("id", attachment.getId());
+                        transformedAttachments.add(attachmentData);
                     }
                 }
-                issueDTO.setAttachments(filenames);
+                issueDTO.setAttachments(transformedAttachments);
             }
         }
 
@@ -627,7 +651,7 @@ public class IssueController {
         return issues.stream().map(
                 issue -> {
 
-                    Map<Long,String> filenames = getAttachmentFilenames(issue);
+                    List<Map<String, Object>> filenames = getAttachmentFilenames(issue);
 
                     IssueDTO convertedIssue = IssueUtils.convertToIssueDTO(issue);
                     convertedIssue.setAttachments(filenames);
@@ -637,11 +661,17 @@ public class IssueController {
         ).toList();
     }
 
-    private Map<Long, String> getAttachmentFilenames(Issue issue){
-        Map<Long,String> filenames = new HashMap<>();
-        for (Attachment a : issue.getAttachments()){
-            filenames.put(a.getId(),a.getFileName());
+    private List<Map<String, Object>> getAttachmentFilenames(Issue issue){
+        List<Map<String, Object>> transformedAttachments = new ArrayList<>();
+
+        if (issue.getAttachments() != null && !issue.getAttachments().isEmpty()) {
+            for (Attachment a : issue.getAttachments()) {
+                Map<String, Object> attachmentData = new HashMap<>();
+                attachmentData.put("fileName", a.getFileName());
+                attachmentData.put("id", a.getId());
+                transformedAttachments.add(attachmentData);
+            }
         }
-        return filenames;
+        return transformedAttachments.stream().toList();
     }
 }

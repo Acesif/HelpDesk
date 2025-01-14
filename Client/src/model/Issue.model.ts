@@ -9,7 +9,7 @@ export class Issue {
   public postedOn: string;
   public postedBy: string;
   public updatedOn: string;
-  public attachments: File[];
+  public attachments: any;
 
   constructor(
     id: number,
@@ -22,7 +22,7 @@ export class Issue {
     postedOn: string,
     postedBy: string,
     updatedOn: string,
-    attachments: File[] = [],
+    attachments: any,
   ) {
     this.id = id;
     this.trackingNumber = trackingNumber;

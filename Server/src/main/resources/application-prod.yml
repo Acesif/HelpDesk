@@ -17,6 +17,10 @@ spring:
       ddl-auto: update
     defer-datasource-initialization: true
 
+  mail:
+    username: "asif@karoothitbd.com"
+    password: "dzdl idsq vxuc hshg"
+
 management:
   endpoints:
     web:

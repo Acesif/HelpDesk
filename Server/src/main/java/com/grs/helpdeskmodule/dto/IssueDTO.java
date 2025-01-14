@@ -30,5 +30,5 @@ public class IssueDTO {
     private Date postedOn;
     @JsonFormat(pattern = "dd-MM-yyyy HH:mm:ss", timezone = "Asia/Dhaka")
     private Date updatedOn;
-    private Map<Long,String> attachments;
+    private List<Map<String, Object>> attachments;
 }

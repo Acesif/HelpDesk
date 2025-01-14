@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import {AuthService} from '../services/auth.service';
 import {InterceptorService} from '../services/interceptor.service';
+import {ToastrService} from 'ngx-toastr';
 
 @Component({
   selector: 'app-navbar',
@@ -12,6 +13,7 @@ export class NavbarComponent {
 
   constructor(
     private auth: AuthService,
+    private toast: ToastrService
   ) {}
 
   isAdmin(): boolean {
@@ -26,6 +28,7 @@ export class NavbarComponent {
 
   logout() {
     this.auth.logout();
+    this.toast.success('Logout successful!', 'Success');
   }
 
   isAuthenticated() {

@@ -110,12 +110,12 @@ export class IssuesComponent {
         (!issuesByDateRange.length || issuesByDateRange.some(filteredIssue => filteredIssue.id === issue.id)) &&
         (!issuesByTextDesc.length || issuesByTextDesc.some(filteredIssue => filteredIssue.id === issue.id))
       );
-      if (this.issues.length === this.allIssues.length) {
-        const noFilterActive = !filter.tracking_number && !filter.status && !filter.start_date && !filter.end_date && !filter.text_desc;
-        if (!noFilterActive) {
-          this.issues = [];
-        }
-      }
+      // if (this.issues.length === this.allIssues.length) {
+      //   const noFilterActive = !filter.tracking_number && !filter.status && !filter.start_date && !filter.end_date && !filter.text_desc;
+      //   if (!noFilterActive) {
+      //     this.issues = [];
+      //   }
+      // }
     }, error => {
       console.error('Error fetching filtered issues:', error);
     });
