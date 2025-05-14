@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import {Router} from '@angular/router';
+import {JwtHelperService} from '@auth0/angular-jwt';
 
 @Injectable({
   providedIn: 'root'
@@ -27,25 +28,31 @@ export class AuthService {
   }
 
   getUserDesignation(): string | null {
+    const jwt = new JwtHelperService();
     const token = localStorage.getItem('token');
     if (!token) {
       return null;
     }
-    const payload = JSON.parse(atob(token.split('.')[1]));
+    const payload = jwt.decodeToken(token);
     return payload.designation || null;
   }
 
   getValidity(): number | null {
+    const jwt = new JwtHelperService();
     const token = localStorage.getItem('token');
     if (!token) {
       return null;
     }
-    const payload = JSON.parse(atob(token.split('.')[1]));
+    const payload = jwt.decodeToken(token);
     return payload.exp || null;
   }
 
   logout(): void {
     localStorage.removeItem('token');
     this.router.navigate(['auth','login']);
+  }
+
+  extractTokenInfo(token: string) {
+    return JSON.parse(atob(token.split('.')[1]));
   }
 }

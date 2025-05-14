@@ -5,9 +5,7 @@ import com.grs.helpdeskmodule.dto.UserInformation;
 import com.grs.helpdeskmodule.entity.User;
 import com.grs.helpdeskmodule.repository.OfficeRepository;
 import com.grs.helpdeskmodule.service.UserService;
-import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -24,10 +22,9 @@ public class UserUtils {
     public User mapToUser(UserDTO dto){
         return User.builder()
                 .name(dto.getName())
-                .email(dto.getEmail())
+                .username(dto.getUsername())
                 .designation(dto.getDesignation())
                 .office(officeRepository.findById(dto.getOfficeId()).orElse(null))
-                .phoneNumber(dto.getPhoneNumber())
                 .password(dto.getPassword())
                 .build();
     }
@@ -37,23 +34,22 @@ public class UserUtils {
                 .createdOn(user.getCreateDate())
                 .password("***")
                 .name(user.getName())
-                .email(user.getEmail())
+                .username(user.getUsername())
                 .designation(user.getDesignation())
                 .officeId(user.getOffice() != null ? user.getOffice().getId() : null)
-                .phoneNumber(user.getPhoneNumber())
                 .build();
     }
     public UserInformation extractUserInformation(Authentication authentication){
 //        User user = userService.findUserByEmail(
 //                SecurityContextHolder.getContext().getAuthentication().getName()
 //        );
-        User user = userService.findUserByEmail(
+        User user = userService.findUserByUsername(
                 authentication.getName()
         );
         return UserInformation.builder()
                 .id(user.getId())
                 .name(user.getName())
-                .email(user.getEmail())
+                .email(user.getUsername())
                 .phoneNumber(user.getPhoneNumber())
                 .officeId(user.getOffice() != null ? user.getOffice().getId() : null)
                 .designation(user.getDesignation())

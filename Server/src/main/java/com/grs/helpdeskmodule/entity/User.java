@@ -18,15 +18,15 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor
 @Table(
         name = "user",
-        uniqueConstraints = @UniqueConstraint(columnNames = {"email","phone_number"})
+        uniqueConstraints = @UniqueConstraint(columnNames = {"username","phone_number"})
 )
 public class User extends BaseEntity {
 
-    @Column(name = "name")
+    @Column(name = "name", columnDefinition = "VARCHAR(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci")
     private String name;
 
-    @Email
-    private String email;
+    @Column(name = "username")
+    private String username;
 
     @Column(name = "phone_number")
     @Pattern(regexp = "\\d{11}")
@@ -36,7 +36,12 @@ public class User extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     private Office office;
 
+    @Column(name = "designation", columnDefinition = "VARCHAR(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci")
     private String designation;
+
+    private Long employeeRecordId;
+
+    private String role;
 
     private String password;
 }

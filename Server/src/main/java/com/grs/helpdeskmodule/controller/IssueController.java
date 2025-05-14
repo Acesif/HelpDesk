@@ -1,8 +1,6 @@
 package com.grs.helpdeskmodule.controller;
 
-import com.grs.helpdeskmodule.base.BaseEntity;
 import com.grs.helpdeskmodule.dto.IssueDTO;
-import com.grs.helpdeskmodule.dto.MailBody;
 import com.grs.helpdeskmodule.dto.Response;
 import com.grs.helpdeskmodule.dto.UserInformation;
 import com.grs.helpdeskmodule.entity.*;
@@ -11,6 +9,7 @@ import com.grs.helpdeskmodule.utils.AttachmentUtils;
 import com.grs.helpdeskmodule.utils.IssueUtils;
 import com.grs.helpdeskmodule.utils.UserUtils;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
@@ -20,8 +19,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import java.text.SimpleDateFormat;
 import java.util.*;
-import java.util.stream.Collectors;
-
 
 @RestController
 @RequestMapping("/api/issue")
@@ -66,7 +63,7 @@ public class IssueController {
                 .build();
 
         String loggedInUserEmail = SecurityContextHolder.getContext().getAuthentication().getName();
-        User postedByUser = userService.findUserByEmail(loggedInUserEmail);
+        User postedByUser = userService.findUserByUsername(loggedInUserEmail);
 
         Issue issue = Issue.builder()
                 .flag(true)
@@ -84,14 +81,7 @@ public class IssueController {
 
         Issue savedIssue = issueService.save(issue);
 
-//        Map<Long,String> filenames = new HashMap<>();
-//
-//        if (attachments != null && !attachments.isEmpty()) {
-//            for (Attachment a: savedIssue.getAttachments()){
-//                filenames.put(a.getId(),a.getFileName());
-//            }
-//        }
-        List<Map<String, Object>> transformedAttachments = getAttachmentFilenames(savedIssue);
+        List<Map<String, Object>> transformedAttachments = AttachmentUtils.getAttachmentFilenames(savedIssue);
 
         IssueDTO savedIssueDTO = IssueDTO.builder()
                 .id(savedIssue.getId())
@@ -248,7 +238,7 @@ public class IssueController {
                         .build();
             }
 
-            List<Map<String, Object>> transformedAttachments = getAttachmentFilenames(findIssue);
+            List<Map<String, Object>> transformedAttachments = AttachmentUtils.getAttachmentFilenames(findIssue);
 
             IssueDTO issueDTO = IssueDTO.builder()
                     .id(findIssue.getId())
@@ -279,12 +269,15 @@ public class IssueController {
      * @return A list of issues for the specified user, or a message indicating no issues found.
      */
     @GetMapping("/user")
-    public Response<?> getIssuesByUser(){
+    public Response<?> getIssuesByUser(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size
+    ){
 
         String loggedInUserEmail = SecurityContextHolder.getContext().getAuthentication().getName();
-        User postedByUser = userService.findUserByEmail(loggedInUserEmail);
+        User postedByUser = userService.findUserByUsername(loggedInUserEmail);
 
-        List<Issue> issueList = issueService.findIssueByUser(postedByUser.getId());
+        Page<Issue> issueList = issueService.findIssueByUser(postedByUser.getId(), page, size);
 
         if (issueList.isEmpty()){
             return Response.builder()
@@ -294,41 +287,7 @@ public class IssueController {
                     .build();
         }
 
-        List<Issue> sortedIssueDTOList = issueList.stream().sorted(Comparator.comparing(BaseEntity::getUpdateDate)).toList();
-
-        List<IssueDTO> issueDTOList = sortedIssueDTOList.stream().map(IssueUtils::convertToIssueDTO).toList();
-
-        Map<Long, Issue> issueMap = issueList.stream()
-                .collect(Collectors.toMap(Issue::getId, issue -> issue));
-
-//        for (IssueDTO issueDTO : issueDTOList) {
-//            Issue correspondingIssue = issueMap.get(issueDTO.getId());
-//            if (correspondingIssue != null) {
-//                Map<Long, String> filenames = new HashMap<>();
-//                if (correspondingIssue.getAttachments() != null && !correspondingIssue.getAttachments().isEmpty()){
-//                    for (Attachment attachment : correspondingIssue.getAttachments()) {
-//                        filenames.put(attachment.getId(), attachment.getFileName());
-//                    }
-//                }
-//                issueDTO.setAttachments(filenames);
-//            }
-//        }
-        List<Map<String, Object>> transformedAttachments = new ArrayList<>();
-
-        for (IssueDTO issueDTO : issueDTOList) {
-            Issue correspondingIssue = issueMap.get(issueDTO.getId());
-            if (correspondingIssue != null) {
-                if (correspondingIssue.getAttachments() != null && !correspondingIssue.getAttachments().isEmpty()) {
-                    for (Attachment attachment : correspondingIssue.getAttachments()) {
-                        Map<String, Object> attachmentData = new HashMap<>();
-                        attachmentData.put("fileName", attachment.getFileName());
-                        attachmentData.put("id", attachment.getId());
-                        transformedAttachments.add(attachmentData);
-                    }
-                }
-                issueDTO.setAttachments(transformedAttachments);
-            }
-        }
+        List<IssueDTO> issueDTOList = IssueUtils.responseIssueListDTO(issueList);
 
         return Response.builder()
                 .status(HttpStatus.OK)
@@ -338,13 +297,16 @@ public class IssueController {
     }
 
     @GetMapping("/inbox")
-    public Response<?> getIssuesByOffice(){
+    public Response<?> getIssuesByOffice(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size
+    ){
 
         String loggedInUserEmail = SecurityContextHolder.getContext().getAuthentication().getName();
-        User postedByUser = userService.findUserByEmail(loggedInUserEmail);
+        User postedByUser = userService.findUserByUsername(loggedInUserEmail);
         Long officeId = postedByUser.getOffice().getId();
 
-        List<Issue> issueList = issueService.findIssueByOffice(officeId);
+        Page<Issue> issueList = issueService.findIssueByOffice(officeId, page, size);
 
         if (issueList.isEmpty()){
             return Response.builder()
@@ -354,29 +316,7 @@ public class IssueController {
                     .build();
         }
 
-        List<Issue> sortedIssueDTOList = issueList.stream().sorted(Comparator.comparing(BaseEntity::getUpdateDate)).toList();
-
-        List<IssueDTO> issueDTOList = sortedIssueDTOList.stream().map(IssueUtils::convertToIssueDTO).toList();
-
-        Map<Long, Issue> issueMap = issueList.stream()
-                .collect(Collectors.toMap(Issue::getId, issue -> issue));
-
-        List<Map<String, Object>> transformedAttachments = new ArrayList<>();
-
-        for (IssueDTO issueDTO : issueDTOList) {
-            Issue correspondingIssue = issueMap.get(issueDTO.getId());
-            if (correspondingIssue != null) {
-                if (correspondingIssue.getAttachments() != null && !correspondingIssue.getAttachments().isEmpty()) {
-                    for (Attachment attachment : correspondingIssue.getAttachments()) {
-                        Map<String, Object> attachmentData = new HashMap<>();
-                        attachmentData.put("fileName", attachment.getFileName());
-                        attachmentData.put("id", attachment.getId());
-                        transformedAttachments.add(attachmentData);
-                    }
-                }
-                issueDTO.setAttachments(transformedAttachments);
-            }
-        }
+        List<IssueDTO> issueDTOList = IssueUtils.responseIssueListDTO(issueList);
 
         return Response.builder()
                 .status(HttpStatus.OK)
@@ -578,7 +518,7 @@ public class IssueController {
         } else {
             issues = issues.stream().filter(i -> Objects.equals(i.getPostedBy().getId(), userId)).toList();
         }
-        List<IssueDTO> issueDTOList = issues.stream().map(IssueUtils::convertToIssueDTO).toList();
+        List<IssueDTO> issueDTOList = IssueUtils.convertToIssueDTOList(issues);
 
         if (issueDTOList.isEmpty()){
             return Response.builder()
@@ -648,30 +588,11 @@ public class IssueController {
     }
 
     private List<IssueDTO> withAttachments(List<Issue> issues) {
-        return issues.stream().map(
-                issue -> {
-
-                    List<Map<String, Object>> filenames = getAttachmentFilenames(issue);
-
-                    IssueDTO convertedIssue = IssueUtils.convertToIssueDTO(issue);
-                    convertedIssue.setAttachments(filenames);
-
-                    return convertedIssue;
-                }
-        ).toList();
-    }
-
-    private List<Map<String, Object>> getAttachmentFilenames(Issue issue){
-        List<Map<String, Object>> transformedAttachments = new ArrayList<>();
-
-        if (issue.getAttachments() != null && !issue.getAttachments().isEmpty()) {
-            for (Attachment a : issue.getAttachments()) {
-                Map<String, Object> attachmentData = new HashMap<>();
-                attachmentData.put("fileName", a.getFileName());
-                attachmentData.put("id", a.getId());
-                transformedAttachments.add(attachmentData);
-            }
-        }
-        return transformedAttachments.stream().toList();
+        return issues.stream().map(issue -> {
+            List<Map<String, Object>> filenames = AttachmentUtils.getAttachmentFilenames(issue);
+            IssueDTO convertedIssue = IssueUtils.convertToIssueDTO(issue);
+            convertedIssue.setAttachments(filenames);
+            return convertedIssue;
+        }).toList();
     }
 }

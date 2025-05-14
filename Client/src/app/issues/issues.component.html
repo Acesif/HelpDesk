@@ -32,6 +32,18 @@
   </table>
 </div>
 
+<!-- Pagination Controls -->
+<nav aria-label="Page navigation" class="mt-3">
+  <ul class="pagination justify-content-center">
+    <li class="page-item" style="cursor: pointer">
+      <a class="page-link" (click)="setPage(0)" [class.disabled]="page === 0" >Previous</a>
+    </li>
+    <li class="page-item" style="cursor: pointer">
+      <a class="page-link" (click)="setPage(1)">Next</a>
+    </li>
+  </ul>
+</nav>
+
 <ng-template #noIssues>
   <table class="table">
     <thead>

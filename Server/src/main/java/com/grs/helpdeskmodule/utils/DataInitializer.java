@@ -1,8 +1,5 @@
 package com.grs.helpdeskmodule.utils;
 
-import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.grs.helpdeskmodule.entity.*;
 import com.grs.helpdeskmodule.repository.*;
 import com.grs.helpdeskmodule.service.OfficeService;
@@ -13,7 +10,6 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -41,15 +37,15 @@ public class DataInitializer implements CommandLineRunner {
         initiatePriority();
         initiateSettings();
         initiateRolePermissions();
-        initializeOffices();
+//        initializeOffices();
     }
     private void initiateUser(){
-        if (userService.findUserByEmail("superadmin@admin.com") == null){
+        if (userService.findUserByUsername("superadmin@admin.com") == null){
             userService.save(
                     User.builder()
                             .flag(true)
                             .name("SUPERADMIN")
-                            .email("superadmin@admin.com")
+                            .username("superadmin@admin.com")
                             .office(null)
                             .password(passwordEncoder.encode("12345678"))
                             .phoneNumber(null)
@@ -324,7 +320,7 @@ public class DataInitializer implements CommandLineRunner {
             roleRepository.saveAll(roles);
         }
     }
-    public void initializeOffices() throws IOException {
+//    public void initializeOffices() throws IOException {
 //        ObjectMapper mapper = new ObjectMapper();
 //        mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 //        File jsonFile = new File("Server/db_tables/offices.json");
@@ -347,18 +343,18 @@ public class DataInitializer implements CommandLineRunner {
 //                officeRepository.save(saveOffice);
 //            }
 //        }
-        if (officeService.getAllOffices().isEmpty()){
-            for (long i = 0; i < 10; i++) {
-                officeService.save(Office.builder()
-                        .id(i)
-                        .office_name_eng("office name"+i)
-                        .office_layer_id(i)
-                        .office_ministry_id(i)
-                        .office_origin_id(i)
-                        .parent_office_id(i)
-                        .build());
-                System.out.println("Office populated "+i+" of "+10);
-            }
-        }
-    }
+//        if (officeService.getAllOffices().isEmpty()){
+//            for (long i = 0; i < 10; i++) {
+//                officeService.save(Office.builder()
+//                        .id(i)
+//                        .office_name_eng("office name"+i)
+//                        .office_layer_id(i)
+//                        .office_ministry_id(i)
+//                        .office_origin_id(i)
+//                        .parent_office_id(i)
+//                        .build());
+//                System.out.println("Office populated "+i+" of "+10);
+//            }
+//        }
+//    }
 }

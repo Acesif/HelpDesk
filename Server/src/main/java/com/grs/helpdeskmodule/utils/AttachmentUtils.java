@@ -11,12 +11,11 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.SecureRandom;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Slf4j
-public class AttachmentUtils {
+public class AttachmentUtils extends CommonUtils{
 
     public static Set<AttachmentDTO> convertToAttachmentDTOs(Set<Attachment> attachments,Long id) {
         return attachments.stream().map(attachment ->
@@ -89,7 +88,7 @@ public class AttachmentUtils {
                     return Attachment.builder()
                             .flag(true)
                             .fileName(file.getOriginalFilename())
-                            .filePath(filePath) // todo: fix file path
+                            .filePath(filePath)
                             .issue(issue)
                             .build();
                 } catch (Exception e){
@@ -146,4 +145,10 @@ public class AttachmentUtils {
         Files.move(sourcePath, targetPath);
     }
 
+    public static List<Map<String, Object>> getAttachmentFilenames(Issue issue){
+        List<Map<String, Object>> transformedAttachments = new ArrayList<>();
+
+        parseAttachment(issue, transformedAttachments);
+        return transformedAttachments.stream().toList();
+    }
 }

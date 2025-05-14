@@ -11,7 +11,6 @@ import com.grs.helpdeskmodule.entity.User;
 import com.grs.helpdeskmodule.service.IssueReplyService;
 import com.grs.helpdeskmodule.service.IssueService;
 import com.grs.helpdeskmodule.service.UserService;
-import com.grs.helpdeskmodule.utils.AttachmentUtils;
 import com.grs.helpdeskmodule.utils.IssueUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -79,7 +78,7 @@ public class IssueReplyController {
     ){
 
         String loggedInUserEmail = SecurityContextHolder.getContext().getAuthentication().getName();
-        User postedByUser = userService.findUserByEmail(loggedInUserEmail);
+        User postedByUser = userService.findUserByUsername(loggedInUserEmail);
 
         Issue issue = issueService.findById(id);
 

@@ -3,14 +3,12 @@ package com.grs.helpdeskmodule.service;
 import com.grs.helpdeskmodule.base.BaseEntityRepository;
 import com.grs.helpdeskmodule.base.BaseService;
 import com.grs.helpdeskmodule.entity.Issue;
-import com.grs.helpdeskmodule.entity.IssueStatus;
 import com.grs.helpdeskmodule.repository.IssueRepository;
-import lombok.RequiredArgsConstructor;
-import org.springframework.data.repository.query.Param;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 
 @Service
@@ -22,12 +20,14 @@ public class IssueService extends BaseService<Issue> {
         this.issueRepository = issueRepository;
     }
 
-    public List<Issue> findIssueByUser(Long id){
-        return issueRepository.findIssuesByUser(id);
+    public Page<Issue> findIssueByUser(Long id, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return issueRepository.findIssuesByUser(id, pageable);
     }
 
-    public List<Issue> findIssueByOffice(Long id){
-        return issueRepository.findIssuesByOffice(id);
+    public Page<Issue> findIssueByOffice(Long id, int page, int size){
+        Pageable pageable = PageRequest.of(page, size);
+        return issueRepository.findIssuesByOffice(id, pageable);
     }
 
     public List<Issue> findByTrackingNumber(String trackingNumber){

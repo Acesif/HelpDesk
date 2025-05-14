@@ -16,12 +16,15 @@ import lombok.experimental.SuperBuilder;
 @Setter
 @RequiredArgsConstructor
 @AllArgsConstructor
-public class Office extends BaseEntity {
+public class Office {
 
+    @Id
+    private Long id;
     @Column(columnDefinition = "VARCHAR(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci")
     private String office_name_eng;
     private Long office_layer_id;
     private Long office_ministry_id;
     private Long office_origin_id;
     private Long parent_office_id;
+    private Long office_unit_organogram_id;
 }

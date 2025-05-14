@@ -27,6 +27,7 @@ export class IssuesComponent {
 
   issues: Issue[] = [];
   allIssues: Issue[] = [];
+  page: number = 0;
 
   // updateIssue(issue: Issue) {
   //   this.issues.push(issue);
@@ -39,14 +40,14 @@ export class IssuesComponent {
     this.router.events
       .pipe(filter((event) => event instanceof NavigationEnd && event.url === '/issues/list'))
       .subscribe(() => {
-        this.loadIssues();
+        this.loadIssues(this.page);
       });
 
-    this.loadIssues();
+    this.loadIssues(this.page);
   }
 
-  loadIssues(): void {
-    this.issueService.getIssues().subscribe(
+  loadIssues(page: number): void {
+    this.issueService.getIssues(page).subscribe(
       (issues: Issue[]) => {
         this.allIssues = issues;
         this.issues = [...issues];
@@ -119,5 +120,15 @@ export class IssuesComponent {
     }, error => {
       console.error('Error fetching filtered issues:', error);
     });
+  }
+
+  setPage(number: number) {
+    if(number === 0 && !(this.page === 0)){
+      this.page -= 1;
+      this.loadIssues(this.page);
+    } else if (number === 1) {
+      this.page += 1;
+      this.loadIssues(this.page);
+    }
   }
 }

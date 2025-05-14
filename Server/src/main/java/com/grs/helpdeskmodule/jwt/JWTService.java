@@ -24,9 +24,9 @@ public class JWTService {
 
         Map<String,Object> claims = new HashMap<>();
         claims.put("name",user.getName());
-        claims.put("email",user.getEmail());
+        claims.put("username",user.getUsername());
         claims.put("phone_number",user.getPhoneNumber());
-        claims.put("office_id",user.getOffice() != null ? user.getOffice().getId() : null);
+        claims.put("officeId",user.getOffice() != null ? user.getOffice().getId() : null);
         claims.put("designation",user.getDesignation());
 
         return Jwts.builder()
@@ -51,7 +51,7 @@ public class JWTService {
         return key;
     }
 
-    public String extractEmail(String token){
+    public String extractUsername(String token){
         return extractClaim(token, Claims::getSubject);
     }
 
@@ -73,7 +73,7 @@ public class JWTService {
     }
 
     public boolean validateToken(String token, UserDetails userDetails){
-        final String username = extractEmail(token);
+        final String username = extractUsername(token);
         return (userDetails.getUsername().equals(username) && !isTokenExpired(token));
     }
 

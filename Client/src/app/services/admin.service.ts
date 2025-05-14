@@ -20,7 +20,7 @@ export class AdminService {
     this.apiUrl = `${this.ipConfigService.getAddress()}/api/issue`;
   }
 
-  getInboxIssues(): Observable<Issue[]> {
+  getInboxIssues(page: number): Observable<Issue[]> {
     const headers = new HttpHeaders({
       'Authorization': `Bearer ${this.authService.getToken()}`,
     });

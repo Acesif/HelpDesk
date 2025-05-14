@@ -4,6 +4,7 @@ import com.grs.helpdeskmodule.dto.LoginRequest;
 import com.grs.helpdeskmodule.dto.Response;
 import com.grs.helpdeskmodule.dto.UserDTO;
 import com.grs.helpdeskmodule.dto.UserInformation;
+import com.grs.helpdeskmodule.entity.Office;
 import com.grs.helpdeskmodule.entity.User;
 import com.grs.helpdeskmodule.repository.OfficeRepository;
 import com.grs.helpdeskmodule.service.UserService;
@@ -11,7 +12,6 @@ import com.grs.helpdeskmodule.utils.UserUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
@@ -38,7 +38,7 @@ public class UserController {
     @PostMapping("/create")
     public Response<?> createUser(@RequestBody UserDTO userDto){
 
-        boolean existingUser = userService.findUserByEmail(userDto.getEmail()) != null || userService.findUserByPhoneNumber(userDto.getPhoneNumber()) != null;
+        boolean existingUser = userService.findUserByUsername(userDto.getUsername()) != null || userService.findUserByPhoneNumber(userDto.getPhoneNumber()) != null;
         if (existingUser){
             return Response.<UserDTO>builder()
                     .status(HttpStatus.CONFLICT)
@@ -49,8 +49,7 @@ public class UserController {
 
         User user = User.builder()
                 .name(userDto.getName())
-                .email(userDto.getEmail())
-                .phoneNumber(userDto.getPhoneNumber())
+                .username(userDto.getUsername())
                 .office(officeRepository.findById(userDto.getOfficeId()).orElse(null))
                 .designation(userDto.getDesignation())
                 .password(passwordEncoder.encode(userDto.getPassword()))
@@ -58,7 +57,7 @@ public class UserController {
 
         User createdUser = userService.save(user);
         LoginRequest loginRequest = LoginRequest.builder()
-                .email(userDto.getEmail())
+                .username(userDto.getUsername())
                 .password(userDto.getPassword())
                 .build();
         String token = userService.verify(loginRequest);
@@ -78,6 +77,89 @@ public class UserController {
                 .build();
     }
 
+    @PostMapping("/referrer-grs")
+    public Response<?> loginFromGRS(@RequestBody UserDTO userDto){
+
+        boolean existingUser = userService.findUserByUsername(userDto.getUsername()) != null;
+        if (existingUser){
+            LoginRequest loginRequest = LoginRequest.builder()
+                                            .username(userDto.getUsername())
+                                            .password(userDto.getPassword())
+                                            .build();
+
+            String token = userService.verify(loginRequest);
+            User user = userService.findUserByUsername(loginRequest.getUsername());
+
+            Map<String,Object> response = new LinkedHashMap<>();
+            response.put("name",user.getName());
+            response.put("username",user.getUsername());
+            response.put("officeId",user.getOffice() != null ? user.getOffice().getId() : null);
+            response.put("role",userDto.getRole());
+            response.put("officeMinistryId",userDto.getOfficeMinistryId());
+            response.put("officeOriginId",userDto.getOfficeOriginId());
+            response.put("designation",userDto.getDesignation());
+            response.put("employeeRecordId",userDto.getEmployeeRecordId());
+            response.put("officeUnitOrganogramId",userDto.getOfficeUnitOrganogramId());
+            response.put("layerLevel",userDto.getLayerLevel());
+            response.put("officeNameBangla",userDto.getOfficeNameBangla());
+            response.put("token", token);
+
+            return Response.builder()
+                    .status(HttpStatus.OK)
+                    .message("Logged in successfully")
+                    .data(response)
+                    .build();
+        } else {
+
+            Office office = officeRepository.findById(userDto.getOfficeId()).orElse(
+                    officeRepository.save(Office.builder()
+                            .id(userDto.getOfficeId())
+                            .office_layer_id(userDto.getOfficeMinistryId())
+                            .office_origin_id(userDto.getOfficeOriginId())
+                            .office_ministry_id(userDto.getOfficeMinistryId())
+                            .office_name_eng(userDto.getOfficeNameBangla())
+                            .office_unit_organogram_id(userDto.getOfficeUnitOrganogramId())
+                            .build())
+            );
+
+            User user = User.builder()
+                    .name(userDto.getName())
+                    .username(userDto.getUsername())
+                    .office(office)
+                    .designation(userDto.getDesignation())
+                    .password(passwordEncoder.encode(userDto.getPassword()))
+                    .build();
+
+            User createdUser = userService.save(user);
+            LoginRequest loginRequest = LoginRequest.builder()
+                    .username(userDto.getUsername())
+                    .password(userDto.getPassword())
+                    .build();
+            String token = userService.verify(loginRequest);
+
+            Map<String,Object> response = new LinkedHashMap<>();
+            response.put("name",createdUser.getName());
+            response.put("username",createdUser.getUsername());
+            response.put("officeId",createdUser.getOffice() != null ? user.getOffice().getId() : null);
+            response.put("role",createdUser.getRole());
+            response.put("officeMinistryId",createdUser.getOffice().getOffice_ministry_id());
+            response.put("officeOriginId",createdUser.getOffice().getOffice_origin_id());
+            response.put("designation",createdUser.getDesignation());
+            response.put("employeeRecordId",createdUser.getEmployeeRecordId());
+            response.put("officeUnitOrganogramId",createdUser.getOffice().getOffice_unit_organogram_id());
+            response.put("layerLevel",createdUser.getOffice().getOffice_layer_id());
+            response.put("officeNameBangla",createdUser.getOffice().getOffice_name_eng());
+            response.put("token", token);
+
+            return Response.builder()
+                    .status(HttpStatus.OK)
+                    .message("Logged in successfully")
+                    .data(response)
+                    .build();
+        }
+
+    }
+
     /**
      * Verifies user login credentials and returns a token or verification result.
      * Handles HTTP POST requests to the "/login" endpoint.
@@ -89,7 +171,7 @@ public class UserController {
     @PostMapping("/login")
     public Response<?> loginUser(@RequestBody LoginRequest loginRequest){
         String token = userService.verify(loginRequest);
-        User user = userService.findUserByEmail(loginRequest.getEmail());
+        User user = userService.findUserByUsername(loginRequest.getUsername());
 
         Map<String,Object> response = new LinkedHashMap<>();
         response.put("name",user.getName());
@@ -162,7 +244,7 @@ public class UserController {
 
         existingUser.setFlag(true);
         existingUser.setName(userDto.getName() == null ? existingUser.getName() : userDto.getName());
-        existingUser.setEmail(userDto.getEmail() == null ? existingUser.getEmail() : userDto.getEmail());
+        existingUser.setUsername(userDto.getUsername() == null ? existingUser.getUsername() : userDto.getUsername());
         existingUser.setPhoneNumber(userDto.getPhoneNumber() == null ? existingUser.getPhoneNumber() : userDto.getPhoneNumber());
         existingUser.setOffice(existingUser.getOffice());
         existingUser.setDesignation(existingUser.getDesignation());
@@ -172,7 +254,7 @@ public class UserController {
 
         UserDTO updatedDTO = UserDTO.builder()
                 .name(updatedUser.getName())
-                .email(updatedUser.getEmail())
+                .username(updatedUser.getUsername())
                 .phoneNumber(updatedUser.getPhoneNumber())
                 .officeId(updatedUser.getOffice() != null ? updatedUser.getOffice().getId() : null)
                 .designation(updatedUser.getDesignation())
@@ -194,7 +276,7 @@ public class UserController {
         UserInformation userInformation = UserInformation.builder()
                 .id(user.getId())
                 .name(user.getName())
-                .email(user.getEmail())
+                .email(user.getUsername())
                 .phoneNumber(user.getPhoneNumber())
                 .designation(user.getDesignation())
                 .officeId(user.getOffice() != null ? user.getOffice().getId() : null)

@@ -56,17 +56,19 @@
     </div>
 
     <div *ngIf="isPreviewVisible" class="overlay">
-      <button class="close-btn" (click)="closePreview()">X</button>
-      <div class="modal-content">
-        <ng-container *ngIf="previewType === 'image'">
-          <img [src]="previewUrl" class="preview-image" alt="Preview">
-        </ng-container>
-        <ng-container *ngIf="previewType === 'pdf'">
-          <iframe [src]="previewUrl" class="preview-pdf"></iframe>
-        </ng-container>
-        <ng-container *ngIf="previewType === 'other'">
-          <p>Preview not available for this file type.</p>
-        </ng-container>
+      <div class="preview-container">
+        <div class="modal-content">
+          <button class="close-btn" (click)="closePreview()">X</button>
+          <ng-container *ngIf="previewType === 'image'">
+            <img [src]="previewUrl" class="preview-image" alt="Preview">
+          </ng-container>
+          <ng-container *ngIf="previewType === 'pdf'">
+            <iframe [src]="previewUrl" class="preview-pdf"></iframe>
+          </ng-container>
+          <ng-container *ngIf="previewType === 'other'">
+            <p>Preview not available for this file type.</p>
+          </ng-container>
+        </div>
       </div>
     </div>
 

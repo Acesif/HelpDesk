@@ -2,6 +2,8 @@ package com.grs.helpdeskmodule.repository;
 
 import com.grs.helpdeskmodule.base.BaseEntityRepository;
 import com.grs.helpdeskmodule.entity.Issue;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
@@ -25,8 +27,8 @@ public interface IssueRepository extends BaseEntityRepository<Issue> {
     List<Issue> findIssuesByTitleOrDescription(String input);
 
     @Query(value = "SELECT * FROM helpdesk.issue WHERE user_id = :user_id", nativeQuery = true)
-    List<Issue> findIssuesByUser(Long user_id);
+    Page<Issue> findIssuesByUser(Long user_id, Pageable pageable);
 
     @Query(value = "SELECT * FROM helpdesk.issue WHERE office_id = :office_id", nativeQuery = true)
-    List<Issue> findIssuesByOffice(Long office_id);
+    Page<Issue> findIssuesByOffice(Long office_id, Pageable pageable);
 }

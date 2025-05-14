@@ -38,7 +38,7 @@ public class SuperadminController {
     @PutMapping("/update/user")
     public Response<?> updateUser(@RequestBody UserDTO userDTO){
 
-        User existingUser = userService.findUserByEmail(userDTO.getEmail());
+        User existingUser = userService.findUserByUsername(userDTO.getUsername());
 
         if (existingUser == null){
             return Response.<UserDTO>builder()
@@ -50,7 +50,7 @@ public class SuperadminController {
 
         existingUser.setFlag(true);
         existingUser.setName(userDTO.getName() == null ? existingUser.getName() : userDTO.getName());
-        existingUser.setEmail(userDTO.getEmail() == null ? existingUser.getEmail() : userDTO.getEmail());
+        existingUser.setUsername(userDTO.getUsername() == null ? existingUser.getUsername() : userDTO.getUsername());
         existingUser.setPhoneNumber(userDTO.getPhoneNumber() == null ? existingUser.getPhoneNumber() : userDTO.getPhoneNumber());
         existingUser.setOffice(existingUser.getOffice());
         existingUser.setDesignation(userDTO.getDesignation() == null ? existingUser.getDesignation() : userDTO.getDesignation());
@@ -60,7 +60,7 @@ public class SuperadminController {
 
         UserDTO updatedDTO = UserDTO.builder()
                 .name(updatedUser.getName())
-                .email(updatedUser.getEmail())
+                .username(updatedUser.getUsername())
                 .phoneNumber(updatedUser.getPhoneNumber())
                 .officeId(updatedUser.getOffice() != null ? updatedUser.getOffice().getId() : null)
                 .designation(updatedUser.getDesignation())

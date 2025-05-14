@@ -45,12 +45,12 @@ export class IssueService {
     return this.http.post(`${this.issueApiUrl}/new`, issueData, {headers});
   }
 
-  getIssues(): Observable<Issue[]> {
+  getIssues(page: number): Observable<Issue[]> {
     const headers = new HttpHeaders({
       'Authorization': `Bearer ${this.authService.getToken()}`,
     });
 
-    return this.http.get<any>(`${this.issueApiUrl}/user`, { headers }).pipe(
+    return this.http.get<any>(`${this.issueApiUrl}/user?page=${page}&size=10`, { headers }).pipe(
       map((res) => {
         if (res.status === 'OK') {
           return res.data.map(

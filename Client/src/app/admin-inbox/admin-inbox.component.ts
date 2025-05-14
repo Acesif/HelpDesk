@@ -17,6 +17,7 @@ export class AdminInboxComponent {
   issues: Issue[] = [];
   allIssues: Issue[] = [];
   loading: boolean = true;
+  page: number = 0;
 
   constructor(
     private adminService: AdminService,
@@ -30,13 +31,13 @@ export class AdminInboxComponent {
     this.router.events
       .pipe(filter((event) => event instanceof NavigationEnd && event.url === '/admin/inbox'))
       .subscribe(() => {
-        this.loadIssues();
+        this.loadIssues(this.page);
       });
-    this.loadIssues();
+    this.loadIssues(this.page);
   }
 
-  loadIssues(): void {
-    this.adminService.getInboxIssues().subscribe(
+  loadIssues(page: number): void {
+    this.adminService.getInboxIssues(page).subscribe(
       (issues: Issue[]) => {
         this.allIssues = issues;
         this.issues = [...issues];
@@ -103,5 +104,15 @@ export class AdminInboxComponent {
     }, error => {
       console.error('Error fetching filtered issues:', error);
     });
+  }
+
+  setPage(number: number) {
+    if(number === 0 && !(this.page === 0)){
+      this.page -= 1;
+      this.loadIssues(this.page);
+    } else if (number === 1) {
+      this.page += 1;
+      this.loadIssues(this.page);
+    }
   }
 }

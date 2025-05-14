@@ -8,13 +8,11 @@ import com.grs.helpdeskmodule.entity.User;
 
 import com.grs.helpdeskmodule.jwt.JWTService;
 import com.grs.helpdeskmodule.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
-import java.util.Arrays;
 import java.util.List;
 
 @Service
@@ -31,8 +29,8 @@ public class UserService extends BaseService<User> {
         this.jwtService = jwtService;
     }
 
-    public User findUserByEmail(String email){
-        return userRepository.findByEmail(email);
+    public User findUserByUsername(String username){
+        return userRepository.findByUsername(username);
     }
 
     public User findUserByPhoneNumber (String phone_number){
@@ -45,16 +43,16 @@ public class UserService extends BaseService<User> {
 
     public String verify(LoginRequest loginRequest) {
         try{
-            User user = findUserByEmail(loginRequest.getEmail());
+            User user = findUserByUsername(loginRequest.getUsername());
 
             if (user == null){
                 return "User does not exist";
             }
             Authentication authentication = authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(loginRequest.getEmail(),loginRequest.getPassword())
+                    new UsernamePasswordAuthenticationToken(loginRequest.getUsername(),loginRequest.getPassword())
             );
             if (authentication.isAuthenticated()){
-                return jwtService.generateToken(loginRequest.getEmail(), user);
+                return jwtService.generateToken(loginRequest.getUsername(), user);
             }
         } catch (Exception e){
             throw new RuntimeException(e);
@@ -63,9 +61,9 @@ public class UserService extends BaseService<User> {
     }
 
     public String refreshAccessToken(String token) {
-        String email = jwtService.extractEmail(token);
-        User user = userRepository.findByEmail(email);
+        String username = jwtService.extractUsername(token);
+        User user = userRepository.findByUsername(username);
 
-        return jwtService.generateToken(email, user);
+        return jwtService.generateToken(username, user);
     }
 }

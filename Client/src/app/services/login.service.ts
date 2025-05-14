@@ -22,4 +22,8 @@ export class LoginService {
   refreshToken(oldToken: string) {
     return this.http.get(`${this.apiUrl}/refresh/${oldToken}`);
   }
+
+  referredLoginFromGRS(userData: any): Observable<any> {
+    return this.http.post(`${this.apiUrl}/referrer-grs`, userData);
+  }
 }
