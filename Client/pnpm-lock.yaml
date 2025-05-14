@@ -35,6 +35,12 @@ importers:
       '@auth0/angular-jwt':
         specifier: ^5.2.0
         version: 5.2.0(@angular/common@18.2.13(@angular/core@18.2.13(rxjs@7.8.2)(zone.js@0.14.10))(rxjs@7.8.2))
+      '@ng-icons/core':
+        specifier: ^31.3.0
+        version: 31.3.0(@angular/common@18.2.13(@angular/core@18.2.13(rxjs@7.8.2)(zone.js@0.14.10))(rxjs@7.8.2))(@angular/core@18.2.13(rxjs@7.8.2)(zone.js@0.14.10))(rxjs@7.8.2)
+      '@ng-icons/heroicons':
+        specifier: ^31.3.0
+        version: 31.3.0
       '@swimlane/ngx-charts':
         specifier: ^21.0.0
         version: 21.1.3(9692d35645bd0853dc699e169fdf6d95)
@@ -1276,6 +1282,16 @@ packages:
     resolution: {integrity: sha512-x0fWaQtYp4E6sktbsdAqnehxDgEc/VwM7uLsRCYWaiGu0ykYdZPiS8zCWdnjHwyiumousxfBm4SO31eXqwEZhQ==}
     cpu: [x64]
     os: [win32]
+
+  '@ng-icons/core@31.3.0':
+    resolution: {integrity: sha512-d6WXKaIaBZ8RoCXMxOde+18mmo4Br4KcRah0M4uVv2iEl6pXwqDW2wCfIkezCKQXoqXHBxUDqQ32Du5tkEm2pw==}
+    peerDependencies:
+      '@angular/common': '>=18.0.0'
+      '@angular/core': '>=18.0.0'
+      rxjs: ^6.5.3 || ^7.4.0
+
+  '@ng-icons/heroicons@31.3.0':
+    resolution: {integrity: sha512-tHYbohGKRY4JC+AhCyq4aU5F19yfCgYQ+sxLAzks+SNXkB0sfjz8i8y7jX8pPg8le1GS8HfXpYSiYcRbdCpe+A==}
 
   '@ngtools/webpack@18.2.19':
     resolution: {integrity: sha512-bExj5JrByKPibsqBbn5Pjn8lo91AUOTsyP2hgKpnOnmSr62rhWSiRwXltgz2MCiZRmuUznpt93WiOLixgYfYvQ==}
@@ -5674,6 +5690,17 @@ snapshots:
 
   '@msgpackr-extract/msgpackr-extract-win32-x64@3.0.3':
     optional: true
+
+  '@ng-icons/core@31.3.0(@angular/common@18.2.13(@angular/core@18.2.13(rxjs@7.8.2)(zone.js@0.14.10))(rxjs@7.8.2))(@angular/core@18.2.13(rxjs@7.8.2)(zone.js@0.14.10))(rxjs@7.8.2)':
+    dependencies:
+      '@angular/common': 18.2.13(@angular/core@18.2.13(rxjs@7.8.2)(zone.js@0.14.10))(rxjs@7.8.2)
+      '@angular/core': 18.2.13(rxjs@7.8.2)(zone.js@0.14.10)
+      rxjs: 7.8.2
+      tslib: 2.8.1
+
+  '@ng-icons/heroicons@31.3.0':
+    dependencies:
+      tslib: 2.8.1
 
   '@ngtools/webpack@18.2.19(@angular/compiler-cli@18.2.13(@angular/compiler@18.2.13(@angular/core@18.2.13(rxjs@7.8.2)(zone.js@0.14.10)))(typescript@5.5.4))(typescript@5.5.4)(webpack@5.94.0(esbuild@0.23.0))':
     dependencies:

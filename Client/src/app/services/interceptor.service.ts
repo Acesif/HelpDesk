@@ -71,8 +71,7 @@ export class InterceptorService {
           this.router.navigate(['auth','login']);
         }
       });
-    }
-      else {
+    } else {
       const currentRoute:string = this.router.url;
       if (currentRoute === '/auth/register' || currentRoute === '/auth/login') {
         this.router.navigate([currentRoute]);

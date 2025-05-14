@@ -1,15 +1,14 @@
 import { Component } from '@angular/core';
 import {AuthService} from '../services/auth.service';
-import {InterceptorService} from '../services/interceptor.service';
 import {ToastrService} from 'ngx-toastr';
 
 @Component({
   selector: 'app-navbar',
   templateUrl: './navbar.component.html',
-  styleUrl: './navbar.component.scss'
+  styleUrl: './navbar.component.scss',
 })
 export class NavbarComponent {
-  appName = "GRS Helpdesk"
+  redirectLink = "Return to GRS"
 
   constructor(
     private auth: AuthService,

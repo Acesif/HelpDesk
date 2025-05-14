@@ -49,7 +49,7 @@ export class AuthService {
 
   logout(): void {
     localStorage.removeItem('token');
-    this.router.navigate(['auth','login']);
+    window.location.href = "http://localhost/dashboard.do";
   }
 
   extractTokenInfo(token: string) {
