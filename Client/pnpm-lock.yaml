@@ -44,9 +44,15 @@ importers:
       '@swimlane/ngx-charts':
         specifier: ^21.0.0
         version: 21.1.3(9692d35645bd0853dc699e169fdf6d95)
+      '@types/flatpickr':
+        specifier: ^3.1.4
+        version: 3.1.4
       bootstrap:
         specifier: ^5.3.3
         version: 5.3.6(@popperjs/core@2.11.8)
+      flatpickr:
+        specifier: ^4.6.13
+        version: 4.6.13
       ngx-daterangepicker-material:
         specifier: ^6.0.4
         version: 6.0.4(dayjs@1.11.13)
@@ -1525,6 +1531,10 @@ packages:
   '@types/express@4.17.21':
     resolution: {integrity: sha512-ejlPM315qwLpaQlQDTjPdsUFSc6ZsP4AN6AlWnogPjQ7CVi7PYF3YVz+CY3jE2pwYf7E/7HlDAN0rV2GxTG0HQ==}
 
+  '@types/flatpickr@3.1.4':
+    resolution: {integrity: sha512-czk8lydTB2qzWBqI6gproY594pg+iEfpHQyrvnyMnMKxvD+2qbrs1g2F8KiWZK173jQMw2C7O9lFjiKeBNub+A==}
+    deprecated: This is a stub types definition. flatpickr provides its own type definitions, so you do not need this installed.
+
   '@types/http-errors@2.0.4':
     resolution: {integrity: sha512-D0CFMMtydbJAegzOyHjtiKPLlvnm3iTZyZRSZoLq2mRhDdmLfIWOCYPfQJ4cu2erKghU++QvjcUjp/5h7hESpA==}
 
@@ -2441,6 +2451,9 @@ packages:
   flat@5.0.2:
     resolution: {integrity: sha512-b6suED+5/3rTpUBdG1gupIl8MPFCAMA0QXwmljLhvCUKcUvdE4gWky9zpuGCcXHOsz4J9wPGNWq6OKpmIzz3hQ==}
     hasBin: true
+
+  flatpickr@4.6.13:
+    resolution: {integrity: sha512-97PMG/aywoYpB4IvbvUJi0RQi8vearvU0oov1WW3k0WZPBMrTQVqekSX5CjSG/M4Q3i6A/0FKXC7RyAoAUUSPw==}
 
   flatted@3.3.3:
     resolution: {integrity: sha512-GX+ysw4PBCz0PzosHDepZGANEuFCMLrnRTiEy9McGjmkCQYwRq4A/X786G/fjM/+OjsWSU1ZrY5qyARZmO/uwg==}
@@ -5966,6 +5979,10 @@ snapshots:
       '@types/qs': 6.9.18
       '@types/serve-static': 1.15.7
 
+  '@types/flatpickr@3.1.4':
+    dependencies:
+      flatpickr: 4.6.13
+
   '@types/http-errors@2.0.4': {}
 
   '@types/http-proxy@1.17.16':
@@ -7004,6 +7021,8 @@ snapshots:
       path-exists: 5.0.0
 
   flat@5.0.2: {}
+
+  flatpickr@4.6.13: {}
 
   flatted@3.3.3: {}
 

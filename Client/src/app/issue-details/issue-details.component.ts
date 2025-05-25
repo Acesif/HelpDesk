@@ -66,11 +66,11 @@ export class IssueDetailsComponent {
             issue.data.description,
             issue.data.category,
             issue.data.status,
-            issue.data.officeId,
+            null,
             issue.data.postedOn,
             issue.data.postedBy,
             issue.data.updatedOn,
-            attachment.data
+            attachment.data,
           );
           console.log(this.issue);
         },

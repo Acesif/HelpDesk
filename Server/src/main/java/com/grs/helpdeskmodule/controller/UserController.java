@@ -81,6 +81,7 @@ public class UserController {
     public Response<?> loginFromGRS(@RequestBody UserDTO userDto){
 
         boolean existingUser = userService.findUserByUsername(userDto.getUsername()) != null;
+        System.out.println(existingUser);
         if (existingUser){
             LoginRequest loginRequest = LoginRequest.builder()
                                             .username(userDto.getUsername())
@@ -110,7 +111,6 @@ public class UserController {
                     .data(response)
                     .build();
         } else {
-
             Office office = officeRepository.findById(userDto.getOfficeId()).orElse(
                     officeRepository.save(Office.builder()
                             .id(userDto.getOfficeId())
@@ -157,7 +157,6 @@ public class UserController {
                     .data(response)
                     .build();
         }
-
     }
 
     /**
@@ -298,13 +297,21 @@ public class UserController {
     }
 
     @GetMapping("/auth/extract")
-    public Response<UserInformation> extractUser(Authentication authentication){
+    public Response<?> extractUser(Authentication authentication){
         UserInformation userInformation = userUtils.extractUserInformation(authentication);
 
-        return Response.<UserInformation>builder()
+        Map<String, Object> response = new LinkedHashMap<>();
+        response.put("id", userInformation.getId());
+        response.put("name", userInformation.getName());
+        response.put("email", userInformation.getEmail());
+        response.put("phoneNumber", userInformation.getPhoneNumber());
+        response.put("officeId", officeRepository.findById(userInformation.getOfficeId()).get().getOffice_name_eng());
+        response.put("designation", userInformation.getDesignation());
+
+        return Response.builder()
                 .status(HttpStatus.OK)
                 .message("User information retrieved")
-                .data(userInformation)
+                .data(response)
                 .build();
     }
 }

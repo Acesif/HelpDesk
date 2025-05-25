@@ -38,7 +38,7 @@ public class IssueUtils extends CommonUtils{
                 .id(issue.getId())
                 .title(issue.getTitle())
                 .status(issue.getStatus())
-                .officeId(issue.getOffice().getId())
+//                .officeId(issue.getOfficeId())
                 .postedOn(issue.getCreateDate())
                 .updatedOn(issue.getUpdateDate())
                 .postedBy(issue.getPostedBy().getId())

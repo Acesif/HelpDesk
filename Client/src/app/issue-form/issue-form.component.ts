@@ -5,6 +5,7 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {InterceptorService} from '../services/interceptor.service';
 import {HttpResponse} from '@angular/common/http';
 import {ToastrService} from 'ngx-toastr';
+import {AuthService} from '../services/auth.service';
 
 @Component({
   selector: 'app-issue-form',
@@ -18,7 +19,8 @@ export class IssueFormComponent {
     private issueService: IssueService,
     private router: Router,
     private interceptor: InterceptorService,
-    private toast: ToastrService
+    private toast: ToastrService,
+    private authService: AuthService,
   ) {}
 
   trackingNumber: string = '';
@@ -74,7 +76,6 @@ export class IssueFormComponent {
       // if (emptyFields.length > 0) {
       //   alert(`please fill up these fields`);
       // }
-
       let issue: Issue = new Issue(
         null,
         null,
@@ -82,11 +83,11 @@ export class IssueFormComponent {
         formData.value.description,
         formData.value.category,
         formData.value.status,
-        formData.value.officeId,
+        this.authService.extractTokenInfo().officeId,
         null,
         null,
         null,
-        this.attachments
+        this.attachments,
       );
 
       this.issueService.createIssue(issue).subscribe({

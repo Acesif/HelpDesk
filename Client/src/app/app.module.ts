@@ -16,7 +16,6 @@ import { FilterFormComponent } from './filterform/filter-form.component';
 import { TitleComponent } from './shared/title/title.component';
 import { HomepageComponent } from './homepage/homepage.component';
 import { ProfileComponent } from './profile/profile.component';
-import { RegistrationComponent } from './registration/registration.component';
 import { provideHttpClient } from '@angular/common/http';
 import { LoginComponent } from './login/login.component';
 import { AdminInboxComponent } from './admin-inbox/admin-inbox.component';
@@ -25,13 +24,6 @@ import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {ToastrModule} from 'ngx-toastr';
 
 const routes: Route[] = [
-  { path: '', component: RegistrationComponent },
-  { path: 'auth',
-    children: [
-      { path: 'login', component: LoginComponent },
-      { path: 'register', component: RegistrationComponent },
-    ]
-  },
   { path: 'admin',
     children: [
       { path: 'dashboard', component: HomepageComponent },
@@ -61,10 +53,10 @@ const routes: Route[] = [
     FilterFormComponent,
     TitleComponent,
     ProfileComponent,
-    RegistrationComponent,
     LoginComponent,
     AdminInboxComponent,
     LoadingSpinnerComponent,
+    FilterFormComponent
   ],
   imports: [
     BrowserModule,

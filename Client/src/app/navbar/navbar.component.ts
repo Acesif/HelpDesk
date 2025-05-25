@@ -17,7 +17,7 @@ export class NavbarComponent {
 
   isAdmin(): boolean {
     const designation = this.auth.getUserDesignation();
-    return designation === 'GRO' || designation === 'VENDOR';
+    return designation === 'ADMIN';
   }
 
   isSuperAdmin() {

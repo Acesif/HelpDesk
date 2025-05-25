@@ -46,9 +46,44 @@ export class IssueService {
   }
 
   getIssues(page: number): Observable<Issue[]> {
+
+    if (this.authService.getUserDesignation() === "SUPERADMIN") {
+
+      const headers = new HttpHeaders({
+        'Authorization': `Bearer ${this.authService.getToken()}`,
+      });
+
+      return this.http.get<any>(`${this.issueApiUrl}/all?page=${page}&size=10`, { headers }).pipe(
+        map((res) => {
+          if (res.status === 'OK') {
+            return res.data.map(
+              (issue: any) =>
+                new Issue(
+                  issue.id,
+                  issue.trackingNumber,
+                  issue.title,
+                  issue.description,
+                  issue.category,
+                  issue.status,
+                  issue.officeId,
+                  issue.postedOn,
+                  issue.postedBy,
+                  issue.updatedOn,
+                  null,
+                )
+            );
+          } else {
+            console.error('Failed to retrieve issues:', res.message);
+            return [];
+          }
+        })
+      );
+    }
+
     const headers = new HttpHeaders({
       'Authorization': `Bearer ${this.authService.getToken()}`,
     });
+
 
     return this.http.get<any>(`${this.issueApiUrl}/user?page=${page}&size=10`, { headers }).pipe(
       map((res) => {
@@ -66,7 +101,7 @@ export class IssueService {
                 issue.postedOn,
                 issue.postedBy,
                 issue.updatedOn,
-                null
+                null,
               )
           );
         } else {

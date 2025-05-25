@@ -37,8 +37,9 @@ public class Issue extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private IssueCategory issueCategory;
 
-    @ManyToOne(cascade = CascadeType.DETACH, fetch = FetchType.EAGER)
-    private Office office;
+//    @ManyToOne(cascade = CascadeType.DETACH, fetch = FetchType.EAGER)
+//    private Office office;
+    private Long officeId;
 
     @ManyToOne
     @JoinColumn(name = "user_id")

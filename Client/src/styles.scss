@@ -1,1 +1,40 @@
-/* You can add global styles to this file, and also import other style files */
+.flatpickr-calendar .flatpickr-monthSelect-months {
+  display: grid !important;
+  width: 100% !important;
+  grid-template-columns: repeat(4, 1fr); /* 4 tiles per row */
+  gap: 10px;
+  padding: 10px;
+  box-sizing: border-box;
+}
+
+.flatpickr-rContainer {
+  width: 100%;
+}
+
+.flatpickr-calendar .flatpickr-monthSelect-month {
+  background-color: #f1f3f5;
+  border-radius: 6px;
+  text-align: center;
+  padding: 12px 0;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  font-size: 14px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.flatpickr-calendar .flatpickr-monthSelect-month:hover {
+  background-color: #dbeafe;
+}
+
+.flatpickr-calendar .flatpickr-monthSelect-month.selected {
+  background-color: #3b82f6;
+  color: white;
+}
+
+.flatpickr-calendar .flatpickr-monthSelect-month.flatpickr-disabled {
+  opacity: 0.4;
+  pointer-events: none;
+  cursor: not-allowed;
+}

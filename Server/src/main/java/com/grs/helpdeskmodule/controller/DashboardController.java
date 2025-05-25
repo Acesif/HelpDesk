@@ -51,11 +51,11 @@ public class DashboardController {
         List<Issue> CLOSED = dashboardService.findIssuesByStatus("CLOSED");
 
         if (officeId != null) {
-            OPEN = OPEN.stream().filter(i -> Objects.equals(i.getOffice().getId(), officeId)).toList();
-            RESOLVED = RESOLVED.stream().filter(i -> Objects.equals(i.getOffice().getId(), officeId)).toList();
-            REJECTED = REJECTED.stream().filter(i -> Objects.equals(i.getOffice().getId(), officeId)).toList();
-            ONGOING = ONGOING.stream().filter(i -> Objects.equals(i.getOffice().getId(), officeId)).toList();
-            CLOSED = CLOSED.stream().filter(i -> Objects.equals(i.getOffice().getId(), officeId)).toList();
+            OPEN = OPEN.stream().filter(i -> Objects.equals(i.getOfficeId(), officeId)).toList();
+            RESOLVED = RESOLVED.stream().filter(i -> Objects.equals(i.getOfficeId(), officeId)).toList();
+            REJECTED = REJECTED.stream().filter(i -> Objects.equals(i.getOfficeId(), officeId)).toList();
+            ONGOING = ONGOING.stream().filter(i -> Objects.equals(i.getOfficeId(), officeId)).toList();
+            CLOSED = CLOSED.stream().filter(i -> Objects.equals(i.getOfficeId(), officeId)).toList();
         }
 
         countList.put("open", OPEN.size());

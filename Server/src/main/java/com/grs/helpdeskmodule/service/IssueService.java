@@ -15,6 +15,7 @@ import java.util.List;
 public class IssueService extends BaseService<Issue> {
 
     private final IssueRepository issueRepository;
+
     public IssueService(BaseEntityRepository<Issue> baseRepository, IssueRepository issueRepository) {
         super(baseRepository);
         this.issueRepository = issueRepository;
@@ -35,10 +36,15 @@ public class IssueService extends BaseService<Issue> {
     }
 
     public List<Issue> findIssuesBetweenYearMonths(String startYearMonth, String endYearMonth){
-        return issueRepository.findIssuesBetweenYearMonths(startYearMonth,endYearMonth);
+        return issueRepository.findIssuesBetweenYearMonths(startYearMonth, endYearMonth);
     }
 
     public List<Issue> findIssuesByTitleOrDescription(String input){
         return issueRepository.findIssuesByTitleOrDescription(input);
+    }
+
+    public Page<Issue> findAllIssues(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return issueRepository.findAll(pageable);
     }
 }

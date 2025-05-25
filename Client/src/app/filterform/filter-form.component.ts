@@ -1,11 +1,19 @@
-import {Component, EventEmitter, Output} from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  EventEmitter,
+  Output,
+  AfterViewInit,
+} from '@angular/core';
+import flatpickr from 'flatpickr';
+import monthSelectPlugin from 'flatpickr/dist/plugins/monthSelect';
 
 @Component({
   selector: 'app-filterform',
   templateUrl: './filter-form.component.html',
   styleUrl: './filter-form.component.scss'
 })
-export class FilterFormComponent {
+export class FilterFormComponent implements AfterViewInit {
   startDate: string;
   endDate: string;
   trackingNumber: number;
@@ -14,40 +22,48 @@ export class FilterFormComponent {
   maxDate: string;
   dateError: boolean = false;
 
-  constructor() {
+  constructor(private elRef: ElementRef) {
     this.status = "";
     this.textDesc = "";
   }
 
   ngOnInit() {
-    const date = new Date();
-    date.setMonth(date.getMonth() - 6);
-    this.startDate = date.toISOString().slice(0, 7);
-    this.endDate = new Date().toISOString().slice(0, 7);
-    this.maxDate = new Date().toISOString().slice(0, 7);
+    const now = new Date();
+    const oneMonthAgo = new Date(now);
+    oneMonthAgo.setMonth(oneMonthAgo.getMonth() - 1);
+
+    this.startDate = oneMonthAgo.toISOString().slice(0, 7);
+    this.endDate = now.toISOString().slice(0, 7);
+    this.maxDate = now.toISOString().slice(0, 7);
   }
 
-  // validateDates(): boolean {
-  //   if (this.startDate && this.endDate) {
-  //     const dateError: boolean = this.startDate > this.endDate;
-  //     if (dateError) {
-  //       this.dateError = true;
-  //       setTimeout(() => {
-  //         this.dateError = false;
-  //         this.endDate = new Date().toISOString().slice(0, 7);
-  //       }, 2000);
-  //     } else {
-  //       this.dateError = false;
-  //     }
-  //   } else {
-  //     this.dateError = false;
-  //   }
-  // }
+  ngAfterViewInit() {
+    const startDateEl = this.elRef.nativeElement.querySelector('#startDate');
+    const endDateEl = this.elRef.nativeElement.querySelector('#endDate');
+
+    flatpickr(startDateEl, {
+      plugins: [monthSelectPlugin({ shorthand: true, dateFormat: 'Y-m' })],
+      defaultDate: this.startDate,
+      maxDate: this.maxDate,
+      onChange: (_, dateStr: string) => {
+        this.startDate = dateStr;
+        this.onChange();
+      }
+    });
+
+    flatpickr(endDateEl, {
+      plugins: [monthSelectPlugin({ shorthand: true, dateFormat: 'Y-m' })],
+      defaultDate: this.endDate,
+      maxDate: this.maxDate,
+      onChange: (_, dateStr: string) => {
+        this.endDate = dateStr;
+        this.onChange();
+      }
+    });
+  }
 
   validateDates(): boolean {
-    if (this.startDate && this.endDate) {
-      return this.startDate > this.endDate;
-    }
+    return this.startDate > this.endDate;
   }
 
   @Output() filterChanged = new EventEmitter<any>();
@@ -56,13 +72,12 @@ export class FilterFormComponent {
     this.dateError = this.validateDates();
     if (!this.dateError) {
       this.filterChanged.emit({
-          "tracking_number": this.trackingNumber,
-          "status": this.status,
-          "text_desc": this.textDesc,
-          "start_date" : this.startDate,
-          "end_date": this.endDate
-        }
-      )
+        tracking_number: this.trackingNumber,
+        status: this.status,
+        text_desc: this.textDesc,
+        start_date: this.startDate,
+        end_date: this.endDate
+      });
     }
   }
 }

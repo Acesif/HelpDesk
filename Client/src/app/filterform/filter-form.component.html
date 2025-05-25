@@ -1,5 +1,6 @@
 <div class="mt-3"></div>
-<form class="d-flex align-items-center justify-content-around mt-5">
+<form class="d-flex align-items-center justify-content-around flex-wrap gap-3 mt-5">
+  <!-- Status Select -->
   <div class="mb-3">
     <label for="floatingSelect" class="form-label">Status</label>
     <select
@@ -17,57 +18,63 @@
       <option value="CLOSED">CLOSED</option>
     </select>
   </div>
-  <div class="mb-3">
-    <label for="trackingNumber" class="form-label">Tracking Number</label>
-    <input
-      type="number"
-      class="form-control"
-      id="trackingNumber"
-      name="trackingNumber"
-      placeholder="Enter tracking number"
-      (input)="onChange()"
-      [(ngModel)]="trackingNumber"
-    >
-  </div>
-  <div class="mb-3">
-    <label for="titleOrDescription" class="form-label">Title / Description</label>
-    <input
-      type="text"
-      class="form-control"
-      id="titleOrDescription"
-      name="textdesc"
-      placeholder="Enter title or description"
-      (input)="onChange()"
-      [(ngModel)]="textDesc"
-    >
-  </div>
-  <div class="mb-3">
-    <label for="startDate" class="form-label">Start Date</label>
-    <input
-      type="month"
-      class="form-control"
-      id="startDate"
-      name="startDate"
-      [(ngModel)]="startDate"
-      (input)="onChange()"
-      [max]="maxDate"
-      required
-    />
-  </div>
-  <div class="mb-3">
-    <label for="endDate" class="form-label">End Date</label>
-    <input
-      type="month"
-      class="form-control"
-      id="endDate"
-      name="endDate"
-      [(ngModel)]="endDate"
-      (input)="onChange()"
-      [max]="maxDate"
-      required
-    />
-  </div>
-</form>
-<div *ngIf="dateError" class="text-danger mx-5">
-  Start Date cannot be later than End Date.
-</div>
+
+  <!-- Tracking Number -->
+<!--  <div class="mb-3">-->
+<!--    <label for="trackingNumber" class="form-label">Tracking Number</label>-->
+<!--    <input-->
+<!--      type="number"-->
+<!--      class="form-control"-->
+<!--      id="trackingNumber"-->
+<!--      name="trackingNumber"-->
+<!--      placeholder="Enter tracking number"-->
+<!--      (input)="onChange()"-->
+<!--      [(ngModel)]="trackingNumber"-->
+<!--    />-->
+<!--  </div>-->
+
+<!--  &lt;!&ndash; Title or Description &ndash;&gt;-->
+<!--  <div class="mb-3">-->
+<!--    <label for="titleOrDescription" class="form-label">Title / Description</label>-->
+<!--    <input-->
+<!--      type="text"-->
+<!--      class="form-control"-->
+<!--      id="titleOrDescription"-->
+<!--      name="textdesc"-->
+<!--      placeholder="Enter title or description"-->
+<!--      (input)="onChange()"-->
+<!--      [(ngModel)]="textDesc"-->
+<!--    />-->
+<!--  </div>-->
+
+<!--  &lt;!&ndash; Start Date &ndash;&gt;-->
+<!--  <div class="mb-3">-->
+<!--    <label for="startDate" class="form-label">Start Date</label>-->
+<!--    <input-->
+<!--      type="text"-->
+<!--      class="form-control"-->
+<!--      id="startDate"-->
+<!--      name="startDate"-->
+<!--      placeholder="Select start month"-->
+<!--      required-->
+<!--    />-->
+<!--  </div>-->
+
+<!--  &lt;!&ndash; End Date &ndash;&gt;-->
+<!--  <div class="mb-3">-->
+<!--    <label for="endDate" class="form-label">End Date</label>-->
+<!--    <input-->
+<!--      type="text"-->
+<!--      class="form-control"-->
+<!--      id="endDate"-->
+<!--      name="endDate"-->
+<!--      placeholder="Select end month"-->
+<!--      required-->
+<!--    />-->
+<!--  </div>-->
+<!--</form>-->
+
+<!--&lt;!&ndash; Validation Message &ndash;&gt;-->
+<!--<div *ngIf="dateError" class="text-danger mx-5">-->
+<!--  Start Date cannot be later than End Date.-->
+<!--</div>-->

@@ -59,6 +59,7 @@ public class IssueController {
                 .title(title)
                 .description(description)
                 .status(IssueStatus.OPEN)
+                .officeId(officeId)
                 .category(IssueCategory.valueOf(category.toUpperCase()))
                 .build();
 
@@ -70,7 +71,7 @@ public class IssueController {
                 .title(issueDto.getTitle())
                 .description(issueDto.getDescription())
                 .status(issueDto.getStatus())
-                .office(officeService.getOffice(officeId))
+                .officeId(issueDto.getOfficeId())
                 .trackingNumber(AttachmentUtils.generateTrackingNumber())
                 .issueCategory(IssueCategory.valueOf(category.toUpperCase()))
                 .postedBy(postedByUser)
@@ -91,7 +92,7 @@ public class IssueController {
                 .trackingNumber(savedIssue.getTrackingNumber())
                 .postedOn(savedIssue.getCreateDate())
                 .updatedOn(savedIssue.getUpdateDate())
-                .officeId(savedIssue.getOffice() != null ? savedIssue.getOffice().getId() : null)
+                .officeId(savedIssue.getOfficeId() != null ? savedIssue.getOfficeId() : null)
                 .postedBy(savedIssue.getPostedBy().getId())
                 .category(savedIssue.getIssueCategory())
                 .attachments(transformedAttachments)
@@ -131,7 +132,7 @@ public class IssueController {
             @RequestPart("description") String description,
             @RequestPart("status") String  status,
             @RequestPart("category") String category,
-            @RequestPart("officeId") String officeId,
+            @RequestPart("officeId") Long officeId,
             @RequestPart(value = "attachments", required = false) List<MultipartFile> attachments
     ){
         Issue issue = issueService.findById(id);
@@ -148,7 +149,7 @@ public class IssueController {
         issue.setStatus(IssueStatus.valueOf(status));
         issue.setTitle(title);
         issue.setDescription(description);
-        issue.setOffice(officeService.getOffice(Long.parseLong(officeId)));
+        issue.setOfficeId(officeId);
         issue.setIssueCategory(IssueCategory.valueOf(category.toUpperCase()));
         issue.setUpdateDate(new Date());
 
@@ -178,7 +179,7 @@ public class IssueController {
                                 .description(updatedIssue.getDescription())
                                 .postedBy(updatedIssue.getPostedBy().getId())
                                 .postedOn(updatedIssue.getCreateDate())
-                                .officeId(updatedIssue.getOffice() != null ? updatedIssue.getOffice().getId() : null)
+                                .officeId(updatedIssue.getOfficeId() != null ? updatedIssue.getOfficeId() : null)
                                 .updatedOn(updatedIssue.getUpdateDate())
                                 .trackingNumber(updatedIssue.getTrackingNumber())
                                 .category(updatedIssue.getIssueCategory())
@@ -248,7 +249,7 @@ public class IssueController {
                     .postedBy(findIssue.getPostedBy().getId())
                     .postedOn(findIssue.getCreateDate())
                     .updatedOn(findIssue.getUpdateDate())
-                    .officeId(findIssue.getOffice() != null ? findIssue.getOffice().getId() : null)
+                    .officeId(findIssue.getOfficeId() != null ? findIssue.getOfficeId() : null)
                     .trackingNumber(findIssue.getTrackingNumber())
                     .category(findIssue.getIssueCategory())
                     .attachments(transformedAttachments)
@@ -371,11 +372,11 @@ public class IssueController {
                     .build();
         }
 
-        if(userType == 0L){
-            issues = issues.stream().filter(i -> Objects.equals(i.getOffice().getId(), officeId)).toList();
-        } else {
-            issues = issues.stream().filter(i -> Objects.equals(i.getPostedBy().getId(), userId)).toList();
-        }
+//        if(userType == 0L){
+//            issues = issues.stream().filter(i -> Objects.equals(i.getOfficeId(), officeId)).toList();
+//        } else {
+//            issues = issues.stream().filter(i -> Objects.equals(i.getPostedBy().getId(), userId)).toList();
+//        }
 
         return Response.builder()
                 .status(HttpStatus.OK)
@@ -419,11 +420,11 @@ public class IssueController {
                     .build();
         }
 
-        if(userType == 0L){
-            issues = issues.stream().filter(i -> Objects.equals(i.getOffice().getId(), officeId)).toList();
-        } else {
-            issues = issues.stream().filter(i -> Objects.equals(i.getPostedBy().getId(), userId)).toList();
-        }
+//        if(userType == 0L){
+//            issues = issues.stream().filter(i -> Objects.equals(i.getOfficeId(), officeId)).toList();
+//        } else {
+//            issues = issues.stream().filter(i -> Objects.equals(i.getPostedBy().getId(), userId)).toList();
+//        }
 
         return Response.builder()
                 .status(HttpStatus.OK)
@@ -472,11 +473,11 @@ public class IssueController {
                     .build();
         }
 
-        if(userType == 0L){
-            issues = issues.stream().filter(i -> Objects.equals(i.getOffice().getId(), officeId)).toList();
-        } else {
-            issues = issues.stream().filter(i -> Objects.equals(i.getPostedBy().getId(), userId)).toList();
-        }
+//        if(userType == 0L){
+//            issues = issues.stream().filter(i -> Objects.equals(i.getOfficeId(), officeId)).toList();
+//        } else {
+//            issues = issues.stream().filter(i -> Objects.equals(i.getPostedBy().getId(), userId)).toList();
+//        }
 
         return Response.builder()
                 .status(HttpStatus.OK)
@@ -513,11 +514,11 @@ public class IssueController {
         }
 
         List<Issue> issues = issueService.findByTrackingNumber(trackingNumber);
-        if(userType == 0L){
-            issues = issues.stream().filter(i -> Objects.equals(i.getOffice().getId(), officeId)).toList();
-        } else {
-            issues = issues.stream().filter(i -> Objects.equals(i.getPostedBy().getId(), userId)).toList();
-        }
+//        if(userType == 0L){
+//            issues = issues.stream().filter(i -> Objects.equals(i.getOfficeId(), officeId)).toList();
+//        } else {
+//            issues = issues.stream().filter(i -> Objects.equals(i.getPostedBy().getId(), userId)).toList();
+//        }
         List<IssueDTO> issueDTOList = IssueUtils.convertToIssueDTOList(issues);
 
         if (issueDTOList.isEmpty()){
@@ -572,17 +573,41 @@ public class IssueController {
                     .build();
         }
 
-        if(userType == 0L){
-            issues = issues.stream().filter(i -> Objects.equals(i.getOffice().getId(), officeId)).toList();
-        } else {
-            issues = issues.stream().filter(i -> Objects.equals(i.getPostedBy().getId(), userId)).toList();
-        }
+//        if(userType == 0L){
+//            issues = issues.stream().filter(i -> Objects.equals(i.getOfficeId(), officeId)).toList();
+//        } else {
+//            issues = issues.stream().filter(i -> Objects.equals(i.getPostedBy().getId(), userId)).toList();
+//        }
 
         List<IssueDTO> issueDTOList = withAttachments(issues);
 
         return Response.builder()
                 .status(HttpStatus.OK)
                 .message("Issues found with the text "+input)
+                .data(issueDTOList)
+                .build();
+    }
+
+    @GetMapping("/all")
+    public Response<?> getAllIssues(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size
+    ) {
+        Page<Issue> issuePage = issueService.findAllIssues(page, size);
+
+        if (issuePage.isEmpty()) {
+            return Response.builder()
+                    .status(HttpStatus.NO_CONTENT)
+                    .message("No issues found")
+                    .data(null)
+                    .build();
+        }
+
+        List<IssueDTO> issueDTOList = IssueUtils.responseIssueListDTO(issuePage);
+
+        return Response.builder()
+                .status(HttpStatus.OK)
+                .message("All issues retrieved successfully")
                 .data(issueDTOList)
                 .build();
     }

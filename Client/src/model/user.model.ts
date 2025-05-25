@@ -3,7 +3,7 @@ export class User {
   name: string;
   email: string;
   phoneNumber: string;
-  officeId: number;
+  officeId: string;
   designation: string;
   password: string;
 
@@ -12,7 +12,7 @@ export class User {
     name: string,
     email: string,
     phoneNumber: string,
-    officeId: number,
+    officeId: string,
     designation: string,
     password: string
   ) {
