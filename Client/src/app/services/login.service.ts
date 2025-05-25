@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import {HttpClient, HttpHeaders} from '@angular/common/http';
 import { Observable } from 'rxjs';
 import {ipConfigService} from '../shared/ip-config.service';
 
@@ -24,6 +24,10 @@ export class LoginService {
   }
 
   referredLoginFromGRS(userData: any): Observable<any> {
-    return this.http.post(`${this.apiUrl}/referrer-grs`, userData);
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Access-Control-Allow-Origin': '*'
+    });
+    return this.http.post(`${this.apiUrl}/referrer-grs`, userData, { headers });
   }
 }

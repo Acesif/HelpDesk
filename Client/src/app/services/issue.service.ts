@@ -51,6 +51,7 @@ export class IssueService {
 
       const headers = new HttpHeaders({
         'Authorization': `Bearer ${this.authService.getToken()}`,
+        'Access-Control-Allow-Origin': '*'
       });
 
       return this.http.get<any>(`${this.issueApiUrl}/all?page=${page}&size=10`, { headers }).pipe(
