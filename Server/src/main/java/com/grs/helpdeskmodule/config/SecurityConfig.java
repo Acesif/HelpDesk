@@ -39,7 +39,6 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
-                .cors(withDefaults())
                 .authorizeHttpRequests(requests ->
                 requests
 //                        .requestMatchers(PERMITALL_PATHS).permitAll()
