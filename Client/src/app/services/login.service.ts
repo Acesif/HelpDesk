@@ -25,9 +25,9 @@ export class LoginService {
 
   referredLoginFromGRS(userData: any): Observable<any> {
     const headers = new HttpHeaders({
-      'Content-Type': 'application/json',
-      'Access-Control-Allow-Origin': '*'
+      'Content-Type': 'application/json'
     });
+
     return this.http.post(`${this.apiUrl}/referrer-grs`, userData, { headers });
   }
 }

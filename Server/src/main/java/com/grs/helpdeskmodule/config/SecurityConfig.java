@@ -38,7 +38,9 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        return http.authorizeHttpRequests(requests ->
+        return http
+                .cors(withDefaults())
+                .authorizeHttpRequests(requests ->
                 requests
 //                        .requestMatchers(PERMITALL_PATHS).permitAll()
 //                        .requestMatchers(ADMIN_PATHS).hasAnyAuthority("ADMIN","SUPERADMIN")
