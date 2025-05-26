@@ -33,6 +33,8 @@ management:
         include: health, info, metrics
 server:
   port: 7890
+  servlet:
+    context-path: /helpdesk
 
 logging:
   level:
