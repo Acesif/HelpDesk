@@ -12,6 +12,7 @@ public class WebConfig implements WebMvcConfigurer {
         registry.addMapping("/**")
                 .allowedOrigins(
                         "http://localhost:4200",                // Local Angular dev
+                        "http://localhost:80",                // Local Angular dev
                         "http://94.250.203.197:4300"            // Your hosted Angular
                 )
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
