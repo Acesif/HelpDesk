@@ -77,7 +77,8 @@
               "buildTarget": "Client:build:production"
             },
             "development": {
-              "buildTarget": "Client:build:development"
+              "buildTarget": "Client:build:development",
+              "port": 4300
             }
           },
           "defaultConfiguration": "development"

@@ -79,18 +79,18 @@ export class AppComponent {
             this.authService.saveToken(res.data.token);
             this.router.navigate(['issues', 'list']);
           } else {
-            window.location.href = "http://localhost/dashboard.do";
+            window.location.href = "https://training.grs.gov.bd/dashboard.do";
           }
         });
 
       } catch (error) {
         console.error("❌ Token decoding failed:", error);
         console.warn("🔎 Token string was:", token);
-        window.location.href = "http://localhost/dashboard.do";
+        window.location.href = "https://training.grs.gov.bd/dashboard.do";
       }
     } else {
       console.warn("❌ No token found in query parameters");
-      window.location.href = "http://localhost/dashboard.do";
+      window.location.href = "https://training.grs.gov.bd/dashboard.do";
     }
   }
 

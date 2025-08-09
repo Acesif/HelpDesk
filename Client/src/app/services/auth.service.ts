@@ -52,7 +52,7 @@ export class AuthService {
 
   logout(): void {
     localStorage.removeItem('token');
-    window.location.href = "http://localhost/dashboard.do";
+    window.location.href = "https://training.grs.gov.bd/dashboard.do";
   }
 
   extractTokenInfo() {
