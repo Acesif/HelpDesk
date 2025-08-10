@@ -40,6 +40,7 @@ export class IssueService {
 
     const headers = new HttpHeaders({
       'Authorization': `Bearer ${this.authService.getToken()}`,
+      'Access-Control-Allow-Origin': '*'
     });
 
     return this.http.post(`${this.issueApiUrl}/new`, issueData, {headers});
@@ -48,6 +49,7 @@ export class IssueService {
   getIssues(): Observable<Issue[]> {
     const headers = new HttpHeaders({
       'Authorization': `Bearer ${this.authService.getToken()}`,
+      'Access-Control-Allow-Origin': '*'
     });
 
     return this.http.get<any>(`${this.issueApiUrl}/user`, { headers }).pipe(
@@ -121,14 +123,16 @@ export class IssueService {
 
   postIssueReply(issueId: number, body: { comment: string; updatedStatus: string }): Observable<any>{
     const headers = new HttpHeaders({
-      'Authorization': `Bearer ${this.authService.getToken()}`
+      'Authorization': `Bearer ${this.authService.getToken()}`,
+      'Access-Control-Allow-Origin': '*'
     });
     return this.http.post(`${this.issueReplyApiUrl}/${issueId}`,body,{ headers });
   }
 
   filterByTrx(tracking_number: string, userType: number): any {
     const headers = new HttpHeaders({
-      'Authorization': `Bearer ${this.authService.getToken()}`
+      'Authorization': `Bearer ${this.authService.getToken()}`,
+      'Access-Control-Allow-Origin': '*'
     });
 
     return this.http.post<any>(`${this.issueApiUrl}/${userType}/tracking/${tracking_number}`, null ,{ headers });
@@ -136,7 +140,8 @@ export class IssueService {
 
   filterByStatus(status: string, userType: number): any {
     const headers = new HttpHeaders({
-      'Authorization': `Bearer ${this.authService.getToken()}`
+      'Authorization': `Bearer ${this.authService.getToken()}`,
+      'Access-Control-Allow-Origin': '*'
     });
 
     return this.http.post<any>(`${this.issueApiUrl}/${userType}/status/${status}`, null, { headers });
@@ -144,7 +149,8 @@ export class IssueService {
 
   filterByTextDesc(text_desc: string, userType: number): any {
     const headers = new HttpHeaders({
-      'Authorization': `Bearer ${this.authService.getToken()}`
+      'Authorization': `Bearer ${this.authService.getToken()}`,
+      'Access-Control-Allow-Origin': '*'
     });
 
     return this.http.post<any>(`${this.issueApiUrl}/${userType}/find/${text_desc}`, null, { headers });
@@ -153,6 +159,7 @@ export class IssueService {
   filterByDateRange(start_date: string, end_date: string, userType: number): any {
     const headers = new HttpHeaders({
     'Authorization': `Bearer ${this.authService.getToken()}`,
+      'Access-Control-Allow-Origin': '*'
     });
 
     return this.http.post<any>(`${this.issueApiUrl}/${userType}/between_month/${start_date}/${end_date}`, null, { headers });
