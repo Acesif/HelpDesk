@@ -28,6 +28,12 @@ public class JWTFilter extends OncePerRequestFilter {
             @Nonnull HttpServletRequest request,
             @Nonnull HttpServletResponse response,
             @Nonnull FilterChain filterChain) throws ServletException, IOException {
+            
+            // Skip JWT authentication for OPTIONS requests (CORS preflight)
+            if (request.getMethod().equals("OPTIONS")) {
+                filterChain.doFilter(request, response);
+                return;
+            }
 
             String authHeader = request.getHeader("Authorization");
             String token = null;
