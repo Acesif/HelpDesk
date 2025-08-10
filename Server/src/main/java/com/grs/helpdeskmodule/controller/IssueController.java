@@ -1,6 +1,5 @@
 package com.grs.helpdeskmodule.controller;
 
-import com.grs.helpdeskmodule.base.BaseEntity;
 import com.grs.helpdeskmodule.dto.IssueDTO;
 import com.grs.helpdeskmodule.dto.MailBody;
 import com.grs.helpdeskmodule.dto.Response;
@@ -294,7 +293,7 @@ public class IssueController {
                     .build();
         }
 
-        List<Issue> sortedIssueDTOList = issueList.stream().sorted(Comparator.comparing(BaseEntity::getUpdateDate)).toList();
+        List<Issue> sortedIssueDTOList = issueList.stream().sorted(Comparator.comparing(Issue::getUpdateDate)).toList();
 
         List<IssueDTO> issueDTOList = sortedIssueDTOList.stream().map(IssueUtils::convertToIssueDTO).toList();
 
@@ -354,7 +353,7 @@ public class IssueController {
                     .build();
         }
 
-        List<Issue> sortedIssueDTOList = issueList.stream().sorted(Comparator.comparing(BaseEntity::getUpdateDate)).toList();
+        List<Issue> sortedIssueDTOList = issueList.stream().sorted(Comparator.comparing(Issue::getUpdateDate)).toList();
 
         List<IssueDTO> issueDTOList = sortedIssueDTOList.stream().map(IssueUtils::convertToIssueDTO).toList();
 

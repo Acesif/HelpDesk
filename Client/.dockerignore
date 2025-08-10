@@ -1,0 +1,18 @@
+# See https://docs.docker.com/engine/reference/builder/#dockerignore-file
+
+# Dependency directories
+node_modules/
+
+# Build artifacts
+dist/
+.angular/cache
+
+# Git
+.git/
+.github/
+
+# IDE configuration
+.vscode/
+
+# Log files
+npm-debug.log

@@ -1,7 +1,6 @@
 package com.grs.helpdeskmodule.config;
 
 import com.grs.helpdeskmodule.jwt.JWTFilter;
-import com.grs.helpdeskmodule.utils.Endpoints;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -17,13 +16,6 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.CorsConfigurationSource;
-import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import org.springframework.web.filter.CorsFilter;
-
-import java.util.Arrays;
-import java.util.List;
 
 import static com.grs.helpdeskmodule.utils.Endpoints.*;
 import static org.springframework.security.config.Customizer.withDefaults;
@@ -40,33 +32,12 @@ public class SecurityConfig {
 
     private final UserDetailsService userDetailsService;
     private final JWTFilter jwtFilter;
-    private final WebConfig webConfig;
-
-    @Bean
-    public CorsConfigurationSource corsConfigurationSource() {
-        CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowCredentials(true);
-        configuration.setAllowedOrigins(Arrays.asList("http://94.250.203.197:4300"));
-        configuration.setAllowedHeaders(Arrays.asList("Origin", "Content-Type", "Accept", "Authorization", 
-                "X-Requested-With", "Access-Control-Request-Method", "Access-Control-Request-Headers"));
-        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-        configuration.setExposedHeaders(Arrays.asList(
-            "Authorization", 
-            "Access-Control-Allow-Origin", 
-            "Access-Control-Allow-Credentials"
-        ));
-        configuration.setMaxAge(3600L);
-        
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", configuration);
-        return source;
-    }
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http.authorizeHttpRequests(requests ->
                 requests
-//                        .requestMatchers(PERMITALL_PATHS).permitAll()
+                        .requestMatchers(PERMITALL_PATHS).permitAll()
 //                        .requestMatchers(ADMIN_PATHS).hasAnyAuthority("ADMIN","SUPERADMIN")
 //                        .requestMatchers(SUPERADMIN_PATHS).hasAnyAuthority("SUPERADMIN","VENDOR")
 //                        .requestMatchers(OFFICER_PATHS).hasAnyAuthority("OFFICER","ADMIN","SUPERADMIN")
@@ -76,7 +47,7 @@ public class SecurityConfig {
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .csrf(AbstractHttpConfigurer::disable)
-                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+                .cors(withDefaults())
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }

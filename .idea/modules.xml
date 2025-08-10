@@ -10,6 +10,7 @@
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/com.grs.HelpDesk-Module.iml" filepath="$PROJECT_DIR$/.idea/modules/com.grs.HelpDesk-Module.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/com.grs.HelpDesk-Module.main.iml" filepath="$PROJECT_DIR$/.idea/modules/com.grs.HelpDesk-Module.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/com.grs.HelpDesk-Module.test.iml" filepath="$PROJECT_DIR$/.idea/modules/com.grs.HelpDesk-Module.test.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/com.grs.Server.main.iml" filepath="$PROJECT_DIR$/.idea/modules/com.grs.Server.main.iml" />
     </modules>
   </component>
 </project>

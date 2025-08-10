@@ -7,6 +7,7 @@ import com.grs.helpdeskmodule.entity.*;
 import com.grs.helpdeskmodule.repository.*;
 import com.grs.helpdeskmodule.service.OfficeService;
 import com.grs.helpdeskmodule.service.UserService;
+import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
@@ -24,7 +25,7 @@ import java.util.List;
 @Component
 @RequiredArgsConstructor
 @Slf4j
-public class DataInitializer implements CommandLineRunner {
+public class DataInitializer {
 
     private final UserService userService;
     private final PriorityRepository priorityRepository;
@@ -34,18 +35,22 @@ public class DataInitializer implements CommandLineRunner {
     private final OfficeService officeService;
 
     private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
+    private final UserRepository userRepository;
 
-    @Override
-    public void run(String... args) throws IOException {
+    @PostConstruct
+    public void runner() {
+        initializeOffices();
         initiateUser();
         initiatePriority();
         initiateSettings();
         initiateRolePermissions();
-        initializeOffices();
     }
     private void initiateUser(){
-        if (userService.findUserByEmail("superadmin@admin.com") == null){
-            userService.save(
+        if (userService.findAll().isEmpty()){
+
+            List<User> users = new ArrayList<>();
+
+            users.add(
                     User.builder()
                             .flag(true)
                             .name("SUPERADMIN")
@@ -56,6 +61,19 @@ public class DataInitializer implements CommandLineRunner {
                             .designation("SUPERADMIN")
                             .build()
             );
+
+            users.add(
+                    User.builder()
+                            .flag(true)
+                            .name("GRO")
+                            .email("gro@grs.com")
+                            .office(officeService.findById(1L))
+                            .password(passwordEncoder.encode("12345678"))
+                            .phoneNumber(null)
+                            .designation("GRO")
+                            .build()
+            );
+            userRepository.saveAllAndFlush(users);
         }
     }
     private void initiatePriority(){
@@ -324,7 +342,7 @@ public class DataInitializer implements CommandLineRunner {
             roleRepository.saveAll(roles);
         }
     }
-    public void initializeOffices() throws IOException {
+    public void initializeOffices() {
 //        ObjectMapper mapper = new ObjectMapper();
 //        mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 //        File jsonFile = new File("Server/db_tables/offices.json");

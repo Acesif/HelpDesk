@@ -20,13 +20,18 @@ export class LoginService {
 
   login(userData: any): Observable<any> {
     const headers = new HttpHeaders({
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
+      'Access-Control-Allow-Origin': 'https://desktop-34m6a2h.tailcfa47b.ts.net',
+      'Access-Control-Allow-Credentials': 'true',
+      'Access-Control-Allow-Headers': 'Authorization',
     });
     return this.http.post(`${this.apiUrl}/login`, userData, { headers });
   }
   refreshToken(oldToken: string) {
     const headers = new HttpHeaders({
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
+      'Access-Control-Allow-Origin': 'https://desktop-34m6a2h.tailcfa47b.ts.net',
+      'Access-Control-Allow-Credentials': 'true',
     });
     return this.http.get(`${this.apiUrl}/refresh/${oldToken}`, { headers });
   }

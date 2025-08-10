@@ -1,13 +1,13 @@
 package com.grs.helpdeskmodule.repository;
 
-import com.grs.helpdeskmodule.base.BaseEntityRepository;
 import com.grs.helpdeskmodule.entity.Issue;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
-public interface IssueRepository extends BaseEntityRepository<Issue> {
+public interface IssueRepository extends JpaRepository<Issue, Long> {
 
     @Query(value = "SELECT * FROM helpdesk.issue WHERE status = :status", nativeQuery = true)
     List<Issue> findIssuesByStatus(String status);

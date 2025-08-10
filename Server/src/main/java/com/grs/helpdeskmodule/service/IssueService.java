@@ -1,25 +1,44 @@
 package com.grs.helpdeskmodule.service;
 
-import com.grs.helpdeskmodule.base.BaseEntityRepository;
-import com.grs.helpdeskmodule.base.BaseService;
 import com.grs.helpdeskmodule.entity.Issue;
-import com.grs.helpdeskmodule.entity.IssueStatus;
 import com.grs.helpdeskmodule.repository.IssueRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Service;
 
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
 @Service
-public class IssueService extends BaseService<Issue> {
+@RequiredArgsConstructor
+public class IssueService {
 
     private final IssueRepository issueRepository;
-    public IssueService(BaseEntityRepository<Issue> baseRepository, IssueRepository issueRepository) {
-        super(baseRepository);
-        this.issueRepository = issueRepository;
+
+    public Issue findById(Long id) {
+        return issueRepository.findById(id).orElse(null);
+    }
+
+    public Issue save(Issue entity) {
+        entity.setCreateDate(new Date());
+        entity.setFlag(true);
+        return issueRepository.saveAndFlush(entity);
+    }
+
+    public Issue update(Issue entity) {
+        entity.setUpdateDate(new Date());
+        return issueRepository.save(entity);
+    }
+
+    public void delete(Long id) {
+        Issue entity = issueRepository.findById(id).orElse(null);
+        if (entity != null) {
+            entity.setFlag(false);
+            update(entity);
+        }
+    }
+
+    public void hardDelete(Long id) {
+        issueRepository.deleteById(id);
     }
 
     public List<Issue> findIssueByUser(Long id){

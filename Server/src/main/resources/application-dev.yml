@@ -7,9 +7,9 @@ spring:
       max-request-size: 5000MB
       max-file-size: 5000MB
   datasource:
-    url: jdbc:mysql://94.250.203.197:3306/helpdesk?createDatabaseIfNotExist=true&autoReconnect=true&useSSL=false&useUnicode=yes&characterEncoding=UTF-8&allowPublicKeyRetrieval=true
-    username: root
-    password: Abc@1234.
+    url: jdbc:mysql://167.86.68.15:3307/helpdesk?createDatabaseIfNotExist=true&autoReconnect=true&useSSL=false&useUnicode=yes&characterEncoding=UTF-8&allowPublicKeyRetrieval=true
+    username: grs
+    password: Win@2019!@#$
     driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     database-platform: org.hibernate.dialect.MySQLDialect

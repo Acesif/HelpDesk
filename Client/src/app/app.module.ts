@@ -17,7 +17,8 @@ import { TitleComponent } from './shared/title/title.component';
 import { HomepageComponent } from './homepage/homepage.component';
 import { ProfileComponent } from './profile/profile.component';
 import { RegistrationComponent } from './registration/registration.component';
-import { provideHttpClient } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, provideHttpClient } from '@angular/common/http';
+import { AuthInterceptor } from './services/auth.interceptor';
 import { LoginComponent } from './login/login.component';
 import { AdminInboxComponent } from './admin-inbox/admin-inbox.component';
 import { LoadingSpinnerComponent } from './loading-spinner/loading-spinner.component';
@@ -81,7 +82,7 @@ const routes: Route[] = [
       timeOut: 2000,
     }),
   ],
-  providers: [IssueService, provideHttpClient()],
+    providers: [IssueService, provideHttpClient(), { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true }],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

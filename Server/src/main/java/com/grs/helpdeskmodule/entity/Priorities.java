@@ -1,6 +1,5 @@
 package com.grs.helpdeskmodule.entity;
 
-import com.grs.helpdeskmodule.base.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
 

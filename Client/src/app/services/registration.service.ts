@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import {HttpClient, HttpHeaders} from '@angular/common/http';
 import { Observable } from 'rxjs';
 import {ipConfigService} from '../shared/ip-config.service';
 
@@ -17,6 +17,11 @@ export class RegistrationService {
   }
 
   register(userData: any): Observable<any> {
-    return this.http.post(this.apiUrl, userData);
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Credentials': 'true',
+    });
+    return this.http.post(this.apiUrl, userData, { headers: headers });
   }
 }

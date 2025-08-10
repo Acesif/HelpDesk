@@ -1,7 +1,6 @@
 package com.grs.helpdeskmodule.controller;
 
 
-import com.grs.helpdeskmodule.base.BaseEntity;
 import com.grs.helpdeskmodule.dto.IssueRepliesDTO;
 import com.grs.helpdeskmodule.dto.Response;
 import com.grs.helpdeskmodule.entity.Issue;
@@ -50,7 +49,7 @@ public class IssueReplyController {
         List<IssueReplies> getIssuesById = issueReplyService.findIssuesByParentId(id);
 
         List<IssueReplies> issueRepliesList = getIssuesById.stream()
-                .sorted(Comparator.comparing(BaseEntity::getUpdateDate))
+                .sorted(Comparator.comparing(IssueReplies::getUpdateDate))
                 .toList();
 
         List<IssueRepliesDTO> issueRepliesDTOS = issueRepliesList.stream().map(IssueUtils::convertToIssueRepliesDTO).toList();
