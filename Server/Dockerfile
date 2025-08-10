@@ -13,8 +13,8 @@ WORKDIR /app
 COPY --from=build /home/gradle/src/build/libs/*.war /app/helpdesk.war
 
 # Expose the port the application will run on
-EXPOSE 7890
+EXPOSE 7878
 
 # Set the command to run the application
 # We also pass the server.port property to ensure Spring Boot uses the correct port
-CMD ["java", "-jar", "/app/helpdesk.war", "--server.port=7890"]
+CMD ["java", "-jar", "/app/helpdesk.war", "--server.port=7878"]
